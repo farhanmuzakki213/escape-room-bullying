@@ -4,12 +4,14 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 
 #[Layout('layouts.guest')]
 class GameManager extends Component
 {
     public string $currentView = 'home';
     public ?int $currentLevel = null;
+    public int $unlockedLevel = 1;
 
     protected $listeners = [
         'startGame' => 'showPetaMisi',
@@ -17,6 +19,22 @@ class GameManager extends Component
         'selectLevel' => 'enterLevel',
         'backToPetaMisi' => 'showPetaMisi'
     ];
+
+    #[On('levelCompleted')]
+    public function handleLevelCompleted(int $completedLevel)
+    {
+        if ($completedLevel == $this->unlockedLevel) {
+            $this->unlockedLevel++;
+        }
+    }
+
+    public function mount()
+    {
+        // --- DEVELOPMENT ONLY ---
+        // Langsung arahkan ke Level 1 untuk mempercepat development.
+        $this->currentView = 'level';
+        $this->currentLevel = 1;
+    }
 
     public function showPetaMisi()
     {
@@ -26,13 +44,16 @@ class GameManager extends Component
 
     public function enterLevel(int $level)
     {
-        $this->currentLevel = $level;
-        $this->currentView = 'level';
+        if ($level <= $this->unlockedLevel) {
+            $this->currentLevel = $level;
+            $this->currentView = 'level';
+        }
     }
 
     public function showHome()
     {
         $this->currentView = 'home';
+        $this->unlockedLevel = 1;
     }
 
     public function render()

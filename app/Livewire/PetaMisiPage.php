@@ -7,6 +7,13 @@ use Livewire\Component;
 #[Layout('layouts.guest')]
 class PetaMisiPage extends Component
 {
+    public int $unlockedLevel;
+    public array $levelTitles = [
+        1 => 'Ruang Kelas',
+        2 => 'Perpustakaan',
+        3 => 'Lorong',
+        4 => 'Lapangan',
+    ];
     public function selectLevel(int $level)
     {
         $this->dispatch('selectLevel', level: $level);

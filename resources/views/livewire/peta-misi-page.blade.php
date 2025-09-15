@@ -1,4 +1,3 @@
-
 <div class="bg-gray-800 min-h-screen flex items-center justify-center">
 
     <div class="relative w-full max-h-full aspect-video">
@@ -33,36 +32,59 @@
         <div
             class="absolute top-[65%] left-[10%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-[2%] z-20 w-[15%]">
             <img src="{{ asset('images/petamisi/number-1.svg') }}" alt="Nomor 1" class="w-[30%] pointer-events-none">
-            <button wire:click="selectLevel(1)" class="w-[70%] hover:scale-110 transition-transform">
+            <button wire:click="selectLevel(1)" class="w-[80%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/petamisi/meja-belajar.svg') }}" alt="Level 1: Kelas">
             </button>
+            <p class="font-chewy font-bold text-black text-xl md:text-2xl lg:text-3xl drop-shadow-lg absolute bottom-[-25%] left-[30%]">{{ $levelTitles[1] }}</p>
         </div>
 
         {{-- GRUP LEVEL 2 --}}
         <div
             class="absolute top-[50%] left-[28%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-[2%] z-20 w-[15%]">
-            <img src="{{ asset('images/petamisi/number-2.svg') }}" alt="Nomor 2" class="w-[30%] pointer-events-none">
+            <img src="{{ asset('images/petamisi/number-2.svg') }}" alt="Nomor 2"
+                class="w-[30%] pointer-events-none {{ $unlockedLevel < 2 ? 'grayscale' : '' }}"
+                @disabled($unlockedLevel < 2)>
             <button wire:click="selectLevel(2)" class="w-[65%] hover:scale-110 transition-transform">
-                <img src="{{ asset('images/petamisi/rak-buku.svg') }}" alt="Level 2: Perpustakaan">
+                <img src="{{ asset('images/petamisi/rak-buku.svg') }}" alt="Level 2: Perpustakaan"
+                    class="{{ $unlockedLevel < 2 ? 'grayscale' : '' }}">
             </button>
+            <p class="font-chewy font-bold text-black text-xl md:text-2xl lg:text-3xl drop-shadow-lg absolute bottom-[-25%] left-[30%]">{{ $levelTitles[2] }}</p>
+            @if ($unlockedLevel < 2)
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
+                </div>
+            @endif
         </div>
 
         {{-- GRUP LEVEL 3 --}}
         <div
             class="absolute top-[68%] left-[45%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-[2%] z-20 w-[15%]">
             <img src="{{ asset('images/petamisi/number-3.svg') }}" alt="Nomor 3" class="w-[30%] pointer-events-none">
-            <button wire:click="selectLevel(3)" class="w-[70%] hover:scale-110 transition-transform">
-                <img src="{{ asset('images/petamisi/locker-bola.svg') }}" alt="Level 3: Lorong">
+            <button wire:click="selectLevel(3)" class="w-[70%] hover:scale-110 transition-transform"
+                {{ $unlockedLevel < 3 ? 'grayscale' : '' }}" @disabled($unlockedLevel < 3)>
+                <img src="{{ asset('images/petamisi/locker-bola.svg') }}" alt="Level 3: Lorong"
+                    class="{{ $unlockedLevel < 3 ? 'grayscale' : '' }}">
             </button>
+            <p class="font-chewy font-bold text-black text-xl md:text-2xl lg:text-3xl drop-shadow-lg absolute bottom-[-25%] left-[30%]">{{ $levelTitles[3] }}</p>
+            @if ($unlockedLevel < 3)
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
+                </div>
+            @endif
         </div>
 
         {{-- GRUP LEVEL 4 --}}
         <div
             class="absolute top-[85%] left-[60%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-[2%] z-20 w-[15%]">
             <img src="{{ asset('images/petamisi/number-4.svg') }}" alt="Nomor 4" class="w-[30%] pointer-events-none">
-            <button wire:click="selectLevel(4)" class="w-[60%] hover:scale-110 transition-transform">
-                <img src="{{ asset('images/petamisi/tiang-bendera-v1.svg') }}" alt="Level 4: Lapangan">
+            <button wire:click="selectLevel(4)" class="w-[60%] hover:scale-110 transition-transform"
+                {{ $unlockedLevel < 4 ? 'grayscale' : '' }}" @disabled($unlockedLevel < 4)>
+                <img src="{{ asset('images/petamisi/tiang-bendera-v1.svg') }}" alt="Level 4: Lapangan"
+                    class="{{ $unlockedLevel < 4 ? 'grayscale' : '' }}">
             </button>
+            <p class="font-chewy font-bold text-black text-xl md:text-2xl lg:text-3xl drop-shadow-lg absolute bottom-[-25%] left-[25%]">{{ $levelTitles[4] }}</p>
+            @if ($unlockedLevel < 4)
+                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
+                </div>
+            @endif
         </div>
 
     </div>

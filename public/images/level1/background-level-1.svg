@@ -24,15 +24,15 @@
 <rect x="293.05" y="532.117" width="399.088" height="344.398" fill="url(#pattern3_11_1464)"/>
 </g>
 </g>
-<mask id="mask4_11_1464" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="456" y="819" width="1450" height="246">
-<path d="M456.286 819.974H1905.98V1064.24H456.286V819.974Z" fill="white"/>
+<mask id="mask4_11_1464" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="456" y="836" width="1450" height="246">
+<path d="M456.286 836.974H1905.98V1081.24H456.286V836.974Z" fill="white"/>
 </mask>
 <g mask="url(#mask4_11_1464)">
-<mask id="mask5_11_1464" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="456" y="819" width="1560" height="496">
-<rect x="456.285" y="819.203" width="1559.4" height="495.164" fill="url(#pattern4_11_1464)"/>
+<mask id="mask5_11_1464" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="456" y="836" width="1560" height="496">
+<rect x="456.285" y="836.203" width="1559.4" height="495.164" fill="url(#pattern4_11_1464)"/>
 </mask>
 <g mask="url(#mask5_11_1464)">
-<rect x="456.285" y="819.203" width="1559.4" height="495.164" fill="url(#pattern5_11_1464)"/>
+<rect x="456.285" y="836.203" width="1559.4" height="495.164" fill="url(#pattern5_11_1464)"/>
 </g>
 </g>
 <path d="M738.183 271.194C738.183 296.872 717.371 317.692 691.685 317.692C666.007 317.692 645.188 296.872 645.188 271.194C645.188 245.509 666.007 224.697 691.685 224.697C717.371 224.697 738.183 245.509 738.183 271.194Z" fill="#6B72C4"/>

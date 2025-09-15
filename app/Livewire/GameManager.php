@@ -30,8 +30,6 @@ class GameManager extends Component
 
     public function mount()
     {
-        // --- DEVELOPMENT ONLY ---
-        // Langsung arahkan ke Level 1 untuk mempercepat development.
         $this->currentView = 'level';
         $this->currentLevel = 1;
     }

@@ -12,6 +12,7 @@ export default {
         extend: {
             fontFamily: {
                 'luckiest-guy': ['"Luckiest Guy"', 'cursive'],
+                'chewy': ['"Chewy"', 'cursive'],
             },
         },
     },

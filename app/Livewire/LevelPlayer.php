@@ -96,9 +96,9 @@ class LevelPlayer extends Component
             'background' => 'images/level2/background-level-2.svg',
             'title' => 'Perpustakaan',
             'rules' => [
-                'popup_text' => 'Selamat datang di perpustakaan! Di sini banyak buku yang menyimpan cerita. Tapi, ada beberapa cerita sedih tentang bullying. Yuk, kita cari tahu jenis-jenis bullying dan bagaimana cara menghadapinya.',
-                'background_text' => 'Klik pada benda-benda di perpustakaan untuk mengungkap misteri perundungan!',
-                'completion_text' => 'Hebat! Kamu berhasil mengidentifikasi jenis-jenis bullying: fisik, verbal, sosial, dan cyberbullying. Ingat, cara terbaik menghadapinya adalah berani melapor ke orang dewasa dan tetap percaya diri. Lanjutkan perjalananmu!'
+                'popup_text' => 'Hore, kita berhasil keluar dari kelas! Tapi sekarang kita terkunci di perpustakaan. Di tempat ini, tersimpan pertanyaan-pertanyaan yang harus kamu jawab agar bisa keluar dari ruangan ini.',
+                'background_text' => 'Coba klik benda-benda didalamnya, siapa tahu ada petunjuk yang bisa membantu kita.',
+                'completion_text' => 'Keren! Sekarang kamu tahu kan jenis-jenis bullying itu apa saja, ada jenis fisik seperti memukul atau mendorong, ada verbal seperti mengejek dan menghina, ada sosial dengan cara mengucilkan atau menyebarkan gosip, dan ada juga cyberbullying lewat media sosial atau pesan online. Semua bentuk ini sama-sama menyakitkan dan berbahaya loh!'
             ],
             'assets' => [
                 'rules_board' => 'images/petunjuk/papan-aturan.svg',
@@ -118,7 +118,7 @@ class LevelPlayer extends Component
                             'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
                             'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
                         ],
-                        'correct_answer' => 'a'
+                        'correct_answer' => 'c'
                     ]
                 ],
                 'papan-library' => [
@@ -133,7 +133,7 @@ class LevelPlayer extends Component
                             'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
                             'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
                         ],
-                        'correct_answer' => 'c'
+                        'correct_answer' => 'b'
                     ]
                 ],
                 'tempat-sampah' => [
@@ -148,7 +148,7 @@ class LevelPlayer extends Component
                             'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
                             'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
                         ],
-                        'correct_answer' => 'b'
+                        'correct_answer' => 'a'
                     ]
                 ],
                 'vas' => [
@@ -172,9 +172,9 @@ class LevelPlayer extends Component
             'background' => 'images/level3/background-level-3.svg',
             'title' => 'Lorong Sekolah',
             'rules' => [
-                'popup_text' => 'Kita sekarang di lorong sekolah. Tempat ini sering jadi saksi bisu aksi bullying. Apa yang akan kamu lakukan jika melihat temanmu diganggu di sini? Keputusanmu sangat berarti!',
-                'background_text' => 'Setiap benda di lorong ini menyimpan petunjuk tentang cara menjadi pahlawan anti-bullying. Klik dan temukan peranmu!',
-                'completion_text' => 'Luar biasa! Kamu membuktikan kepedulianmu. Menjadi pembela (upstander) adalah kunci melawan bullying. Cukup dengan tidak diam, melapor, atau membantu teman, kamu sudah menjadi pahlawan. Ayo ke level terakhir!'
+                'popup_text' => 'Kita berhasil keluar dari perpustakaan! Tapi sekarang lorong sekolah ini terkunci. Hmm… suasananya terasa berbeda ya? Di tempat ini, kita harus mencari tahu apa yang membuat bullying terjadi dan apa saja dampaknya bagi korban maupun lingkungan sekolah.',
+                'background_text' => 'Ayo perhatikan baik-baik benda-benda di lorong ini, mungkin ada petunjuk yang bisa membantu kita membuka pintu berikutnya.',
+                'completion_text' => 'Wah, kamu hebat! Teman-teman, bullying itu tidak muncul begitu saja. Ada banyak faktor penyebabnya yaitu keluarga, pergaulan, teknologi, dan lingkungan sekolah dan dampaknya juga besar banget loh korban bisa terluka fisik (dampak fisik), menghindar dari pertemanan (dampak sosial), kehilangan semangat belajar dan bolos sekolah (dampak akademik), bahkan trauma dan rendah diri (dampak psikologis). Jadi yuk, kita sama-sama jaga lingkungan sekolah supaya aman, nyaman, dan bebas dari bullying. Nah, ayo kita lanjut ke halaman sekolah untuk mencari tahu bagaimana cara mencegah dan menangani bullying!'
             ],
             'assets' => [
                 'rules_board' => 'images/petunjuk/papan-aturan.svg',
@@ -207,7 +207,7 @@ class LevelPlayer extends Component
                             'b' => 'images/pertanyaan-jawaban/b-p2-lv3.svg',
                             'c' => 'images/pertanyaan-jawaban/c-p2-lv3.svg',
                         ],
-                        'correct_answer' => 'c'
+                        'correct_answer' => 'b'
                     ]
                 ],
                 'jam-dinding' => [
@@ -221,7 +221,7 @@ class LevelPlayer extends Component
                             'b' => 'images/pertanyaan-jawaban/b-p3-lv3.svg',
                             'c' => 'images/pertanyaan-jawaban/c-p3-lv3.svg',
                         ],
-                        'correct_answer' => 'b'
+                        'correct_answer' => 'c'
                     ]
                 ],
                 'pensil-berjatuhan' => [
@@ -235,7 +235,7 @@ class LevelPlayer extends Component
                             'b' => 'images/pertanyaan-jawaban/b-p4-lv3.svg',
                             'c' => 'images/pertanyaan-jawaban/c-p4-lv3.svg',
                         ],
-                        'correct_answer' => 'c'
+                        'correct_answer' => 'a'
                     ]
                 ],
             ]
@@ -251,9 +251,9 @@ class LevelPlayer extends Component
         $this->levelConfig = $this->levelData[$this->levelId];
         $this->backgroundUrl = asset($this->levelConfig['background']);
 
-        // if (env('APP_ENV') == 'local') {
-        //     $this->viewState = 'playing';
-        // }
+        if (env('APP_ENV') == 'local') {
+            $this->viewState = 'playing';
+        }
     }
 
     // --- METODE NAVIGASI ALUR ---

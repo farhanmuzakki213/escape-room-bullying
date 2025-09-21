@@ -30,8 +30,8 @@ class GameManager extends Component
 
     public function mount()
     {
-        $this->currentView = 'level';
-        $this->currentLevel = 1;
+        $this->currentView = 'peta_misi';
+        $this->currentLevel = null;
     }
 
     public function showPetaMisi()

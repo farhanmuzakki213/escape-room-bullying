@@ -24,16 +24,9 @@
         </div>
 
         {{-- Judul Game (Posisi tunggal dan ukuran font fluid) --}}
-        <div class="absolute top-[50%] left-[73%] -translate-x-1/2 -translate-y-1/2 z-20 text-center">
-            <h2 class="font-luckiest-guy text-black mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
-                <span class="font-bold text-2xl md:text-3xl lg:text-5xl xl:text-8xl">
-                    ESCAPE GAME
-                    <br>
-                    BULLYING
-                </span>
-            </h2>
+        <div class="absolute top-[70%] left-[73%] -translate-x-1/2 -translate-y-1/2 z-20 text-center">
             <button wire:click="startGame"
-                class="w-[50%] max-w-[256px] hover:scale-110 transition-transform duration-300">
+                class="max-w-[256px] hover:scale-110 transition-transform duration-300">
                 <img src="{{ asset('images/home/start-button.svg') }}" alt="Start Game">
             </button>
         </div>

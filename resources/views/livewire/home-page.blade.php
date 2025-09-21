@@ -17,16 +17,15 @@
                 <img src="{{ asset('images/home/menu-button.svg') }}" alt="Home">
             </button>
         </div>
-        <div class="absolute top-[4%] right-[-6%] w-[15%] flex z-20">
-            <button class="w-[60%] hover:scale-110 transition-transform">
-                <img src="{{ asset('images/home/volume-button.svg') }}" class="w-[80%]" alt="Volume">
+        <div class="absolute top-[4%] right-[0%] w-[10%] flex z-20">
+            <button class="w-[80%] hover:scale-110 transition-transform">
+                <img src="{{ asset('images/home/volume-button.svg') }}" alt="Volume">
             </button>
         </div>
 
         {{-- Judul Game (Posisi tunggal dan ukuran font fluid) --}}
         <div class="absolute top-[70%] left-[73%] -translate-x-1/2 -translate-y-1/2 z-20 text-center">
-            <button wire:click="startGame"
-                class="max-w-[256px] hover:scale-110 transition-transform duration-300">
+            <button wire:click="startGame" class="max-w-[256px] hover:scale-110 transition-transform duration-300">
                 <img src="{{ asset('images/home/start-button.svg') }}" alt="Start Game">
             </button>
         </div>

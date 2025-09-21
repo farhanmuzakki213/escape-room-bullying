@@ -6,7 +6,7 @@
             class="absolute top-0 left-0 w-full h-full object-cover z-0">
 
         {{-- Tombol UI Atas --}}
-        <div class="absolute top-[4%] left-[2%] w-[15%] flex gap-2 z-20">
+        <div class="absolute top-[4%] left-[2%] w-[15%] flex z-20">
             <button class="w-[60%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/home/help-button.svg') }}" class="w-[80%]" alt="Help">
             </button>

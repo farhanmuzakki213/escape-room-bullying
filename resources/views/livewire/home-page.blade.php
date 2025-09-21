@@ -9,17 +9,17 @@
             class="absolute top-0 left-0 w-full h-full object-cover z-0">
 
         {{-- Tombol UI Atas (Ukuran dan Posisi menggunakan Persentase) --}}
-        <div class="absolute top-[4%] left-[2%] flex gap-2 z-20">
-            <button class="w-12 h-12 md:w-16 md:h-16 hover:scale-110 transition-transform">
+        <div class="absolute top-[4%] left-[2%] flex gap-[4%] z-20 w-[15%]">
+            <button class="w-[60%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/home/help-button.svg') }}" alt="Help">
             </button>
-            <button class="w-12 h-12 md:w-16 md:h-16 hover:scale-110 transition-transform">
+            <button class="w-[60%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/home/menu-button.svg') }}" alt="Home">
             </button>
         </div>
-        <div class="absolute top-[4%] right-[2%] flex gap-2 z-20">
-            <button class="w-12 h-12 md:w-16 md:h-16 hover:scale-110 transition-transform">
-                <img src="{{ asset('images/home/volume-button.svg') }}" alt="Volume">
+        <div class="absolute top-[4%] right-[-6%] w-[15%] flex z-20">
+            <button class="w-[60%] hover:scale-110 transition-transform">
+                <img src="{{ asset('images/home/volume-button.svg') }}" class="w-[80%]" alt="Volume">
             </button>
         </div>
 

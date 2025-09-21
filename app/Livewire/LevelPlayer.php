@@ -31,6 +31,17 @@ class LevelPlayer extends Component
     public int $currentCompletionTextPage = 0;
 
     /**
+     * Properti untuk teka teki silang.
+     */
+    public array $crosswordGrid = [];
+    public int $rows = 0;
+    public int $cols = 0;
+    public array $clueNumbers = [];
+    public array $wordData = [];
+    public array $filledAnswers = [];
+    public string $userAnswer = '';
+
+    /**
      * Properti STATE untuk mengelola alur di dalam level.
      * Pilihan state: 'rules_popup', 'rules_background', 'playing', 'level_complete_popup'.
      */
@@ -246,7 +257,78 @@ class LevelPlayer extends Component
                 ],
             ]
         ],
-        4 => ['background' => 'images/petamisi/background-peta-misi.svg', 'title' => 'Lapangan Sekolah', 'objects' => []],
+        4 => [
+            'background' => 'images/level4/background-level-4.svg',
+            'title' => 'Lapangan Sekolah',
+            'rules' => [
+                'popup_text' => 'Akhirnya kita sampai di halaman sekolah! Di sini adalah tempat terakhir kita belajar bersama Arunika. Kamu akan belajar bagaimana cara mencegah dan mengatasi bullying jika terjadi di sekitarmu.',
+                'background_text' => 'Untuk menyelesaikan level ini, kamu harus menjawab semua pertanyaan dalam bentuk teka-teki silang. Klik benda-benda di halaman sekolah untuk menemukan soalnya!',
+                'completion_text' => 'Luar biasa! Kamu berhasil menyelesaikan semua tantangan! Sekarang kamu sudah tahu banyak tentang bullying, mulai dari pengertian, jenis, dampak, hingga cara mencegah dan mengatasinya. Ingat, kita semua punya peran untuk menciptakan lingkungan yang aman dan nyaman. Jangan ragu untuk melapor dan saling mendukung ya. Terima kasih sudah berpetualang bersama Arunika!'
+            ],
+            'assets' => ['rules_board' => 'images/petunjuk/papan-aturan.svg',],
+            'objects' => [
+                'kertas-berjatuhan' => [
+                    'image' => 'images/level4/kertas-berjatuhan.svg',
+                    'alt' => 'Kertas Berjatuhan',
+                    'style' => 'top: 80%; left: 80%; width: 8%;',
+                    'question' => [
+                        'id' => 1,
+                        'image' => 'images/pertanyaan-jawaban/p1-lv4.svg',
+                        'answer' => 'konseling'
+                    ]
+                ],
+                'kursi' => [
+                    'image' => 'images/level4/kursi.svg',
+                    'alt' => 'Kursi',
+                    'style' => 'top: 75%; left: 20%; width: 10%;',
+                    'question' => [
+                        'id' => 2,
+                        'image' => 'images/pertanyaan-jawaban/p2-lv4.svg',
+                        'answer' => 'dukungan'
+                    ]
+                ],
+                'pohon' => [
+                    'image' => 'images/level4/pohon.svg',
+                    'alt' => 'Pohon',
+                    'style' => 'top: 45%; left: 85%; width: 15%;',
+                    'question' => [
+                        'id' => 3,
+                        'image' => 'images/pertanyaan-jawaban/p3-lv4.svg',
+                        'answer' => 'komunikasi'
+                    ]
+                ],
+                'tempat-sampah' => [
+                    'image' => 'images/level4/tempat-sampah.svg',
+                    'alt' => 'Tempat Sampah',
+                    'style' => 'top: 78%; left: 35%; width: 6%;',
+                    'question' => [
+                        'id' => 4,
+                        'image' => 'images/pertanyaan-jawaban/p4-lv4.svg',
+                        'answer' => 'melaporkan'
+                    ]
+                ],
+                'bendera' => [
+                    'image' => 'images/level4/bendera.svg',
+                    'alt' => 'Bendera',
+                    'style' => 'top: 30%; left: 50%; width: 8%;',
+                    'question' => [
+                        'id' => 5,
+                        'image' => 'images/pertanyaan-jawaban/p5-lv4.svg',
+                        'answer' => 'masyarakat'
+                    ]
+                ],
+                'bambu' => [
+                    'image' => 'images/level4/bambu.svg',
+                    'alt' => 'Bambu',
+                    'style' => 'top: 55%; left: 15%; width: 8%;',
+                    'question' => [
+                        'id' => 6,
+                        'image' => 'images/pertanyaan-jawaban/p6-lv4.svg',
+                        'answer' => 'sekolah'
+                    ]
+                ],
+            ]
+        ],
     ];
 
     /**
@@ -257,9 +339,13 @@ class LevelPlayer extends Component
         $this->levelConfig = $this->levelData[$this->levelId];
         $this->backgroundUrl = asset($this->levelConfig['background']);
 
-        // if (env('APP_ENV') == 'local') {
-        //     $this->viewState = 'playing';
-        // }
+        if (env('APP_ENV') == 'local') {
+            $this->viewState = 'playing';
+        }
+
+        if ($this->levelId === 4) {
+            $this->initializeTts();
+        }
     }
 
     // --- METODE NAVIGASI ALUR ---
@@ -291,7 +377,6 @@ class LevelPlayer extends Component
      */
     public function objectClicked(string $objectName)
     {
-        // Jangan tampilkan soal jika sudah pernah dijawab benar
         if (in_array($objectName, $this->answeredObjects)) {
             return;
         }
@@ -301,6 +386,7 @@ class LevelPlayer extends Component
             $this->currentQuestion = $this->levelConfig['objects'][$objectName]['question'];
             $this->showQuestionModal = true;
             $this->feedbackMessage = null;
+            $this->userAnswer = '';
         }
     }
 
@@ -309,6 +395,8 @@ class LevelPlayer extends Component
      */
     public function selectAnswer(string $selectedOption)
     {
+        if ($this->levelId === 4) return;
+
         if ($this->currentQuestion) {
             if ($selectedOption == $this->currentQuestion['correct_answer']) {
                 $this->feedbackMessage = "Jawabanmu Benar! 👍";
@@ -345,7 +433,8 @@ class LevelPlayer extends Component
     public function checkLevelCompletion()
     {
         $totalObjectsWithQuestions = count($this->levelConfig['objects']);
-        if (count($this->answeredObjects) >= $totalObjectsWithQuestions) {
+        $answeredCount = ($this->levelId === 4) ? count($this->filledAnswers) : count($this->answeredObjects);
+        if ($answeredCount >= $totalObjectsWithQuestions) {
             $this->paginateCompletionText();
             $this->viewState = 'level_complete_popup';
         }
@@ -360,6 +449,7 @@ class LevelPlayer extends Component
         $this->currentQuestion = null;
         $this->feedbackMessage = null;
         $this->activeObjectName = null;
+        $this->userAnswer = '';
     }
 
     /**
@@ -369,33 +459,11 @@ class LevelPlayer extends Component
     {
         $text = $this->levelConfig['rules']['completion_text'];
         $words = explode(' ', $text);
-        $pages = [];
-        $currentPage = '';
-        $wordCount = 0;
-        $maxWordsPerPage = 30; // Naikkan batas kata per halaman
+        $chunks = array_chunk($words, 30);
+        $this->completionTextPages = array_map(function($chunk) {
+            return implode(' ', $chunk);
+        }, $chunks);
 
-        foreach ($words as $word) {
-            // Cek jika penambahan kata baru akan melebihi batas
-            if ($wordCount > 0 && $wordCount + str_word_count($word) > $maxWordsPerPage) {
-                $pages[] = trim($currentPage);
-                $currentPage = '';
-                $wordCount = 0;
-            }
-            $currentPage .= $word . ' ';
-            $wordCount++;
-        }
-
-        // Tambahkan sisa kalimat terakhir ke halaman
-        if (!empty(trim($currentPage))) {
-            $pages[] = trim($currentPage);
-        }
-
-        // Jika tidak ada halaman yang dibuat (teks pendek), masukkan semua teks
-        if (empty($pages) && !empty($text)) {
-            $pages[] = $text;
-        }
-
-        $this->completionTextPages = $pages;
         $this->currentCompletionTextPage = 0;
     }
 
@@ -413,6 +481,103 @@ class LevelPlayer extends Component
             $this->currentCompletionTextPage--;
         }
     }
+
+    public function initializeTts()
+    {
+        $words = [
+            ['word' => 'konseling',  'pos' => [9, 0], 'dir' => 'H', 'clueNo' => 1],
+            ['word' => 'dukungan',   'pos' => [2, 2],  'dir' => 'V', 'clueNo' => 2],
+            ['word' => 'komunikasi', 'pos' => [0, 6],  'dir' => 'V', 'clueNo' => 3],
+            ['word' => 'melaporkan', 'pos' => [2, 6],  'dir' => 'H', 'clueNo' => 4],
+            ['word' => 'masyarakat', 'pos' => [7, 5],  'dir' => 'H', 'clueNo' => 5],
+            ['word' => 'sekolah',    'pos' => [0, 4],  'dir' => 'H', 'clueNo' => 6],
+        ];
+
+        // Simpan data kata untuk digunakan nanti saat mengisi jawaban
+        foreach ($words as $w) {
+            $this->wordData[strtolower($w['word'])] = $w;
+        }
+
+        // Tentukan ukuran grid secara dinamis
+        $maxRow = 0;
+        $maxCol = 0;
+        foreach ($words as $w) {
+            $r = $w['pos'][0];
+            $c = $w['pos'][1];
+            $len = strlen($w['word']);
+            if ($w['dir'] === 'H') {
+                $maxRow = max($maxRow, $r);
+                $maxCol = max($maxCol, $c + $len - 1);
+            } else { // 'V'
+                $maxRow = max($maxRow, $r + $len - 1);
+                $maxCol = max($maxCol, $c);
+            }
+        }
+        $this->rows = $maxRow + 1;
+        $this->cols = $maxCol + 1;
+
+        // Inisialisasi grid: null = area kosong, '' = kotak huruf yang belum diisi
+        $grid = array_fill(0, $this->rows, array_fill(0, $this->cols, null));
+
+        foreach ($words as $w) {
+            $r_start = $w['pos'][0];
+            $c_start = $w['pos'][1];
+            $this->clueNumbers["{$r_start}_{$c_start}"] = $w['clueNo'];
+
+            for ($k = 0; $k < strlen($w['word']); $k++) {
+                if ($w['dir'] === 'H') {
+                    $grid[$r_start][$c_start + $k] = ''; // Kotak kosong
+                } else { // 'V'
+                    $grid[$r_start + $k][$c_start] = ''; // Kotak kosong
+                }
+            }
+        }
+
+        $grid[9][0] = 'K';
+        $grid[4][2] = 'k';
+        $grid[7][6] = 'A';
+        $grid[2][6] = 'M';
+        $grid[0][10] = 'H';
+        $this->crosswordGrid = $grid;
+    }
+
+    public function submitTtsAnswer()
+    {
+        if (!$this->currentQuestion) return;
+
+        $correctAnswer = strtolower($this->currentQuestion['answer']);
+        $submittedAnswer = strtolower(trim($this->userAnswer));
+
+        if ($submittedAnswer === $correctAnswer) {
+            $this->feedbackMessage = "Jawabanmu Benar! 👍";
+            if (!in_array($correctAnswer, $this->filledAnswers)) {
+                $this->filledAnswers[] = $correctAnswer;
+            }
+            // Panggil fungsi untuk mengisi huruf ke grid
+            $this->fillWordInGrid($correctAnswer);
+        } else {
+            $this->feedbackMessage = "Jawabanmu kurang tepat. Coba lagi!";
+        }
+    }
+
+    public function fillWordInGrid(string $word)
+    {
+        $word = strtolower($word);
+        if (!isset($this->wordData[$word])) return;
+
+        $data = $this->wordData[$word];
+        $letters = str_split($word);
+        [$row, $col] = $data['pos'];
+
+        foreach ($letters as $i => $letter) {
+            if ($data['dir'] === 'H') {
+                $this->crosswordGrid[$row][$col + $i] = strtoupper($letter);
+            } else { // 'V'
+                $this->crosswordGrid[$row + $i][$col] = strtoupper($letter);
+            }
+        }
+    }
+
 
 
     /**

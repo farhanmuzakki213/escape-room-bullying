@@ -5,9 +5,15 @@
 
         {{-- Objek Interaktif --}}
         @foreach ($levelConfig['objects'] as $objectName => $objectData)
+            @php
+                $isAnswered =
+                    $levelId === 4
+                        ? in_array($objectData['question']['answer'], $filledAnswers)
+                        : in_array($objectName, $answeredObjects);
+            @endphp
             <button wire:click="objectClicked('{{ $objectName }}')"
-                class="absolute transition-transform z-10 -translate-x-1/2 -translate-y-1/2 {{ in_array($objectName, $answeredObjects) ? 'opacity-50 cursor-default' : '' }}"
-                style="{{ $objectData['style'] }}" @disabled(in_array($objectName, $answeredObjects))>
+                class="absolute transition-transform z-10 -translate-x-1/2 -translate-y-1/2 {{ $isAnswered ? 'opacity-50 cursor-default' : 'hover:scale-110' }}"
+                style="{{ $objectData['style'] }}" @disabled($isAnswered)>
                 <img src="{{ asset($objectData['image']) }}" alt="{{ $objectData['alt'] }}">
             </button>
         @endforeach
@@ -28,44 +34,23 @@
         @endif
 
         {{-- STATE 1: POPUP ATURAN AWAL --}}
-        @if ($viewState === 'rules_popup')
+        @if ($viewState === 'rules_popup' || $viewState === 'rules_background')
             <div class="absolute inset-0 w-full h-full flex items-center justify-center z-40">
                 <div class="relative w-[60%] aspect-[4/3]">
                     <img src="{{ asset($levelConfig['assets']['rules_board']) }}" class="w-full h-full">
                     <div class="absolute top-[20%] left-[36%] w-[60%] h-[55%] flex items-center justify-center p-2">
                         <p class="text-center font-semibold text-gray-800 md:text-xl lg:text-2xl">
-                            {{ $levelConfig['rules']['popup_text'] }}</p>
+                            {{ $viewState === 'rules_popup' ? $levelConfig['rules']['popup_text'] : $levelConfig['rules']['background_text'] }}
+                        </p>
                     </div>
                     {{-- Tombol Navigasi --}}
-                    <button wire:click="backToPetaMisi"
+                    <button wire:click="{{ $viewState === 'rules_popup' ? 'backToPetaMisi' : 'backToRulesPopup' }}"
                         class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
                         <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
                     </button>
-                    <button wire:click="showRulesBackground"
+                    <button wire:click="{{ $viewState === 'rules_popup' ? 'showRulesBackground' : 'startGameplay' }}"
                         class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
                         <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Lanjut">
-                    </button>
-                </div>
-            </div>
-        @endif
-
-        {{-- STATE 2: HALAMAN LATAR ATURAN --}}
-        @if ($viewState === 'rules_background')
-            <div class="absolute inset-0 w-full h-full flex items-center justify-center z-40">
-                <div class="relative w-[60%] aspect-[4/3]">
-                    <img src="{{ asset($levelConfig['assets']['rules_board']) }}" class="w-full h-full">
-                    <div class="absolute top-[20%] left-[36%] w-[60%] h-[55%] flex items-center justify-center p-2">
-                        <p class="text-center font-semibold text-gray-800 md:text-xl lg:text-2xl">
-                            {{ $levelConfig['rules']['background_text'] }}</p>
-                    </div>
-                    {{-- Tombol Navigasi --}}
-                    <button wire:click="backToRulesPopup"
-                        class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
-                        <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
-                    </button>
-                    <button wire:click="startGameplay"
-                        class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
-                        <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Mulai Bermain">
                     </button>
                 </div>
             </div>
@@ -74,60 +59,133 @@
         {{-- POPUP SOAL (di dalam state 'playing') --}}
         @if ($showQuestionModal && $currentQuestion)
             <div class="absolute inset-0 flex items-center justify-center z-50">
-                <div class="relative w-[70%] aspect-[4/3]">
-                    <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">
 
-                    <div class="absolute inset-0 flex flex-col items-center justify-end p-[12%]">
-                        {{-- Pilihan Jawaban --}}
-                        @if ($levelId == 2)
-                            {{-- Layout Grid 2x2 untuk Level 2 (4 Pilihan) --}}
-                            <div class="grid grid-cols-2 gap-[5%] w-[50%] max-w-xl mb-[5%]">
-                                @foreach ($currentQuestion['options'] as $key => $option)
-                                    <button wire:click.prevent="selectAnswer('{{ $key }}')"
-                                        @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
-                                        class="p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
-                                        <img src="{{ asset($option) }}" class="w-full h-full object-contain">
-                                    </button>
-                                @endforeach
-                            </div>
-                        @else
-                            {{-- Layout Segitiga untuk Level 1 & 3 (3 Pilihan) --}}
-                            <div class="w-full max-w-4xl mb-4">
-                                <div class="flex justify-center gap-[4%]">
-                                    <button wire:click.prevent="selectAnswer('a')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
-                                        class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
-                                        <img src="{{ asset($currentQuestion['options']['a']) }}"
-                                            class="w-full h-full object-contain">
-                                    </button>
-                                    <button wire:click.prevent="selectAnswer('b')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
-                                        class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
-                                        <img src="{{ asset($currentQuestion['options']['b']) }}"
-                                            class="w-full h-full object-contain">
-                                    </button>
-                                </div>
-                                <div class="flex justify-center mt-4">
-                                    <button wire:click.prevent="selectAnswer('c')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
-                                        class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
-                                        <img src="{{ asset($currentQuestion['options']['c']) }}"
-                                            class="w-full h-full object-contain">
-                                    </button>
-                                </div>
-                            </div>
-                        @endif
+                {{-- ================================================================= --}}
+                {{-- KONDISIONAL BARU UNTUK LEVEL 4 (TTS) --}}
+                {{-- ================================================================= --}}
+                @if ($levelId == 4)
+                    <div class="relative w-[70%] aspect-[4/3]">
+                        {{-- Gambar Papan Tulis sebagai Latar Belakang --}}
+                        <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">
 
-                        {{-- Feedback & Tombol Lanjut --}}
-                        @if ($feedbackMessage)
-                            <div
-                                class="mt-4 font-semibold text-lg {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-400' : 'text-red-400' }}">
-                                {{ $feedbackMessage }}
+                        {{-- Kontainer untuk elemen-elemen di atas gambar --}}
+                        <div class="absolute inset-0 w-full h-full">
+
+                            {{-- === BLOK TTS BARU YANG SUDAH DI-STYLING === --}}
+                            <div class="absolute w-[44%] left-[50%] top-[48%] -translate-x-1/2 -translate-y-1/2">
+                                <div class="inline-grid gap-1" style="grid-template-columns: repeat({{ $cols }}, 2rem);">
+                                    @for ($r = 0; $r < $rows; $r++)
+                                        @for ($c = 0; $c < $cols; $c++)
+                                            @php
+                                                $cell = $crosswordGrid[$r][$c] ?? null;
+                                                $key = "{$r}_{$c}";
+                                                $clueNo = $clueNumbers[$key] ?? null;
+                                            @endphp
+
+                                            @if ($cell === null)
+                                                {{-- Area kosong, bukan bagian dari TTS --}}
+                                                <div class="w-8 h-8 bg-transparent"></div>
+                                            @else
+                                                {{-- Kotak untuk huruf --}}
+                                                <div class="relative w-8 h-8 bg-white text-black text-center flex items-center justify-center font-bold text-lg rounded-sm">
+                                                    @if ($clueNo)
+                                                        <span class="absolute top-0 left-0.5 text-[8px] leading-none text-gray-600">{{ $clueNo }}</span>
+                                                    @endif
+                                                    <span class="select-none">{{ $cell }}</span>
+                                                </div>
+                                            @endif
+                                        @endfor
+                                    @endfor
+                                </div>
                             </div>
-                            @if (str_contains($feedbackMessage, 'Benar'))
-                                <button wire:click="closeModalAndCheckCompletion"
-                                    class="mt-4 px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">Lanjut</button>
-                            @endif
-                        @endif
+                            {{-- === AKHIR BLOK TTS BARU === --}}
+
+
+                            {{-- Form Jawaban (Diposisikan di bawah grid) --}}
+                            <div class="absolute bottom-[8%] left-[50%] -translate-x-1/2 w-[40%] text-center">
+                                @if (!$feedbackMessage || !str_contains($feedbackMessage, 'Benar'))
+                                    <label for="userAnswer" class="block mb-2 font-bold text-white">Jawabanmu:</label>
+                                    <input type="text" id="userAnswer" wire:model.live="userAnswer"
+                                        wire:keydown.enter="submitTtsAnswer"
+                                        class="p-2 w-full text-center border border-gray-400 rounded-md shadow-sm"
+                                        placeholder="Ketik jawaban..." autocomplete="off">
+                                    <button wire:click="submitTtsAnswer"
+                                        class="mt-3 px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600">
+                                        Kirim Jawaban
+                                    </button>
+                                @endif
+
+                                {{-- Feedback & Tombol Lanjut --}}
+                                @if ($feedbackMessage)
+                                    <div class="mt-4 font-bold text-xl {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-300' : 'text-red-400' }}">
+                                        {{ $feedbackMessage }}
+                                    </div>
+                                    @if (str_contains($feedbackMessage, 'Benar'))
+                                        <button wire:click="closeModalAndCheckCompletion"
+                                            class="mt-2 px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">
+                                            Lanjut
+                                        </button>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    {{-- ================================================================= --}}
+                    {{-- BLOK UNTUK LEVEL 1, 2, 3 (PILIHAN GANDA) --}}
+                    {{-- ================================================================= --}}
+                @else
+                    <div class="relative w-[70%] aspect-[4/3]">
+                        <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">
+                        <div class="absolute inset-0 flex flex-col items-center justify-end p-[12%]">
+                            {{-- Pilihan Jawaban --}}
+                            @if ($levelId == 2)
+                                <div class="grid grid-cols-2 gap-[5%] w-[50%] max-w-xl mb-[5%]">
+                                    @foreach ($currentQuestion['options'] as $key => $option)
+                                        <button wire:click.prevent="selectAnswer('{{ $key }}')"
+                                            @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
+                                            class="p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
+                                            <img src="{{ asset($option) }}" class="w-full h-full object-contain">
+                                        </button>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="w-full max-w-4xl mb-4">
+                                    <div class="flex justify-center gap-[4%]">
+                                        <button wire:click.prevent="selectAnswer('a')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
+                                            class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
+                                            <img src="{{ asset($currentQuestion['options']['a']) }}"
+                                                class="w-full h-full object-contain">
+                                        </button>
+                                        <button wire:click.prevent="selectAnswer('b')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
+                                            class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
+                                            <img src="{{ asset($currentQuestion['options']['b']) }}"
+                                                class="w-full h-full object-contain">
+                                        </button>
+                                    </div>
+                                    <div class="flex justify-center mt-4">
+                                        <button wire:click.prevent="selectAnswer('c')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
+                                            class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
+                                            <img src="{{ asset($currentQuestion['options']['c']) }}"
+                                                class="w-full h-full object-contain">
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+                            {{-- Feedback & Tombol Lanjut --}}
+                            @if ($feedbackMessage)
+                                <div
+                                    class="mt-4 font-semibold text-lg {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-400' : 'text-red-400' }}">
+                                    {{ $feedbackMessage }}
+                                </div>
+                                @if (str_contains($feedbackMessage, 'Benar'))
+                                    <button wire:click="closeModalAndCheckCompletion"
+                                        class="mt-4 px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">Lanjut</button>
+                                @endif
+                            @endif
+                        </div>
+                    </div>
+                @endif
             </div>
         @endif
 

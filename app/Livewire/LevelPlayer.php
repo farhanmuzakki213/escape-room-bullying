@@ -25,6 +25,12 @@ class LevelPlayer extends Component
     public ?string $activeObjectName = null;
 
     /**
+     * Properti untuk paginasi teks penyelesaian level.
+     */
+    public array $completionTextPages = [];
+    public int $currentCompletionTextPage = 0;
+
+    /**
      * Properti STATE untuk mengelola alur di dalam level.
      * Pilihan state: 'rules_popup', 'rules_background', 'playing', 'level_complete_popup'.
      */
@@ -40,7 +46,7 @@ class LevelPlayer extends Component
             'rules' => [
                 'popup_text' => 'Halo, aku Arunika. Aku akan menemanimu menjelajah sekolah ini. Tapi pintu kelas terkunci! Untuk keluar, kita harus tahu dulu apa itu bullying, bagaimana cirinya, dan apa tujuan orang melakukannya.',
                 'background_text' => 'Silahkan kamu klik benda-benda yang ada didalam kelas untuk mengetahuinya!',
-                'completion_text' => 'Kerja bagus! Kamu sekarang tahu bullying adalah tindakan sengaja dan berulang untuk menyakiti orang lain. Meskipun pelakunya mencari kekuasaan atau perhatian, tindakan itu tetap salah dan merugikan semua orang. Ayo lanjutkan!'
+                'completion_text' => 'Hebat! Sekarang kamu tahu kan bahwa bullying itu artinya perilaku menyakiti orang lain secara sengaja dan berulang, biasanya pada yang lebih lemah. Orang melakukan bullying biasanya karena ingin berkuasa, mencari perhatian, balas dendam, atau supaya diakui teman-temannya. Tapi semua itu bukan alasan yang benar, karena justru merugikan diri sendiri dan orang lain. Yuk, kita lanjut!'
             ],
             'assets' => [
                 'rules_board' => 'images/petunjuk/papan-aturan.svg',
@@ -251,9 +257,9 @@ class LevelPlayer extends Component
         $this->levelConfig = $this->levelData[$this->levelId];
         $this->backgroundUrl = asset($this->levelConfig['background']);
 
-        if (env('APP_ENV') == 'local') {
-            $this->viewState = 'playing';
-        }
+        // if (env('APP_ENV') == 'local') {
+        //     $this->viewState = 'playing';
+        // }
     }
 
     // --- METODE NAVIGASI ALUR ---
@@ -340,6 +346,7 @@ class LevelPlayer extends Component
     {
         $totalObjectsWithQuestions = count($this->levelConfig['objects']);
         if (count($this->answeredObjects) >= $totalObjectsWithQuestions) {
+            $this->paginateCompletionText();
             $this->viewState = 'level_complete_popup';
         }
     }
@@ -354,6 +361,59 @@ class LevelPlayer extends Component
         $this->feedbackMessage = null;
         $this->activeObjectName = null;
     }
+
+    /**
+     * Membagi teks penyelesaian menjadi beberapa halaman.
+     */
+    public function paginateCompletionText()
+    {
+        $text = $this->levelConfig['rules']['completion_text'];
+        $words = explode(' ', $text);
+        $pages = [];
+        $currentPage = '';
+        $wordCount = 0;
+        $maxWordsPerPage = 30; // Naikkan batas kata per halaman
+
+        foreach ($words as $word) {
+            // Cek jika penambahan kata baru akan melebihi batas
+            if ($wordCount > 0 && $wordCount + str_word_count($word) > $maxWordsPerPage) {
+                $pages[] = trim($currentPage);
+                $currentPage = '';
+                $wordCount = 0;
+            }
+            $currentPage .= $word . ' ';
+            $wordCount++;
+        }
+
+        // Tambahkan sisa kalimat terakhir ke halaman
+        if (!empty(trim($currentPage))) {
+            $pages[] = trim($currentPage);
+        }
+
+        // Jika tidak ada halaman yang dibuat (teks pendek), masukkan semua teks
+        if (empty($pages) && !empty($text)) {
+            $pages[] = $text;
+        }
+
+        $this->completionTextPages = $pages;
+        $this->currentCompletionTextPage = 0;
+    }
+
+
+    public function nextCompletionPage()
+    {
+        if ($this->currentCompletionTextPage < count($this->completionTextPages) - 1) {
+            $this->currentCompletionTextPage++;
+        }
+    }
+
+    public function previousCompletionPage()
+    {
+        if ($this->currentCompletionTextPage > 0) {
+            $this->currentCompletionTextPage--;
+        }
+    }
+
 
     /**
      * Merender view komponen.

@@ -38,11 +38,11 @@
                     </div>
                     {{-- Tombol Navigasi --}}
                     <button wire:click="backToPetaMisi"
-                        class="absolute bottom-[8%] left-[8%] w-[15%] h-auto hover:scale-110 transition-transform">
+                        class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
                         <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
                     </button>
                     <button wire:click="showRulesBackground"
-                        class="absolute bottom-[8%] right-[8%] w-[15%] h-auto hover:scale-110 transition-transform">
+                        class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
                         <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Lanjut">
                     </button>
                 </div>
@@ -60,11 +60,11 @@
                     </div>
                     {{-- Tombol Navigasi --}}
                     <button wire:click="backToRulesPopup"
-                        class="absolute bottom-[8%] left-[8%] w-[15%] h-auto hover:scale-110 transition-transform">
+                        class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
                         <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
                     </button>
                     <button wire:click="startGameplay"
-                        class="absolute bottom-[8%] right-[8%] w-[15%] h-auto hover:scale-110 transition-transform">
+                        class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
                         <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Mulai Bermain">
                     </button>
                 </div>
@@ -94,16 +94,22 @@
                             {{-- Layout Segitiga untuk Level 1 & 3 (3 Pilihan) --}}
                             <div class="w-full max-w-4xl mb-4">
                                 <div class="flex justify-center gap-[4%]">
-                                    <button wire:click.prevent="selectAnswer('a')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar')) class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
-                                        <img src="{{ asset($currentQuestion['options']['a']) }}" class="w-full h-full object-contain">
+                                    <button wire:click.prevent="selectAnswer('a')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
+                                        class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
+                                        <img src="{{ asset($currentQuestion['options']['a']) }}"
+                                            class="w-full h-full object-contain">
                                     </button>
-                                    <button wire:click.prevent="selectAnswer('b')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar')) class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
-                                        <img src="{{ asset($currentQuestion['options']['b']) }}" class="w-full h-full object-contain">
+                                    <button wire:click.prevent="selectAnswer('b')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
+                                        class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
+                                        <img src="{{ asset($currentQuestion['options']['b']) }}"
+                                            class="w-full h-full object-contain">
                                     </button>
                                 </div>
                                 <div class="flex justify-center mt-4">
-                                    <button wire:click.prevent="selectAnswer('c')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar')) class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
-                                        <img src="{{ asset($currentQuestion['options']['c']) }}" class="w-full h-full object-contain">
+                                    <button wire:click.prevent="selectAnswer('c')" @disabled($feedbackMessage && str_contains($feedbackMessage, 'Benar'))
+                                        class="w-2/5 p-1 rounded-lg hover:scale-105 transition-transform disabled:opacity-70">
+                                        <img src="{{ asset($currentQuestion['options']['c']) }}"
+                                            class="w-full h-full object-contain">
                                     </button>
                                 </div>
                             </div>
@@ -111,7 +117,8 @@
 
                         {{-- Feedback & Tombol Lanjut --}}
                         @if ($feedbackMessage)
-                            <div class="mt-4 font-semibold text-lg {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-400' : 'text-red-400' }}">
+                            <div
+                                class="mt-4 font-semibold text-lg {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-400' : 'text-red-400' }}">
                                 {{ $feedbackMessage }}
                             </div>
                             @if (str_contains($feedbackMessage, 'Benar'))
@@ -126,17 +133,34 @@
 
         {{-- STATE 4: POPUP LEVEL SELESAI --}}
         @if ($viewState === 'level_complete_popup')
-            <div class="absolute inset-0 w-full h-full flex items-center justify-center z-40">
+            <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-40">
                 <div class="relative w-[60%] aspect-[4/3]">
                     <img src="{{ asset($levelConfig['assets']['rules_board']) }}" class="w-full h-full">
                     <div class="absolute top-[28%] left-[35%] w-[63%] h-[40%] flex items-center justify-center p-2">
                         <p class="text-center font-semibold text-gray-800 md:text-xl lg:text-2xl">
-                            {{ $levelConfig['rules']['completion_text'] }}</p>
+                            {{ $completionTextPages[$currentCompletionTextPage] ?? '' }}
+                        </p>
                     </div>
-                    <button wire:click="completeLevelAndExit"
-                        class="absolute top-[5%] right-[-5%] w-[12%] h-auto hover:scale-110 transition-transform text-gray-700">
-                        <img src="{{ asset('images/home/exit-button.svg') }}" alt="Home">
-                    </button>
+                    {{-- Tombol Navigasi Kiri --}}
+                    @if ($currentCompletionTextPage > 0)
+                        <button wire:click="previousCompletionPage"
+                            class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
+                            <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
+                        </button>
+                    @endif
+
+                    {{-- Tombol Navigasi Kanan atau Tombol Silang --}}
+                    @if ($currentCompletionTextPage < count($completionTextPages) - 1)
+                        <button wire:click="nextCompletionPage"
+                            class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
+                            <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Lanjut">
+                        </button>
+                    @else
+                        <button wire:click="completeLevelAndExit"
+                            class="absolute top-[5%] right-[-5%] w-[12%] h-auto hover:scale-110 transition-transform text-gray-700">
+                            <img src="{{ asset('images/home/exit-button.svg') }}" alt="Selesai">
+                        </button>
+                    @endif
                 </div>
             </div>
         @endif

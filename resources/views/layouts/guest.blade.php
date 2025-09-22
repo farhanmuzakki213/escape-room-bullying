@@ -14,7 +14,20 @@
 </head>
 
 <body>
+    <audio id="background-music" loop preload="auto">
+        <source src="{{ asset('suara/sound-latar-game.mp3') }}" type="audio/mpeg">
+    </audio>
+    <audio id="correct-answer-sound" preload="auto">
+        <source src="{{ asset('suara/jwban-yg-benar.mp3') }}" type="audio/mpeg">
+    </audio>
+    <audio id="incorrect-answer-sound" preload="auto">
+        <source src="{{ asset('suara/jawaban-salah.mp3') }}" type="audio/mpeg">
+    </audio>
+    <audio id="click-sound" preload="auto">
+        <source src="{{ asset('suara/untuk-klik-tombol.mp3') }}" type="audio/mpeg">
+    </audio>
     {{ $slot }}
+    @livewireScripts
 </body>
 
 </html>

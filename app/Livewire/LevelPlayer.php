@@ -48,6 +48,18 @@ class LevelPlayer extends Component
     public string $viewState = 'rules_popup';
 
     /**
+     * Properti baru untuk alur refleksi.
+     */
+    public int $currentReflectionPage = 1;
+    public array $reflectionPages = [
+        1 => 'images/petunjuk/background-refleksi-diri.svg',
+        2 => 'images/petunjuk/background-refleksi-verbal.svg',
+        3 => 'images/petunjuk/background-refleksi-fisik.svg',
+        4 => 'images/petunjuk/background-refleksi-relasional.svg',
+        5 => 'images/petunjuk/background-refleksi-cyberbullying.svg',
+    ];
+
+    /**
      * Konfigurasi data untuk semua level dalam game.
      */
     public array $levelData = [
@@ -339,9 +351,9 @@ class LevelPlayer extends Component
         $this->levelConfig = $this->levelData[$this->levelId];
         $this->backgroundUrl = asset($this->levelConfig['background']);
 
-        if (env('APP_ENV') == 'local') {
-            $this->viewState = 'playing';
-        }
+        // if (env('APP_ENV') == 'local') {
+        //     $this->viewState = 'playing';
+        // }
 
         if ($this->levelId === 4) {
             $this->initializeTts();
@@ -403,8 +415,10 @@ class LevelPlayer extends Component
                 if (!in_array($this->activeObjectName, $this->answeredObjects)) {
                     $this->answeredObjects[] = $this->activeObjectName;
                 }
+                $this->dispatch('correct-answer');
             } else {
                 $this->feedbackMessage = "Jawabanmu kurang tepat. Coba pikirkan lagi pilihan yang paling tepat.";
+                $this->dispatch('incorrect-answer');
             }
         }
     }
@@ -414,8 +428,13 @@ class LevelPlayer extends Component
      */
     public function completeLevelAndExit()
     {
-        $this->dispatch('levelCompleted', $this->levelId);
-        $this->dispatch('backToPetaMisi');
+        if ($this->levelId === 4) {
+            $this->viewState = 'reflection';
+            $this->currentReflectionPage = 1;
+        } else {
+            $this->dispatch('levelCompleted', $this->levelId);
+            $this->dispatch('backToPetaMisi');
+        }
     }
 
     /**
@@ -482,6 +501,30 @@ class LevelPlayer extends Component
         }
     }
 
+    /**
+     * **NEW:** Navigasi ke halaman refleksi berikutnya.
+     */
+    public function nextReflectionPage()
+    {
+        if ($this->currentReflectionPage < count($this->reflectionPages)) {
+            $this->currentReflectionPage++;
+        } else {
+            // Setelah halaman terakhir, kembali ke peta misi
+            $this->dispatch('levelCompleted', $this->levelId);
+            $this->dispatch('backToPetaMisi');
+        }
+    }
+
+    /**
+     * **NEW:** Navigasi ke halaman refleksi sebelumnya.
+     */
+    public function previousReflectionPage()
+    {
+        if ($this->currentReflectionPage > 1) {
+            $this->currentReflectionPage--;
+        }
+    }
+
     public function initializeTts()
     {
         $words = [
@@ -534,7 +577,7 @@ class LevelPlayer extends Component
         }
 
         $grid[9][0] = 'K';
-        $grid[4][2] = 'k';
+        $grid[4][2] = 'K';
         $grid[7][6] = 'A';
         $grid[2][6] = 'M';
         $grid[0][10] = 'H';
@@ -555,8 +598,10 @@ class LevelPlayer extends Component
             }
             // Panggil fungsi untuk mengisi huruf ke grid
             $this->fillWordInGrid($correctAnswer);
+            $this->dispatch('correct-answer');
         } else {
             $this->feedbackMessage = "Jawabanmu kurang tepat. Coba lagi!";
+            $this->dispatch('incorrect-answer');
         }
     }
 

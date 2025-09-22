@@ -12,27 +12,48 @@ class GameManager extends Component
     public string $currentView = 'home';
     public ?int $currentLevel = null;
     public int $unlockedLevel = 1;
+    public ?string $previousView = null;
 
     protected $listeners = [
         'startGame' => 'showPetaMisi',
         'backToHome' => 'showHome',
         'selectLevel' => 'enterLevel',
-        'backToPetaMisi' => 'showPetaMisi'
+        'backToPetaMisi' => 'showPetaMisi',
+        'showHelp' => 'showHelpScreen',
+        'hideHelp' => 'hideHelpScreen',
+        'showProfile' => 'showProfileScreen',
+        'hideProfile' => 'hideProfileScreen'
     ];
 
-    #[On('levelCompleted')]
-    public function handleLevelCompleted(int $completedLevel)
+    public function showHelpScreen()
     {
-        if ($completedLevel == $this->unlockedLevel) {
-            $this->unlockedLevel++;
-        }
+        $this->previousView = $this->currentView;
+        $this->currentView = 'help';
     }
 
-    public function mount()
+    public function hideHelpScreen()
     {
-        $this->currentView = 'level';
-        $this->currentLevel = '4';
+        $this->currentView = $this->previousView;
+        $this->previousView = null;
     }
+
+    public function showProfileScreen()
+    {
+        $this->previousView = $this->currentView;
+        $this->currentView = 'profile';
+    }
+
+    public function hideProfileScreen()
+    {
+        $this->currentView = $this->previousView;
+        $this->previousView = null;
+    }
+
+    // public function mount()
+    // {
+    //     $this->currentView = 'level';
+    //     $this->currentLevel = '4';
+    // }
 
     public function showPetaMisi()
     {

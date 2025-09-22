@@ -7,7 +7,7 @@
 
         {{-- Tombol UI Atas --}}
         <div class="absolute top-[4%] left-[2%] w-[15%] flex z-20">
-            <button class="w-[60%] hover:scale-110 transition-transform">
+            <button wire:click="$dispatch('showHelp')" class="w-[60%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/home/help-button.svg') }}" class="w-[80%]" alt="Help">
             </button>
         </div>

@@ -219,5 +219,31 @@
                 </div>
             </div>
         @endif
+        @if ($viewState === 'reflection')
+            <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-40">
+                <img src="{{ asset($reflectionPages[$currentReflectionPage]) }}" class="w-full h-full object-cover">
+
+                {{-- Tombol Volume --}}
+                <div class="absolute top-[4%] right-[0%] w-[10%] flex z-20">
+                    <button class="w-[80%] hover:scale-110 transition-transform">
+                        <img src="{{ asset('images/home/volume-button.svg') }}" alt="Volume">
+                    </button>
+                </div>
+
+                {{-- Tombol Navigasi Kiri (muncul dari halaman ke-2) --}}
+                @if ($currentReflectionPage > 1)
+                    <button wire:click="previousReflectionPage"
+                        class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
+                        <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
+                    </button>
+                @endif
+
+                {{-- Tombol Navigasi Kanan --}}
+                <button wire:click="nextReflectionPage"
+                    class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
+                    <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Lanjut">
+                </button>
+            </div>
+        @endif
     </div>
 </div>

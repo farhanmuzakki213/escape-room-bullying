@@ -10,10 +10,10 @@
 
         {{-- Tombol UI Atas (Ukuran dan Posisi menggunakan Persentase) --}}
         <div class="absolute top-[4%] left-[2%] flex gap-[4%] z-20 w-[15%]">
-            <button class="w-[60%] hover:scale-110 transition-transform">
+            <button wire:click="$dispatch('showHelp')" class="w-[60%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/home/help-button.svg') }}" alt="Help">
             </button>
-            <button class="w-[60%] hover:scale-110 transition-transform">
+            <button wire:click="$dispatch('showProfile')" class="w-[60%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/home/menu-button.svg') }}" alt="Home">
             </button>
         </div>

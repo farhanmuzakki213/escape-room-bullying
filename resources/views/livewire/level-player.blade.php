@@ -12,7 +12,7 @@
                         : in_array($objectName, $answeredObjects);
             @endphp
             <button wire:click="objectClicked('{{ $objectName }}')"
-                class="absolute transition-transform z-10 -translate-x-1/2 -translate-y-1/2 {{ $isAnswered ? 'opacity-50 cursor-default' : 'hover:scale-110' }}"
+                class="absolute transition-transform z-10 -translate-x-1/2 -translate-y-1/2 {{ $isAnswered ? 'opacity-50 cursor-default' : 'hover:scale-101' }}"
                 style="{{ $objectData['style'] }}" @disabled($isAnswered)>
                 <img src="{{ asset($objectData['image']) }}" alt="{{ $objectData['alt'] }}">
             </button>
@@ -59,21 +59,19 @@
         {{-- POPUP SOAL (di dalam state 'playing') --}}
         @if ($showQuestionModal && $currentQuestion)
             <div class="absolute inset-0 flex items-center justify-center z-50">
-
-                {{-- ================================================================= --}}
-                {{-- KONDISIONAL BARU UNTUK LEVEL 4 (TTS) --}}
-                {{-- ================================================================= --}}
                 @if ($levelId == 4)
                     <div class="relative w-[70%] aspect-[4/3]">
                         {{-- Gambar Papan Tulis sebagai Latar Belakang --}}
                         <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">
 
                         {{-- Kontainer untuk elemen-elemen di atas gambar --}}
-                        <div class="absolute inset-0 w-full h-full">
+                        <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center">
 
                             {{-- === BLOK TTS BARU YANG SUDAH DI-STYLING === --}}
-                            <div class="absolute w-[44%] left-[50%] top-[48%] -translate-x-1/2 -translate-y-1/2">
-                                <div class="inline-grid gap-1" style="grid-template-columns: repeat({{ $cols }}, 2rem);">
+                            <div
+                                class="absolute top-[80%] xs:top-[75%] tablet:top-[42%] lg:top-[48%] left-[32%] lg:left-1/2 -translate-x-1/2 -translate-y-1/2 xs:w-[80%] sm:w-[20%] tablet:w-[20%] lg:w-[60%]">
+                                <div class="inline-grid gap-1 w-full"
+                                    style="grid-template-columns: repeat({{ $cols }}, 1fr);">
                                     @for ($r = 0; $r < $rows; $r++)
                                         @for ($c = 0; $c < $cols; $c++)
                                             @php
@@ -83,46 +81,49 @@
                                             @endphp
 
                                             @if ($cell === null)
-                                                {{-- Area kosong, bukan bagian dari TTS --}}
-                                                <div class="w-8 h-8 bg-transparent"></div>
+                                                {{-- Area kosong --}}
+                                                <div class="w-full aspect-square bg-transparent"></div>
                                             @else
-                                                {{-- Kotak untuk huruf --}}
-                                                <div class="relative w-8 h-8 bg-white text-black text-center flex items-center justify-center font-bold text-lg rounded-sm">
+                                                {{-- Kotak huruf yang benar (hanya w-full dan aspect-square) --}}
+                                                <div
+                                                    class="relative w-full aspect-square bg-white text-black text-center flex items-center justify-center font-bold rounded-sm">
                                                     @if ($clueNo)
-                                                        <span class="absolute top-0 left-0.5 text-[8px] leading-none text-gray-600">{{ $clueNo }}</span>
+                                                        <span
+                                                            class="absolute top-0 left-0.5 text-[5px] sm:text-[8px] md:text-[0.6rem] lg:text-[0.7rem] leading-none text-gray-600">{{ $clueNo }}</span>
                                                     @endif
-                                                    <span class="select-none">{{ $cell }}</span>
+                                                    <span
+                                                        class="select-none text-[5px] sm:text-xs md:text-sm lg:text-base">{{ $cell }}</span>
                                                 </div>
                                             @endif
                                         @endfor
                                     @endfor
                                 </div>
                             </div>
-                            {{-- === AKHIR BLOK TTS BARU === --}}
+                            {{-- === AKHIR BLOK TTS === --}}
 
-
-                            {{-- Form Jawaban (Diposisikan di bawah grid) --}}
-                            <div class="absolute bottom-[8%] left-[50%] -translate-x-1/2 w-[40%] text-center">
+                            {{-- Form Jawaban --}}
+                            <div
+                                class="absolute bottom-[12%] left-[50%] -translate-x-1/2 w-[60%] h-[10%] md:w-[50%] lg:w-[40%] text-center">
                                 @if (!$feedbackMessage || !str_contains($feedbackMessage, 'Benar'))
-                                    <label for="userAnswer" class="block mb-2 font-bold text-white">Jawabanmu:</label>
                                     <input type="text" id="userAnswer" wire:model.live="userAnswer"
                                         wire:keydown.enter="submitTtsAnswer"
-                                        class="p-2 w-full text-center border border-gray-400 rounded-md shadow-sm"
+                                        class="p-1 md:p-2 w-full text-center border border-gray-400 rounded-md shadow-sm text-sm md:text-base"
                                         placeholder="Ketik jawaban..." autocomplete="off">
                                     <button wire:click="submitTtsAnswer"
-                                        class="mt-3 px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600">
+                                        class="mt-1 md:mt-3 px-4 py-1 md:px-6 md:py-2 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 text-sm md:text-base">
                                         Kirim Jawaban
                                     </button>
                                 @endif
 
                                 {{-- Feedback & Tombol Lanjut --}}
                                 @if ($feedbackMessage)
-                                    <div class="mt-4 font-bold text-xl {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-300' : 'text-red-400' }}">
+                                    <div
+                                        class="mt-2 md:mt-4 font-bold text-base md:text-xl {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-300' : 'text-red-400' }}">
                                         {{ $feedbackMessage }}
                                     </div>
                                     @if (str_contains($feedbackMessage, 'Benar'))
                                         <button wire:click="closeModalAndCheckCompletion"
-                                            class="mt-2 px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">
+                                            class="mt-1 md:mt-2 px-4 py-1 md:px-6 md:py-2 bg-green-500 text-white rounded-full hover:bg-green-600 text-sm md:text-base">
                                             Lanjut
                                         </button>
                                     @endif
@@ -130,10 +131,6 @@
                             </div>
                         </div>
                     </div>
-
-                    {{-- ================================================================= --}}
-                    {{-- BLOK UNTUK LEVEL 1, 2, 3 (PILIHAN GANDA) --}}
-                    {{-- ================================================================= --}}
                 @else
                     <div class="relative w-[70%] aspect-[4/3]">
                         <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">

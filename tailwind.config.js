@@ -14,6 +14,10 @@ export default {
                 'luckiest-guy': ['"Luckiest Guy"', 'cursive'],
                 'chewy': ['"Chewy"', 'cursive'],
             },
+            screens: {
+                'xs': '375px',
+                'tablet': '570px',
+            },
         },
     },
     plugins: [],

@@ -261,16 +261,16 @@ class LevelPlayer extends Component
             'background' => 'images/level4/background-level-4.svg',
             'title' => 'Lapangan Sekolah',
             'rules' => [
-                'popup_text' => 'Akhirnya kita sampai di halaman sekolah! Di sini adalah tempat terakhir kita belajar bersama Arunika. Kamu akan belajar bagaimana cara mencegah dan mengatasi bullying jika terjadi di sekitarmu.',
-                'background_text' => 'Untuk menyelesaikan level ini, kamu harus menjawab semua pertanyaan dalam bentuk teka-teki silang. Klik benda-benda di halaman sekolah untuk menemukan soalnya!',
-                'completion_text' => 'Luar biasa! Kamu berhasil menyelesaikan semua tantangan! Sekarang kamu sudah tahu banyak tentang bullying, mulai dari pengertian, jenis, dampak, hingga cara mencegah dan mengatasinya. Ingat, kita semua punya peran untuk menciptakan lingkungan yang aman dan nyaman. Jangan ragu untuk melapor dan saling mendukung ya. Terima kasih sudah berpetualang bersama Arunika!'
+                'popup_text' => 'Kita sudah sampai di halaman sekolah! Wah, ternyata gerbang sekolah terkunci. Untuk bisa keluar, kita harus menemukan kunci rahasia. Tapi kuncinya hanya bisa terbuka kalau kita tahu cara mencegah dan menangani bullying.',
+                'background_text' => 'Yuk, cari petunjuk di sekitar halaman ini, mungkin ada papan, tas, atau barang-barang yang menyimpan jawaban!',
+                'completion_text' => 'Hebat sekali! Agar bullying tidak terjadi, kita perlu mencegahnya sejak awal. Caranya dengan mendidik anak penuh kasih sayang di rumah, menciptakan budaya sekolah yang aman, serta memberi contoh sikap baik dalam masyarakat. Nah jika bullying sudah terjadi, penanganannya bisa lewat komunikasi yang terbuka, memberi dukungan pada korban, menegur pelaku dengan tegas dan sanksi, dan melibatkan guru maupun orang tua. Dengan begitu, semua bisa merasa aman dan dihargai.'
             ],
             'assets' => ['rules_board' => 'images/petunjuk/papan-aturan.svg',],
             'objects' => [
                 'kertas-berjatuhan' => [
                     'image' => 'images/level4/kertas-berjatuhan.svg',
                     'alt' => 'Kertas Berjatuhan',
-                    'style' => 'top: 80%; left: 80%; width: 8%;',
+                    'style' => 'top: 90%; left: 20%; width: 8%;',
                     'question' => [
                         'id' => 1,
                         'image' => 'images/pertanyaan-jawaban/p1-lv4.svg',
@@ -280,7 +280,7 @@ class LevelPlayer extends Component
                 'kursi' => [
                     'image' => 'images/level4/kursi.svg',
                     'alt' => 'Kursi',
-                    'style' => 'top: 75%; left: 20%; width: 10%;',
+                    'style' => 'top: 70%; left: 11%; width: 20%;',
                     'question' => [
                         'id' => 2,
                         'image' => 'images/pertanyaan-jawaban/p2-lv4.svg',
@@ -290,7 +290,7 @@ class LevelPlayer extends Component
                 'pohon' => [
                     'image' => 'images/level4/pohon.svg',
                     'alt' => 'Pohon',
-                    'style' => 'top: 45%; left: 85%; width: 15%;',
+                    'style' => 'top: 45%; left: 10%; width: 25%;',
                     'question' => [
                         'id' => 3,
                         'image' => 'images/pertanyaan-jawaban/p3-lv4.svg',
@@ -300,7 +300,7 @@ class LevelPlayer extends Component
                 'tempat-sampah' => [
                     'image' => 'images/level4/tempat-sampah.svg',
                     'alt' => 'Tempat Sampah',
-                    'style' => 'top: 78%; left: 35%; width: 6%;',
+                    'style' => 'top: 66%; left: 78%; width: 14%;',
                     'question' => [
                         'id' => 4,
                         'image' => 'images/pertanyaan-jawaban/p4-lv4.svg',
@@ -310,7 +310,7 @@ class LevelPlayer extends Component
                 'bendera' => [
                     'image' => 'images/level4/bendera.svg',
                     'alt' => 'Bendera',
-                    'style' => 'top: 30%; left: 50%; width: 8%;',
+                    'style' => 'top: 50%; left: 55%; width: 15%;',
                     'question' => [
                         'id' => 5,
                         'image' => 'images/pertanyaan-jawaban/p5-lv4.svg',
@@ -318,9 +318,9 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'bambu' => [
-                    'image' => 'images/level4/bambu.svg',
+                    'image' => 'images/level3/bola-basket.svg',
                     'alt' => 'Bambu',
-                    'style' => 'top: 55%; left: 15%; width: 8%;',
+                    'style' => 'top: 85%; left: 85%; width: 5%;',
                     'question' => [
                         'id' => 6,
                         'image' => 'images/pertanyaan-jawaban/p6-lv4.svg',

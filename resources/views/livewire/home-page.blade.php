@@ -5,7 +5,7 @@
     <div class="relative w-full max-h-full aspect-video">
 
         {{-- Gambar Background --}}
-        <img src="{{ asset('images/home/background-home.svg') }}" alt="Background"
+        <img src="{{ asset('images/home/background-home.jpg') }}" alt="Background"
             class="absolute top-0 left-0 w-full h-full object-cover z-0">
 
         {{-- Tombol UI Atas (Ukuran dan Posisi menggunakan Persentase) --}}

@@ -25,6 +25,14 @@ class GameManager extends Component
         'hideProfile' => 'hideProfileScreen'
     ];
 
+    #[On('levelCompleted')]
+    public function handleLevelCompleted(int $completedLevel)
+    {
+        if ($completedLevel == $this->unlockedLevel) {
+            $this->unlockedLevel++;
+        }
+    }
+
     public function showHelpScreen()
     {
         $this->previousView = $this->currentView;
@@ -52,7 +60,7 @@ class GameManager extends Component
     // public function mount()
     // {
     //     $this->currentView = 'level';
-    //     $this->currentLevel = '4';
+    //     $this->currentLevel = '1';
     // }
 
     public function showPetaMisi()

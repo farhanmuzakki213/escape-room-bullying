@@ -52,11 +52,11 @@ class LevelPlayer extends Component
      */
     public int $currentReflectionPage = 1;
     public array $reflectionPages = [
-        1 => 'images/petunjuk/background-refleksi-diri.svg',
-        2 => 'images/petunjuk/background-refleksi-verbal.svg',
-        3 => 'images/petunjuk/background-refleksi-fisik.svg',
-        4 => 'images/petunjuk/background-refleksi-relasional.svg',
-        5 => 'images/petunjuk/background-refleksi-cyberbullying.svg',
+        1 => 'images/petunjuk/background-refleksi-diri.jpg',
+        2 => 'images/petunjuk/background-refleksi-verbal.jpg',
+        3 => 'images/petunjuk/background-refleksi-fisik.jpg',
+        4 => 'images/petunjuk/background-refleksi-relasional.jpg',
+        5 => 'images/petunjuk/background-refleksi-cyberbullying.jpg',
     ];
 
     /**
@@ -64,7 +64,7 @@ class LevelPlayer extends Component
      */
     public array $levelData = [
         1 => [
-            'background' => 'images/level1/background-level-1.svg',
+            'background' => 'images/level1/background-level-1.jpg',
             'title' => 'Ruang Kelas',
             'rules' => [
                 'popup_text' => 'Halo, aku Arunika. Aku akan menemanimu menjelajah sekolah ini. Tapi pintu kelas terkunci! Untuk keluar, kita harus tahu dulu apa itu bullying, bagaimana cirinya, dan apa tujuan orang melakukannya.',
@@ -73,12 +73,10 @@ class LevelPlayer extends Component
             ],
             'assets' => [
                 'rules_board' => 'images/petunjuk/papan-aturan.svg',
-                'question_board' => 'images/petunjuk/papan-pertanyaan.svg',
-                'rules_background' => 'images/petunjuk/background-rules.svg'
             ],
             'objects' => [
                 'gunting' => [
-                    'image' => 'images/level1/gunting.svg',
+                    'image' => 'images/level1/gunting.png',
                     'alt' => 'Gunting',
                     'style' => 'top: 90%; left: 70%; width: 6%;',
                     'question' => [
@@ -92,7 +90,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'colokan' => [
-                    'image' => 'images/level1/colokan.svg',
+                    'image' => 'images/level1/colokan.png',
                     'alt' => 'Colokan',
                     'style' => 'top:63%; left: 39%; width: 6%;',
                     'question' => [
@@ -106,7 +104,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'lukisan' => [
-                    'image' => 'images/level1/lukisan-biru.svg',
+                    'image' => 'images/level1/lukisan-biru.png',
                     'alt' => 'Lukisan',
                     'style' => 'top: 25%; left: 25%; width: 10%;',
                     'question' => [
@@ -122,7 +120,7 @@ class LevelPlayer extends Component
             ]
         ],
         2 => [
-            'background' => 'images/level2/background-level-2.svg',
+            'background' => 'images/level2/background-level-2.jpg',
             'title' => 'Perpustakaan',
             'rules' => [
                 'popup_text' => 'Hore, kita berhasil keluar dari kelas! Tapi sekarang kita terkunci di perpustakaan. Di tempat ini, tersimpan pertanyaan-pertanyaan yang harus kamu jawab agar bisa keluar dari ruangan ini.',
@@ -131,12 +129,10 @@ class LevelPlayer extends Component
             ],
             'assets' => [
                 'rules_board' => 'images/petunjuk/papan-aturan.svg',
-                'question_board' => 'images/petunjuk/papan-pertanyaan.svg',
-                'rules_background' => 'images/petunjuk/background-rules.svg'
             ],
             'objects' => [
                 'ac' => [
-                    'image' => 'images/level2/ac.svg',
+                    'image' => 'images/level2/ac.png',
                     'alt' => 'AC',
                     'style' => 'top: 20%; left: 60%; width: 10%;',
                     'question' => [
@@ -151,7 +147,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'papan-library' => [
-                    'image' => 'images/level2/papan-library.svg',
+                    'image' => 'images/level2/papan-library.png',
                     'alt' => 'Papan Library',
                     'style' => 'top: 35%; left: 50%; width: 8%;',
                     'question' => [
@@ -166,7 +162,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'tempat-sampah' => [
-                    'image' => 'images/level2/tempat-sampah.svg',
+                    'image' => 'images/level2/tempat-sampah.png',
                     'alt' => 'Tempat Sampah',
                     'style' => 'top: 67%; left: 76%; width: 8%;',
                     'question' => [
@@ -181,7 +177,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'vas' => [
-                    'image' => 'images/level2/vas.svg',
+                    'image' => 'images/level2/vas.png',
                     'alt' => 'Vas',
                     'style' => 'top: 76%; left: 33%; width: 7%;',
                     'question' => [
@@ -198,7 +194,7 @@ class LevelPlayer extends Component
             ]
         ],
         3 => [
-            'background' => 'images/level3/background-level-3.svg',
+            'background' => 'images/level3/background-level-3.jpg',
             'title' => 'Lorong Sekolah',
             'rules' => [
                 'popup_text' => 'Kita berhasil keluar dari perpustakaan! Tapi sekarang lorong sekolah ini terkunci. Hmm… suasananya terasa berbeda ya? Di tempat ini, kita harus mencari tahu apa yang membuat bullying terjadi dan apa saja dampaknya bagi korban maupun lingkungan sekolah.',
@@ -207,12 +203,10 @@ class LevelPlayer extends Component
             ],
             'assets' => [
                 'rules_board' => 'images/petunjuk/papan-aturan.svg',
-                'question_board' => 'images/petunjuk/papan-pertanyaan.svg',
-                'rules_background' => 'images/petunjuk/background-rules.svg'
             ],
             'objects' => [
                 'mading' => [
-                    'image' => 'images/level3/mading.svg',
+                    'image' => 'images/level3/mading.png',
                     'alt' => 'Mading',
                     'style' => 'top: 48%; left: 44.5%; width: 10%;',
                     'question' => [
@@ -226,7 +220,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'bola-basket' => [
-                    'image' => 'images/level3/bola-basket.svg',
+                    'image' => 'images/level3/bola-basket.png',
                     'alt' => 'Bola Basket',
                     'style' => 'top: 67%; left: 54%; width: 3%;',
                     'question' => [
@@ -240,7 +234,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'jam-dinding' => [
-                    'image' => 'images/level3/jam-dinding.svg',
+                    'image' => 'images/level3/jam-dinding.png',
                     'alt' => 'Jam Dinding',
                     'style' => 'top: 40%; left: 28%; width: 5%;',
                     'question' => [
@@ -254,7 +248,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'pensil-berjatuhan' => [
-                    'image' => 'images/level3/pensil-berjatuhan.svg',
+                    'image' => 'images/level3/pensil-berjatuhan.png',
                     'alt' => 'Pensil Berjatuhan',
                     'style' => 'top: 85%; left: 32%; width: 8%;',
                     'question' => [
@@ -270,7 +264,7 @@ class LevelPlayer extends Component
             ]
         ],
         4 => [
-            'background' => 'images/level4/background-level-4.svg',
+            'background' => 'images/level4/background-level-4.jpg',
             'title' => 'Lapangan Sekolah',
             'rules' => [
                 'popup_text' => 'Kita sudah sampai di halaman sekolah! Wah, ternyata gerbang sekolah terkunci. Untuk bisa keluar, kita harus menemukan kunci rahasia. Tapi kuncinya hanya bisa terbuka kalau kita tahu cara mencegah dan menangani bullying.',
@@ -280,7 +274,7 @@ class LevelPlayer extends Component
             'assets' => ['rules_board' => 'images/petunjuk/papan-aturan.svg',],
             'objects' => [
                 'kertas-berjatuhan' => [
-                    'image' => 'images/level4/kertas-berjatuhan.svg',
+                    'image' => 'images/level4/kertas-berjatuhan.png',
                     'alt' => 'Kertas Berjatuhan',
                     'style' => 'top: 90%; left: 20%; width: 8%;',
                     'question' => [
@@ -290,7 +284,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'kursi' => [
-                    'image' => 'images/level4/kursi.svg',
+                    'image' => 'images/level4/kursi.png',
                     'alt' => 'Kursi',
                     'style' => 'top: 70%; left: 11%; width: 20%;',
                     'question' => [
@@ -300,7 +294,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'pohon' => [
-                    'image' => 'images/level4/pohon.svg',
+                    'image' => 'images/level4/pohon.png',
                     'alt' => 'Pohon',
                     'style' => 'top: 45%; left: 10%; width: 25%;',
                     'question' => [
@@ -310,7 +304,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'tempat-sampah' => [
-                    'image' => 'images/level4/tempat-sampah.svg',
+                    'image' => 'images/level4/tempat-sampah.png',
                     'alt' => 'Tempat Sampah',
                     'style' => 'top: 66%; left: 78%; width: 14%;',
                     'question' => [
@@ -320,7 +314,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'bendera' => [
-                    'image' => 'images/level4/bendera.svg',
+                    'image' => 'images/level4/bendera.png',
                     'alt' => 'Bendera',
                     'style' => 'top: 50%; left: 55%; width: 15%;',
                     'question' => [
@@ -330,7 +324,7 @@ class LevelPlayer extends Component
                     ]
                 ],
                 'bambu' => [
-                    'image' => 'images/level3/bola-basket.svg',
+                    'image' => 'images/level3/bola-basket.png',
                     'alt' => 'Bambu',
                     'style' => 'top: 85%; left: 85%; width: 5%;',
                     'question' => [

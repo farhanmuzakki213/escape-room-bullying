@@ -1,6 +1,6 @@
 <div class="bg-gray-800 min-h-screen flex items-center justify-center">
     <div class="relative w-full max-h-full aspect-video">
-        <img src="{{ asset('images/petunjuk/background-petunjuk.svg') }}" alt="Petunjuk"
+        <img src="{{ asset('images/petunjuk/background-petunjuk.jpg') }}" alt="Petunjuk"
             class="absolute top-0 left-0 w-full h-full object-cover z-0">
 
         {{-- Tombol UI pada Layar Bantuan --}}

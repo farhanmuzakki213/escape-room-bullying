@@ -1,7 +1,7 @@
 <div class="bg-gray-800 min-h-screen flex items-center justify-center">
     <div class="relative w-full max-h-full aspect-video">
         {{-- Latar belakang halaman profil --}}
-        <img src="{{ asset('images/petunjuk/background-profile.svg') }}" alt="Profil Pengembang"
+        <img src="{{ asset('images/petunjuk/background-profile.jpg') }}" alt="Profil Pengembang"
             class="absolute top-0 left-0 w-full h-full object-cover z-0">
 
         {{-- Tombol UI --}}

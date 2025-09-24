@@ -28,6 +28,7 @@
     </audio>
     {{ $slot }}
     @livewireScripts
+    <div id="notification-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-2"></div>
 </body>
 
 </html>

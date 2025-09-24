@@ -113,20 +113,11 @@
                                         class="mt-1 md:mt-3 px-4 py-1 md:px-6 md:py-2 bg-blue-500 text-white rounded-2xl hover:bg-blue-600 text-sm md:text-base">
                                         Kirim Jawaban
                                     </button>
-                                @endif
-
-                                {{-- Feedback & Tombol Lanjut --}}
-                                @if ($feedbackMessage)
-                                    <div
-                                        class="mt-2 md:mt-4 font-bold text-base md:text-xl {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-300' : 'text-red-400' }}">
-                                        {{ $feedbackMessage }}
-                                    </div>
-                                    @if (str_contains($feedbackMessage, 'Benar'))
-                                        <button wire:click="closeModalAndCheckCompletion"
-                                            class="mt-1 md:mt-2 px-4 py-1 md:px-6 md:py-2 bg-green-500 text-white rounded-full hover:bg-green-600 text-sm md:text-base">
-                                            Lanjut
-                                        </button>
-                                    @endif
+                                @else
+                                    <button wire:click="closeModalAndCheckCompletion"
+                                        class="mt-1 md:mt-2 px-4 py-1 md:px-6 md:py-2 bg-green-500 text-white rounded-full hover:bg-green-600 text-sm md:text-base">
+                                        Lanjut
+                                    </button>
                                 @endif
                             </div>
                         </div>
@@ -170,15 +161,9 @@
                                 </div>
                             @endif
                             {{-- Feedback & Tombol Lanjut --}}
-                            @if ($feedbackMessage)
-                                <div
-                                    class="mt-4 font-semibold text-lg {{ str_contains($feedbackMessage, 'Benar') ? 'text-green-400' : 'text-red-400' }}">
-                                    {{ $feedbackMessage }}
-                                </div>
-                                @if (str_contains($feedbackMessage, 'Benar'))
-                                    <button wire:click="closeModalAndCheckCompletion"
-                                        class="mt-4 px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">Lanjut</button>
-                                @endif
+                            @if (str_contains($feedbackMessage, 'Benar'))
+                                <button wire:click="closeModalAndCheckCompletion"
+                                    class="mt-4 px-6 py-2 bg-green-500 text-white rounded-full hover:bg-green-600">Lanjut</button>
                             @endif
                         </div>
                     </div>

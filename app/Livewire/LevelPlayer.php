@@ -345,9 +345,9 @@ class LevelPlayer extends Component
         $this->levelConfig = $this->levelData[$this->levelId];
         $this->backgroundUrl = asset($this->levelConfig['background']);
 
-        // if (env('APP_ENV') == 'local') {
-        //     $this->viewState = 'playing';
-        // }
+        if (env('APP_ENV') == 'local') {
+            $this->viewState = 'playing';
+        }
 
         if ($this->levelId === 4) {
             $this->initializeTts();
@@ -391,8 +391,8 @@ class LevelPlayer extends Component
             $this->activeObjectName = $objectName;
             $this->currentQuestion = $this->levelConfig['objects'][$objectName]['question'];
             $this->showQuestionModal = true;
-            $this->feedbackMessage = null;
             $this->userAnswer = '';
+            $this->feedbackMessage = null;
         }
     }
 
@@ -405,14 +405,16 @@ class LevelPlayer extends Component
 
         if ($this->currentQuestion) {
             if ($selectedOption == $this->currentQuestion['correct_answer']) {
-                $this->feedbackMessage = "Jawabanmu Benar! 👍";
                 if (!in_array($this->activeObjectName, $this->answeredObjects)) {
                     $this->answeredObjects[] = $this->activeObjectName;
                 }
                 $this->dispatch('correct-answer');
+                $this->dispatch('show-notification', message: 'Jawabanmu Benar! 👍', type: 'success');
+                $this->feedbackMessage = 'Benar';
             } else {
-                $this->feedbackMessage = "Jawabanmu kurang tepat. Coba pikirkan lagi pilihan yang paling tepat.";
                 $this->dispatch('incorrect-answer');
+                $this->dispatch('show-notification', message: 'Jawabanmu kurang tepat. Coba pikirkan lagi.', type: 'error');
+                $this->feedbackMessage = 'Salah';
             }
         }
     }
@@ -460,9 +462,9 @@ class LevelPlayer extends Component
     {
         $this->showQuestionModal = false;
         $this->currentQuestion = null;
-        $this->feedbackMessage = null;
         $this->activeObjectName = null;
         $this->userAnswer = '';
+        $this->feedbackMessage = null;
     }
 
     /**
@@ -473,7 +475,7 @@ class LevelPlayer extends Component
         $text = $this->levelConfig['rules']['completion_text'];
         $words = explode(' ', $text);
         $chunks = array_chunk($words, 30);
-        $this->completionTextPages = array_map(function($chunk) {
+        $this->completionTextPages = array_map(function ($chunk) {
             return implode(' ', $chunk);
         }, $chunks);
 
@@ -586,16 +588,16 @@ class LevelPlayer extends Component
         $submittedAnswer = strtolower(trim($this->userAnswer));
 
         if ($submittedAnswer === $correctAnswer) {
-            $this->feedbackMessage = "Jawabanmu Benar! 👍";
             if (!in_array($correctAnswer, $this->filledAnswers)) {
                 $this->filledAnswers[] = $correctAnswer;
             }
-            // Panggil fungsi untuk mengisi huruf ke grid
             $this->fillWordInGrid($correctAnswer);
             $this->dispatch('correct-answer');
+            $this->dispatch('show-notification', message: 'Jawabanmu Benar! 👍', type: 'success');
+            $this->feedbackMessage = 'Benar';
         } else {
-            $this->feedbackMessage = "Jawabanmu kurang tepat. Coba lagi!";
             $this->dispatch('incorrect-answer');
+            $this->dispatch('show-notification', message: 'Jawabanmu kurang tepat. Coba pikirkan lagi.', type: 'error');
         }
     }
 

@@ -72,3 +72,64 @@ document.addEventListener('click', function(event) {
 // 4. Listener global untuk efek suara dari event Livewire (tidak berubah)
 Livewire.on('correct-answer', () => playSound(correctSound));
 Livewire.on('incorrect-answer', () => playSound(incorrectSound));
+
+/**
+ * Menampilkan notifikasi mengambang.
+ * @param {string} message Pesan notifikasi.
+ * @param {string} type 'success' untuk hijau, 'error' untuk merah.
+ */
+function showNotification(message, type = 'success') {
+    const container = document.getElementById('notification-container');
+    if (!container) return;
+
+    const notification = document.createElement('div');
+
+    // Logika ini memastikan 'bgColor' selalu mendapatkan nilai yang benar.
+    const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
+
+    const textColor = 'text-white';
+    const padding = 'p-4';
+    const margin = 'mb-2';
+    const rounded = 'rounded-lg';
+    const shadow = 'shadow-lg';
+    const transition = 'transition-all duration-300 ease-in-out';
+
+    // Baris ini sangat rentan terhadap typo. Versi di bawah ini sudah dipastikan benar.
+    notification.className = `${padding} ${margin} ${textColor} ${bgColor} ${rounded} ${shadow} ${transition} transform translate-x-full opacity-0 relative flex items-center justify-between min-w-[250px] max-w-sm`;
+
+    notification.innerHTML = `
+        <span class="mr-4">${message}</span>
+        <button class="flex-shrink-0 text-white hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50" aria-label="Close">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+    `;
+
+    container.appendChild(notification);
+
+    requestAnimationFrame(() => {
+        notification.classList.remove('translate-x-full', 'opacity-0');
+    });
+
+    // Kode timer dan tombol close akan berjalan dengan benar setelah `className` diperbaiki.
+    const dismissTimeout = setTimeout(() => {
+        if (notification.parentElement) {
+            notification.classList.add('translate-x-full', 'opacity-0');
+            notification.addEventListener('transitionend', () => notification.remove(), { once: true });
+        }
+    }, 1000);
+
+    notification.querySelector('button').addEventListener('click', () => {
+        clearTimeout(dismissTimeout);
+        notification.classList.add('translate-x-full', 'opacity-0');
+        notification.addEventListener('transitionend', () => notification.remove(), { once: true });
+    });
+}
+
+// Listener ini sudah benar, akan meneruskan 'type' dengan benar.
+Livewire.on('show-notification', ({ message, type }) => {
+    if (message) {
+        showNotification(message, type);
+    }
+});

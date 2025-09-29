@@ -34,23 +34,31 @@
         @endif
 
         {{-- STATE 1: POPUP ATURAN AWAL --}}
-        @if ($viewState === 'rules_popup' || $viewState === 'rules_background')
+        @if ($viewState === 'rules_popup')
             <div class="absolute inset-0 w-full h-full flex items-center justify-center z-40">
                 <div class="relative w-[60%] aspect-[4/3]">
-                    <img src="{{ asset($levelConfig['assets']['rules_board']) }}" class="w-full h-full">
-                    <div class="absolute top-[20%] left-[36%] w-[60%] h-[55%] flex items-center justify-center p-2">
-                        <p class="text-center font-semibold text-gray-800 md:text-xl lg:text-2xl">
-                            {{ $viewState === 'rules_popup' ? $levelConfig['rules']['popup_text'] : $levelConfig['rules']['background_text'] }}
-                        </p>
-                    </div>
-                    {{-- Tombol Navigasi --}}
-                    <button wire:click="{{ $viewState === 'rules_popup' ? 'backToPetaMisi' : 'backToRulesPopup' }}"
-                        class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
-                        <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
-                    </button>
-                    <button wire:click="{{ $viewState === 'rules_popup' ? 'showRulesBackground' : 'startGameplay' }}"
-                        class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
-                        <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Lanjut">
+                    {{-- Menampilkan gambar aturan secara dinamis --}}
+                    <img src="{{ asset($levelConfig['assets']['rules_boards'][$currentRulesPage]) }}"
+                        class="w-full h-full">
+
+                    {{-- Tombol Navigasi Kiri --}}
+                    @if ($currentRulesPage > 0)
+                        <button wire:click="showPreviousRule"
+                            class="absolute bottom-[2%] right-[25%] w-[25%] h-auto hover:scale-110 transition-transform">
+                            <img src="{{ asset('images/utils/tombol-back.png') }}" alt="Kembali">
+                        </button>
+                    @else
+                        {{-- Tombol kembali ke Peta Misi di halaman pertama --}}
+                        <button wire:click="backToPetaMisi"
+                            class="absolute bottom-[2%] right-[25%] w-[25%] h-auto hover:scale-110 transition-transform">
+                            <img src="{{ asset('images/utils/tombol-back.png') }}" alt="Kembali ke Peta Misi">
+                        </button>
+                    @endif
+
+                    {{-- Tombol Navigasi Kanan --}}
+                    <button wire:click="showNextRule"
+                        class="absolute bottom-[2%] right-[-2%] w-[25%] h-auto hover:scale-110 transition-transform">
+                        <img src="{{ asset('images/utils/tombol-next.png') }}" alt="Lanjut">
                     </button>
                 </div>
             </div>
@@ -175,35 +183,43 @@
         @if ($viewState === 'level_complete_popup')
             <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-40">
                 <div class="relative w-[60%] aspect-[4/3]">
-                    <img src="{{ asset($levelConfig['assets']['rules_board']) }}" class="w-full h-full">
-                    <div class="absolute top-[28%] left-[35%] w-[63%] h-[40%] flex items-center justify-center p-2">
-                        <p class="text-center font-semibold text-gray-800 md:text-xl lg:text-2xl">
-                            {{ $completionTextPages[$currentCompletionTextPage] ?? '' }}
-                        </p>
-                    </div>
+                    {{-- Menampilkan gambar selesai secara dinamis --}}
+                    <img src="{{ asset($levelConfig['assets']['completion_boards'][$currentCompletionPage]) }}"
+                        class="w-full h-full">
+
                     {{-- Tombol Navigasi Kiri --}}
-                    @if ($currentCompletionTextPage > 0)
-                        <button wire:click="previousCompletionPage"
-                            class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
-                            <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
+                    @if ($currentCompletionPage > 0)
+                        <button wire:click="showPreviousCompletionPage"
+                            class="absolute bottom-[2%] right-[25%] w-[25%] h-auto hover:scale-110 transition-transform">
+                            <img src="{{ asset('images/utils/tombol-back.png') }}" alt="Kembali">
                         </button>
                     @endif
 
-                    {{-- Tombol Navigasi Kanan atau Tombol Silang --}}
-                    @if ($currentCompletionTextPage < count($completionTextPages) - 1)
-                        <button wire:click="nextCompletionPage"
-                            class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
-                            <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Lanjut">
+                    {{-- Tombol Navigasi Kanan atau Tombol Next Level --}}
+                    @if ($currentCompletionPage < count($levelConfig['assets']['completion_boards']) - 1)
+                        <button wire:click="showNextCompletionPage"
+                            class="absolute bottom-[2%] right-[-2%] w-[25%] h-auto hover:scale-110 transition-transform">
+                            <img src="{{ asset('images/utils/tombol-next.png') }}" alt="Lanjut">
                         </button>
                     @else
-                        <button wire:click="completeLevelAndExit"
-                            class="absolute top-[5%] right-[-5%] w-[12%] h-auto hover:scale-110 transition-transform text-gray-700">
-                            <img src="{{ asset('images/home/exit-button.svg') }}" alt="Selesai">
-                        </button>
+                        @if ($levelId == 4)
+                            {{-- KHUSUS LV 4: Tombol "Next" untuk menuju halaman refleksi --}}
+                            <button wire:click="completeLevelAndExit"
+                                class="absolute bottom-[2%] right-[-2%] w-[25%] h-auto hover:scale-110 transition-transform">
+                                <img src="{{ asset('images/utils/tombol-next.png') }}" alt="Lanjut">
+                            </button>
+                        @else
+                            {{-- LV 1-3: Tombol "Next Level" untuk ke level selanjutnya --}}
+                            <button wire:click="completeLevelAndExit"
+                                class="absolute bottom-[2%] right-[-2%] w-[25%] h-auto hover:scale-110 transition-transform">
+                                <img src="{{ asset('images/utils/tombol-next-level.png') }}" alt="Next Level">
+                            </button>
+                        @endif
                     @endif
                 </div>
             </div>
         @endif
+
         @if ($viewState === 'reflection')
             <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-40">
                 <img src="{{ asset($reflectionPages[$currentReflectionPage]) }}" class="w-full h-full object-cover">
@@ -215,19 +231,18 @@
                     </button>
                 </div>
 
-                {{-- Tombol Navigasi Kiri (muncul dari halaman ke-2) --}}
-                @if ($currentReflectionPage > 1)
-                    <button wire:click="previousReflectionPage"
-                        class="absolute bottom-[8%] left-[42%] w-[15%] h-auto hover:scale-110 transition-transform">
-                        <img src="{{ asset('images/petunjuk/panah-kiri-button.svg') }}" alt="Kembali">
+                {{-- Tombol Mengerti --}}
+                @if ($currentReflectionPage < count($reflectionPages) - 1)
+                    <button wire:click="nextReflectionPage"
+                        class="absolute bottom-[8%] right-[25%] w-[25%] h-auto hover:scale-110 transition-transform">
+                        <img src="{{ asset('images/utils/tombol-mengerti.png') }}" alt="Mengerti">
+                    </button>
+                @else
+                    <button wire:click="nextReflectionPage"
+                        class="absolute bottom-[8%] right-[25%] w-[25%] h-auto hover:scale-110 transition-transform">
+                        <img src="{{ asset('images/utils/tombol-selesai.png') }}" alt="Selesai">
                     </button>
                 @endif
-
-                {{-- Tombol Navigasi Kanan --}}
-                <button wire:click="nextReflectionPage"
-                    class="absolute bottom-[8%] right-[22%] w-[15%] h-auto hover:scale-110 transition-transform">
-                    <img src="{{ asset('images/petunjuk/panah-kanan-button.svg') }}" alt="Lanjut">
-                </button>
             </div>
         @endif
     </div>

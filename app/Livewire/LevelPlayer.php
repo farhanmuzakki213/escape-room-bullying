@@ -24,11 +24,8 @@ class LevelPlayer extends Component
     public ?string $feedbackMessage = null;
     public ?string $activeObjectName = null;
 
-    /**
-     * Properti untuk paginasi teks penyelesaian level.
-     */
-    public array $completionTextPages = [];
-    public int $currentCompletionTextPage = 0;
+    public int $currentRulesPage = 0;
+    public int $currentCompletionPage = 0;
 
     /**
      * Properti untuk teka teki silang.
@@ -66,13 +63,15 @@ class LevelPlayer extends Component
         1 => [
             'background' => 'images/level1/background-level-1.jpg',
             'title' => 'Ruang Kelas',
-            'rules' => [
-                'popup_text' => 'Halo, aku Arunika. Aku akan menemanimu menjelajah sekolah ini. Tapi pintu kelas terkunci! Untuk keluar, kita harus tahu dulu apa itu bullying, bagaimana cirinya, dan apa tujuan orang melakukannya.',
-                'background_text' => 'Silahkan kamu klik benda-benda yang ada didalam kelas untuk mengetahuinya!',
-                'completion_text' => 'Hebat! Sekarang kamu tahu kan bahwa bullying itu artinya perilaku menyakiti orang lain secara sengaja dan berulang, biasanya pada yang lebih lemah. Orang melakukan bullying biasanya karena ingin berkuasa, mencari perhatian, balas dendam, atau supaya diakui teman-temannya. Tapi semua itu bukan alasan yang benar, karena justru merugikan diri sendiri dan orang lain. Yuk, kita lanjut!'
-            ],
             'assets' => [
-                'rules_board' => 'images/petunjuk/papan-aturan.svg',
+                'rules_boards' => [
+                    'images/level1/papan-aturan-lv1.1.png',
+                    'images/level1/papan-aturan-lv1.2.png',
+                ],
+                'completion_boards' => [
+                    'images/level1/papan-selesai-lv1.1.png',
+                    'images/level1/papan-selesai-lv1.2.png',
+                ],
             ],
             'objects' => [
                 'gunting' => [
@@ -122,13 +121,14 @@ class LevelPlayer extends Component
         2 => [
             'background' => 'images/level2/background-level-2.jpg',
             'title' => 'Perpustakaan',
-            'rules' => [
-                'popup_text' => 'Hore, kita berhasil keluar dari kelas! Tapi sekarang kita terkunci di perpustakaan. Di tempat ini, tersimpan pertanyaan-pertanyaan yang harus kamu jawab agar bisa keluar dari ruangan ini.',
-                'background_text' => 'Coba klik benda-benda didalamnya, siapa tahu ada petunjuk yang bisa membantu kita.',
-                'completion_text' => 'Keren! Sekarang kamu tahu kan jenis-jenis bullying itu apa saja, ada jenis fisik seperti memukul atau mendorong, ada verbal seperti mengejek dan menghina, ada sosial dengan cara mengucilkan atau menyebarkan gosip, dan ada juga cyberbullying lewat media sosial atau pesan online. Semua bentuk ini sama-sama menyakitkan dan berbahaya loh!'
-            ],
             'assets' => [
-                'rules_board' => 'images/petunjuk/papan-aturan.svg',
+                'rules_boards' => [
+                    'images/level2/papan-aturan-lv2.1.png',
+                ],
+                'completion_boards' => [
+                    'images/level2/papan-selesai-lv2.1.png',
+                    'images/level2/papan-selesai-lv2.2.png',
+                ],
             ],
             'objects' => [
                 'ac' => [
@@ -196,13 +196,15 @@ class LevelPlayer extends Component
         3 => [
             'background' => 'images/level3/background-level-3.jpg',
             'title' => 'Lorong Sekolah',
-            'rules' => [
-                'popup_text' => 'Kita berhasil keluar dari perpustakaan! Tapi sekarang lorong sekolah ini terkunci. Hmm… suasananya terasa berbeda ya? Di tempat ini, kita harus mencari tahu apa yang membuat bullying terjadi dan apa saja dampaknya bagi korban maupun lingkungan sekolah.',
-                'background_text' => 'Ayo perhatikan baik-baik benda-benda di lorong ini, mungkin ada petunjuk yang bisa membantu kita membuka pintu berikutnya.',
-                'completion_text' => 'Wah, kamu hebat! Teman-teman, bullying itu tidak muncul begitu saja. Ada banyak faktor penyebabnya yaitu keluarga, pergaulan, teknologi, dan lingkungan sekolah dan dampaknya juga besar banget loh korban bisa terluka fisik (dampak fisik), menghindar dari pertemanan (dampak sosial), kehilangan semangat belajar dan bolos sekolah (dampak akademik), bahkan trauma dan rendah diri (dampak psikologis). Jadi yuk, kita sama-sama jaga lingkungan sekolah supaya aman, nyaman, dan bebas dari bullying. Nah, ayo kita lanjut ke halaman sekolah untuk mencari tahu bagaimana cara mencegah dan menangani bullying!'
-            ],
             'assets' => [
-                'rules_board' => 'images/petunjuk/papan-aturan.svg',
+                'rules_boards' => [
+                    'images/level3/papan-aturan-lv3.1.png',
+                    'images/level3/papan-aturan-lv3.2.png',
+                ],
+                'completion_boards' => [
+                    'images/level3/papan-selesai-lv3.1.png',
+                    'images/level3/papan-selesai-lv3.2.png',
+                ],
             ],
             'objects' => [
                 'mading' => [
@@ -266,12 +268,16 @@ class LevelPlayer extends Component
         4 => [
             'background' => 'images/level4/background-level-4.jpg',
             'title' => 'Lapangan Sekolah',
-            'rules' => [
-                'popup_text' => 'Kita sudah sampai di halaman sekolah! Wah, ternyata gerbang sekolah terkunci. Untuk bisa keluar, kita harus menemukan kunci rahasia. Tapi kuncinya hanya bisa terbuka kalau kita tahu cara mencegah dan menangani bullying.',
-                'background_text' => 'Yuk, cari petunjuk di sekitar halaman ini, mungkin ada papan, tas, atau barang-barang yang menyimpan jawaban!',
-                'completion_text' => 'Hebat sekali! Agar bullying tidak terjadi, kita perlu mencegahnya sejak awal. Caranya dengan mendidik anak penuh kasih sayang di rumah, menciptakan budaya sekolah yang aman, serta memberi contoh sikap baik dalam masyarakat. Nah jika bullying sudah terjadi, penanganannya bisa lewat komunikasi yang terbuka, memberi dukungan pada korban, menegur pelaku dengan tegas dan sanksi, dan melibatkan guru maupun orang tua. Dengan begitu, semua bisa merasa aman dan dihargai.'
+            'assets' => [
+                'rules_boards' => [
+                    'images/level4/papan-aturan-lv4.1.png',
+                    'images/level4/papan-aturan-lv4.2.png',
+                ],
+                'completion_boards' => [
+                    'images/level4/papan-selesai-lv4.1.png',
+                    'images/level4/papan-selesai-lv4.2.png',
+                ],
             ],
-            'assets' => ['rules_board' => 'images/petunjuk/papan-aturan.svg',],
             'objects' => [
                 'kertas-berjatuhan' => [
                     'image' => 'images/level4/kertas-berjatuhan.png',
@@ -346,7 +352,7 @@ class LevelPlayer extends Component
         $this->backgroundUrl = asset($this->levelConfig['background']);
 
         if (env('APP_ENV') == 'local') {
-            $this->viewState = 'playing';
+            $this->viewState = 'reflection';
         }
 
         if ($this->levelId === 4) {
@@ -364,6 +370,7 @@ class LevelPlayer extends Component
     public function startGameplay()
     {
         $this->viewState = 'playing';
+        $this->currentRulesPage = 0;
     }
 
     public function backToRulesPopup()
@@ -450,8 +457,8 @@ class LevelPlayer extends Component
         $totalObjectsWithQuestions = count($this->levelConfig['objects']);
         $answeredCount = ($this->levelId === 4) ? count($this->filledAnswers) : count($this->answeredObjects);
         if ($answeredCount >= $totalObjectsWithQuestions) {
-            $this->paginateCompletionText();
             $this->viewState = 'level_complete_popup';
+            $this->currentCompletionPage = 0;
         }
     }
 
@@ -467,33 +474,36 @@ class LevelPlayer extends Component
         $this->feedbackMessage = null;
     }
 
-    /**
-     * Membagi teks penyelesaian menjadi beberapa halaman.
-     */
-    public function paginateCompletionText()
+
+    public function showNextCompletionPage()
     {
-        $text = $this->levelConfig['rules']['completion_text'];
-        $words = explode(' ', $text);
-        $chunks = array_chunk($words, 30);
-        $this->completionTextPages = array_map(function ($chunk) {
-            return implode(' ', $chunk);
-        }, $chunks);
-
-        $this->currentCompletionTextPage = 0;
-    }
-
-
-    public function nextCompletionPage()
-    {
-        if ($this->currentCompletionTextPage < count($this->completionTextPages) - 1) {
-            $this->currentCompletionTextPage++;
+        $completionBoards = $this->levelConfig['assets']['completion_boards'];
+        if ($this->currentCompletionPage < count($completionBoards) - 1) {
+            $this->currentCompletionPage++;
         }
     }
 
-    public function previousCompletionPage()
+    public function showPreviousCompletionPage()
     {
-        if ($this->currentCompletionTextPage > 0) {
-            $this->currentCompletionTextPage--;
+        if ($this->currentCompletionPage > 0) {
+            $this->currentCompletionPage--;
+        }
+    }
+
+    public function showNextRule()
+    {
+        $rulesBoards = $this->levelConfig['assets']['rules_boards'];
+        if ($this->currentRulesPage < count($rulesBoards) - 1) {
+            $this->currentRulesPage++;
+        } else {
+            $this->startGameplay();
+        }
+    }
+
+    public function showPreviousRule()
+    {
+        if ($this->currentRulesPage > 0) {
+            $this->currentRulesPage--;
         }
     }
 

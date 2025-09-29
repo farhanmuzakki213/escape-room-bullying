@@ -572,11 +572,31 @@ class LevelPlayer extends Component
             }
         }
 
+        // soal 1
         $grid[9][0] = 'K';
-        $grid[4][2] = 'K';
-        $grid[7][6] = 'A';
-        $grid[2][6] = 'M';
+        $grid[9][3] = 'S';
+        $grid[9][6] = 'I';
+
+        // soal 6
+        $grid[0][4] = 'S';
         $grid[0][10] = 'H';
+        $grid[0][7] = 'O';
+
+        // soal 2
+        $grid[2][2] = 'D';
+        $grid[4][2] = 'K';
+        $grid[6][2] = 'N';
+
+        // soal 3
+        $grid[7][5] = 'M';
+        $grid[7][7] = 'S';
+        $grid[7][13] = 'A';
+
+        // soal 4
+        $grid[2][6] = 'M';
+        $grid[2][9] = 'A';
+        $grid[2][14] = 'N';
+
         $this->crosswordGrid = $grid;
     }
 

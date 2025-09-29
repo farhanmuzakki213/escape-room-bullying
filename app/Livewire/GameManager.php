@@ -60,7 +60,7 @@ class GameManager extends Component
     public function mount()
     {
         $this->currentView = 'level';
-        $this->currentLevel = '1';
+        $this->currentLevel = '4';
     }
 
     public function showPetaMisi()

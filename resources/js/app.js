@@ -47,7 +47,7 @@ document.body.addEventListener('click', () => {
 }, { once: true }); // Opsi { once: true } memastikan ini hanya berjalan sekali
 
 // 3. EVENT DELEGATION: Satu listener utama untuk menangani semua klik
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     // Cari elemen <button> atau <a> terdekat dari elemen yang diklik (event.target)
     // Ini penting agar suara tetap berbunyi meskipun yang diklik adalah <img> di dalam <button>
     const button = event.target.closest('button, a');
@@ -132,4 +132,40 @@ Livewire.on('show-notification', ({ message, type }) => {
     if (message) {
         showNotification(message, type);
     }
+});
+document.addEventListener('livewire:initialized', () => {
+
+    /**
+     * ===================================================================
+     * FUNGSI PROGRES GAME (dari home-page.blade.php dan guest.blade.php)
+     * ===================================================================
+     */
+
+    // Saat halaman utama dimuat, periksa local storage untuk progres game.
+    // Kita hanya menjalankan ini jika komponen home-page ada di halaman.
+    if (document.querySelector('livewire\\:home-page')) {
+        const savedProgress = JSON.parse(localStorage.getItem('gameProgress'));
+        if (savedProgress) {
+            console.log('Progres ditemukan di localStorage:', savedProgress);
+            // Kirim progres yang ditemukan ke komponen Livewire 'home-page'
+            Livewire.dispatchTo('home-page', 'loadProgress', { progress: savedProgress });
+        }
+    }
+
+    // Listener global untuk menghapus progres dari local storage.
+    // Dipicu oleh GameManager saat 'startNewGame' dijalankan.
+    Livewire.on('clear-local-storage', () => {
+        localStorage.removeItem('gameProgress');
+        console.log('Progres di local storage telah dihapus.');
+    });
+
+    // Listener global untuk menyimpan progres ke local storage.
+    // Dipicu oleh GameManager setiap kali progres perlu disimpan.
+    Livewire.on('save-progress-to-local-storage', (event) => {
+        const progress = event.progress; // Akses data dari event Livewire 3
+        if (progress) {
+            localStorage.setItem('gameProgress', JSON.stringify(progress));
+            console.log('Progres disimpan ke local storage.', progress);
+        }
+    });
 });

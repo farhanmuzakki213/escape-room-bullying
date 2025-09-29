@@ -6,10 +6,7 @@
         {{-- Objek Interaktif --}}
         @foreach ($levelConfig['objects'] as $objectName => $objectData)
             @php
-                $isAnswered =
-                    $levelId === 4
-                        ? in_array($objectData['question']['answer'], $filledAnswers)
-                        : in_array($objectName, $answeredObjects);
+                $isAnswered = in_array($objectName, $answeredObjects);
             @endphp
             <button wire:click="objectClicked('{{ $objectName }}')"
                 class="absolute transition-transform z-10 -translate-x-1/2 -translate-y-1/2 {{ $isAnswered ? 'opacity-50 cursor-default' : 'hover:scale-101' }}"

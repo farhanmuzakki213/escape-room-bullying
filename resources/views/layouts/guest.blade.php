@@ -13,7 +13,7 @@
     @livewireStyles
 </head>
 
-<body>
+<body class="antialiased">
     <audio id="background-music" loop preload="auto">
         <source src="{{ asset('suara/sound-latar-game.mp3') }}" type="audio/mpeg">
     </audio>

@@ -15,7 +15,8 @@ class GameManager extends Component
     public ?string $previousView = null;
 
     protected $listeners = [
-        'startGame' => 'showPetaMisi',
+        'startNewGame' => 'startNewGame',
+        'continueGame' => 'continueGame',
         'backToHome' => 'showHome',
         'selectLevel' => 'enterLevel',
         'backToPetaMisi' => 'showPetaMisi',
@@ -28,8 +29,9 @@ class GameManager extends Component
     #[On('levelCompleted')]
     public function handleLevelCompleted(int $completedLevel)
     {
-        if ($completedLevel == $this->unlockedLevel) {
-            $this->unlockedLevel++;
+        if ($completedLevel >= $this->unlockedLevel && $completedLevel < 4) {
+            $this->unlockedLevel = $completedLevel + 1;
+            $this->saveProgressToSession();
         }
     }
 
@@ -59,14 +61,46 @@ class GameManager extends Component
 
     public function mount()
     {
-        $this->currentView = 'level';
-        $this->currentLevel = '4';
+        $progress = session('game_progress', []);
+        if (!empty($progress)) {
+            $this->unlockedLevel = $progress['unlockedLevel'] ?? 1;
+        }
+        // $this->currentView = 'level';
+        // $this->currentLevel = '4';
     }
+
+    public function startNewGame()
+    {
+        session()->forget('game_progress');
+        $this->dispatch('clear-local-storage');
+        $this->unlockedLevel = 1;
+        $this->showPetaMisi();
+    }
+
+    // METODE BARU: Untuk melanjutkan game
+    public function continueGame(array $progress)
+    {
+        session(['game_progress' => $progress]);
+        $this->unlockedLevel = $progress['unlockedLevel'] ?? 1;
+
+        $this->showPetaMisi();
+    }
+
+    private function saveProgressToSession()
+    {
+        $progress = [
+            'unlockedLevel' => $this->unlockedLevel,
+        ];
+        session(['game_progress' => $progress]);
+        $this->dispatch('save-progress-to-local-storage', progress: $progress);
+    }
+
 
     public function showPetaMisi()
     {
         $this->currentView = 'peta_misi';
         $this->currentLevel = null;
+        $this->saveProgressToSession();
     }
 
     public function enterLevel(int $level)
@@ -80,7 +114,6 @@ class GameManager extends Component
     public function showHome()
     {
         $this->currentView = 'home';
-        $this->unlockedLevel = 1;
     }
 
     public function render()

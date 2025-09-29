@@ -25,24 +25,10 @@
 
         {{-- Judul Game (Posisi tunggal dan ukuran font fluid) --}}
         <div class="absolute top-[70%] left-[73%] -translate-x-1/2 -translate-y-1/2 z-20 text-center">
-            <button wire:click="startGame" class="max-w-[256px] hover:scale-110 transition-transform duration-300">
+            {{-- Tombol Start biasa jika tidak ada progres --}}
+            <button wire:click="startNewGame" class="max-w-[256px] hover:scale-110 transition-transform duration-300">
                 <img src="{{ asset('images/home/start-button.svg') }}" alt="Start Game">
             </button>
         </div>
-
     </div>
 </div>
-
-{{-- Script dipindahkan ke luar div utama untuk kebersihan kode, tidak mempengaruhi fungsi --}}
-<script>
-    document.addEventListener('livewire:initialized', () => {
-        const savedProgress = JSON.parse(localStorage.getItem('gameProgress'));
-
-        if (savedProgress) {
-            console.log('Progres ditemukan:', savedProgress);
-            @this.call('loadProgress', savedProgress);
-        } else {
-            console.log('Tidak ada progres tersimpan. Memulai game baru.');
-        }
-    });
-</script>

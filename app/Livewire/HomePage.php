@@ -16,10 +16,19 @@ class HomePage extends Component
         $this->savedProgress = $progress;
     }
 
-    public function startGame()
+
+    public function startNewGame()
     {
-        $this->dispatch('start-game');
+        $this->dispatch('startNewGame');
     }
+
+    public function continueGame()
+    {
+        if ($this->savedProgress) {
+            $this->dispatch('continueGame', $this->savedProgress);
+        }
+    }
+
     public function render()
     {
         return view('livewire.home-page');

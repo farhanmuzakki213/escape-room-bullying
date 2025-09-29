@@ -15,6 +15,7 @@ class LevelPlayer extends Component
     public array $levelConfig;
     public string $backgroundUrl;
     public array $answeredObjects = [];
+    public array $questionMap = [];
 
     /**
      * Properti untuk mengelola state Popup Soal.
@@ -37,6 +38,7 @@ class LevelPlayer extends Component
     public array $wordData = [];
     public array $filledAnswers = [];
     public string $userAnswer = '';
+    public int $totalQuestions = 0;
 
     /**
      * Properti STATE untuk mengelola alur di dalam level.
@@ -78,44 +80,51 @@ class LevelPlayer extends Component
                     'image' => 'images/level1/gunting.png',
                     'alt' => 'Gunting',
                     'style' => 'top: 90%; left: 70%; width: 6%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p1-lv1.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/a-p1-lv1.svg',
-                            'b' => 'images/pertanyaan-jawaban/b-p1-lv1.svg',
-                            'c' => 'images/pertanyaan-jawaban/c-p1-lv1.svg',
-                        ],
-                        'correct_answer' => 'b'
-                    ]
                 ],
                 'colokan' => [
                     'image' => 'images/level1/colokan.png',
                     'alt' => 'Colokan',
                     'style' => 'top:63%; left: 39%; width: 6%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p2-lv1.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/a-p2-lv1.svg',
-                            'b' => 'images/pertanyaan-jawaban/b-p2-lv1.svg',
-                            'c' => 'images/pertanyaan-jawaban/c-p2-lv1.svg',
-                        ],
-                        'correct_answer' => 'a'
-                    ]
                 ],
                 'lukisan' => [
                     'image' => 'images/level1/lukisan-biru.png',
                     'alt' => 'Lukisan',
-                    'style' => 'top: 25%; left: 25%; width: 10%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p3-lv1.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/a-p3-lv1.svg',
-                            'b' => 'images/pertanyaan-jawaban/b-p3-lv1.svg',
-                            'c' => 'images/pertanyaan-jawaban/c-p3-lv1.svg',
-                        ],
-                        'correct_answer' => 'b'
-                    ]
+                    'style' => 'top: 28%; left: 25%; width: 10%;',
                 ],
+                'penggaris' => [
+                    'image' => 'images/level1/penggaris.png',
+                    'alt' => 'Penggaris',
+                    'style' => 'top: 75%; left: 25%; width: 10%;',
+                ],
+            ],
+            'questions' => [
+                'q1' => [
+                    'image' => 'images/pertanyaan-jawaban/p1-lv1.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/a-p1-lv1.svg',
+                        'b' => 'images/pertanyaan-jawaban/b-p1-lv1.svg',
+                        'c' => 'images/pertanyaan-jawaban/c-p1-lv1.svg',
+                    ],
+                    'correct_answer' => 'b'
+                ],
+                'q2' => [
+                    'image' => 'images/pertanyaan-jawaban/p2-lv1.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/a-p2-lv1.svg',
+                        'b' => 'images/pertanyaan-jawaban/b-p2-lv1.svg',
+                        'c' => 'images/pertanyaan-jawaban/c-p2-lv1.svg',
+                    ],
+                    'correct_answer' => 'a'
+                ],
+                'q3' => [
+                    'image' => 'images/pertanyaan-jawaban/p3-lv1.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/a-p3-lv1.svg',
+                        'b' => 'images/pertanyaan-jawaban/b-p3-lv1.svg',
+                        'c' => 'images/pertanyaan-jawaban/c-p3-lv1.svg',
+                    ],
+                    'correct_answer' => 'b'
+                ]
             ]
         ],
         2 => [
@@ -135,62 +144,64 @@ class LevelPlayer extends Component
                     'image' => 'images/level2/ac.png',
                     'alt' => 'AC',
                     'style' => 'top: 20%; left: 60%; width: 10%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p1-lv2.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
-                            'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
-                            'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
-                            'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
-                        ],
-                        'correct_answer' => 'c'
-                    ]
                 ],
                 'papan-library' => [
                     'image' => 'images/level2/papan-library.png',
                     'alt' => 'Papan Library',
                     'style' => 'top: 35%; left: 50%; width: 8%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p2-lv2.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
-                            'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
-                            'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
-                            'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
-                        ],
-                        'correct_answer' => 'b'
-                    ]
                 ],
                 'tempat-sampah' => [
                     'image' => 'images/level2/tempat-sampah.png',
                     'alt' => 'Tempat Sampah',
                     'style' => 'top: 67%; left: 76%; width: 8%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p3-lv2.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
-                            'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
-                            'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
-                            'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
-                        ],
-                        'correct_answer' => 'a'
-                    ]
                 ],
                 'vas' => [
                     'image' => 'images/level2/vas.png',
                     'alt' => 'Vas',
                     'style' => 'top: 76%; left: 33%; width: 7%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p4-lv2.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
-                            'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
-                            'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
-                            'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
-                        ],
-                        'correct_answer' => 'd'
-                    ]
                 ],
+            ],
+            'questions' => [
+                'q1' => [
+                    'image' => 'images/pertanyaan-jawaban/p1-lv2.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
+                        'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
+                        'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
+                        'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
+                    ],
+                    'correct_answer' => 'c'
+                ],
+                'q2' => [
+                    'image' => 'images/pertanyaan-jawaban/p2-lv2.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
+                        'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
+                        'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
+                        'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
+                    ],
+                    'correct_answer' => 'b'
+                ],
+                'q3' => [
+                    'image' => 'images/pertanyaan-jawaban/p3-lv2.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
+                        'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
+                        'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
+                        'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
+                    ],
+                    'correct_answer' => 'a'
+                ],
+                'q4' => [
+                    'image' => 'images/pertanyaan-jawaban/p4-lv2.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/gambar-a.svg',
+                        'b' => 'images/pertanyaan-jawaban/gambar-b.svg',
+                        'c' => 'images/pertanyaan-jawaban/gambar-c.svg',
+                        'd' => 'images/pertanyaan-jawaban/gambar-d.svg',
+                    ],
+                    'correct_answer' => 'd'
+                ]
             ]
         ],
         3 => [
@@ -211,58 +222,60 @@ class LevelPlayer extends Component
                     'image' => 'images/level3/mading.png',
                     'alt' => 'Mading',
                     'style' => 'top: 48%; left: 44.5%; width: 10%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p1-lv3.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/a-p1-lv3.svg',
-                            'b' => 'images/pertanyaan-jawaban/b-p1-lv3.svg',
-                            'c' => 'images/pertanyaan-jawaban/c-p1-lv3.svg',
-                        ],
-                        'correct_answer' => 'a'
-                    ]
                 ],
                 'bola-basket' => [
                     'image' => 'images/level3/bola-basket.png',
                     'alt' => 'Bola Basket',
                     'style' => 'top: 67%; left: 54%; width: 3%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p2-lv3.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/a-p2-lv3.svg',
-                            'b' => 'images/pertanyaan-jawaban/b-p2-lv3.svg',
-                            'c' => 'images/pertanyaan-jawaban/c-p2-lv3.svg',
-                        ],
-                        'correct_answer' => 'b'
-                    ]
                 ],
                 'jam-dinding' => [
                     'image' => 'images/level3/jam-dinding.png',
                     'alt' => 'Jam Dinding',
                     'style' => 'top: 40%; left: 28%; width: 5%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p3-lv3.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/a-p3-lv3.svg',
-                            'b' => 'images/pertanyaan-jawaban/b-p3-lv3.svg',
-                            'c' => 'images/pertanyaan-jawaban/c-p3-lv3.svg',
-                        ],
-                        'correct_answer' => 'c'
-                    ]
                 ],
                 'pensil-berjatuhan' => [
                     'image' => 'images/level3/pensil-berjatuhan.png',
                     'alt' => 'Pensil Berjatuhan',
                     'style' => 'top: 85%; left: 32%; width: 8%;',
-                    'question' => [
-                        'image' => 'images/pertanyaan-jawaban/p4-lv3.svg',
-                        'options' => [
-                            'a' => 'images/pertanyaan-jawaban/a-p4-lv3.svg',
-                            'b' => 'images/pertanyaan-jawaban/b-p4-lv3.svg',
-                            'c' => 'images/pertanyaan-jawaban/c-p4-lv3.svg',
-                        ],
-                        'correct_answer' => 'a'
-                    ]
                 ],
+            ],
+            'questions' => [
+                'q1' => [
+                    'image' => 'images/pertanyaan-jawaban/p1-lv3.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/a-p1-lv3.svg',
+                        'b' => 'images/pertanyaan-jawaban/b-p1-lv3.svg',
+                        'c' => 'images/pertanyaan-jawaban/c-p1-lv3.svg',
+                    ],
+                    'correct_answer' => 'a'
+                ],
+                'q2' => [
+                    'image' => 'images/pertanyaan-jawaban/p2-lv3.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/a-p2-lv3.svg',
+                        'b' => 'images/pertanyaan-jawaban/b-p2-lv3.svg',
+                        'c' => 'images/pertanyaan-jawaban/c-p2-lv3.svg',
+                    ],
+                    'correct_answer' => 'b'
+                ],
+                'q3' => [
+                    'image' => 'images/pertanyaan-jawaban/p3-lv3.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/a-p3-lv3.svg',
+                        'b' => 'images/pertanyaan-jawaban/b-p3-lv3.svg',
+                        'c' => 'images/pertanyaan-jawaban/c-p3-lv3.svg',
+                    ],
+                    'correct_answer' => 'c'
+                ],
+                'q4' => [
+                    'image' => 'images/pertanyaan-jawaban/p4-lv3.svg',
+                    'options' => [
+                        'a' => 'images/pertanyaan-jawaban/a-p4-lv3.svg',
+                        'b' => 'images/pertanyaan-jawaban/b-p4-lv3.svg',
+                        'c' => 'images/pertanyaan-jawaban/c-p4-lv3.svg',
+                    ],
+                    'correct_answer' => 'a'
+                ]
             ]
         ],
         4 => [
@@ -283,62 +296,64 @@ class LevelPlayer extends Component
                     'image' => 'images/level4/kertas-berjatuhan.png',
                     'alt' => 'Kertas Berjatuhan',
                     'style' => 'top: 90%; left: 20%; width: 8%;',
-                    'question' => [
-                        'id' => 1,
-                        'image' => 'images/pertanyaan-jawaban/p1-lv4.svg',
-                        'answer' => 'konseling'
-                    ]
                 ],
                 'kursi' => [
                     'image' => 'images/level4/kursi.png',
                     'alt' => 'Kursi',
                     'style' => 'top: 70%; left: 11%; width: 20%;',
-                    'question' => [
-                        'id' => 2,
-                        'image' => 'images/pertanyaan-jawaban/p2-lv4.svg',
-                        'answer' => 'dukungan'
-                    ]
                 ],
                 'pohon' => [
                     'image' => 'images/level4/pohon.png',
                     'alt' => 'Pohon',
                     'style' => 'top: 45%; left: 10%; width: 25%;',
-                    'question' => [
-                        'id' => 3,
-                        'image' => 'images/pertanyaan-jawaban/p3-lv4.svg',
-                        'answer' => 'komunikasi'
-                    ]
                 ],
                 'tempat-sampah' => [
                     'image' => 'images/level4/tempat-sampah.png',
                     'alt' => 'Tempat Sampah',
                     'style' => 'top: 66%; left: 78%; width: 14%;',
-                    'question' => [
-                        'id' => 4,
-                        'image' => 'images/pertanyaan-jawaban/p4-lv4.svg',
-                        'answer' => 'melaporkan'
-                    ]
                 ],
                 'bendera' => [
                     'image' => 'images/level4/bendera.png',
                     'alt' => 'Bendera',
                     'style' => 'top: 50%; left: 55%; width: 15%;',
-                    'question' => [
-                        'id' => 5,
-                        'image' => 'images/pertanyaan-jawaban/p5-lv4.svg',
-                        'answer' => 'masyarakat'
-                    ]
                 ],
-                'bambu' => [
+                'bola-basket' => [
                     'image' => 'images/level3/bola-basket.png',
                     'alt' => 'Bambu',
                     'style' => 'top: 85%; left: 85%; width: 5%;',
-                    'question' => [
-                        'id' => 6,
-                        'image' => 'images/pertanyaan-jawaban/p6-lv4.svg',
-                        'answer' => 'sekolah'
-                    ]
                 ],
+            ],
+            'questions' => [
+                'q1' => [
+                    'id' => 1,
+                    'image' => 'images/pertanyaan-jawaban/p1-lv4.svg',
+                    'answer' => 'konseling'
+                ],
+                'q2' => [
+                    'id' => 2,
+                    'image' => 'images/pertanyaan-jawaban/p2-lv4.svg',
+                    'answer' => 'dukungan'
+                ],
+                'q3' => [
+                    'id' => 3,
+                    'image' => 'images/pertanyaan-jawaban/p3-lv4.svg',
+                    'answer' => 'komunikasi'
+                ],
+                'q4' => [
+                    'id' => 4,
+                    'image' => 'images/pertanyaan-jawaban/p4-lv4.svg',
+                    'answer' => 'melaporkan'
+                ],
+                'q5' => [
+                    'id' => 5,
+                    'image' => 'images/pertanyaan-jawaban/p5-lv4.svg',
+                    'answer' => 'masyarakat'
+                ],
+                'q6' => [
+                    'id' => 6,
+                    'image' => 'images/pertanyaan-jawaban/p6-lv4.svg',
+                    'answer' => 'sekolah'
+                ]
             ]
         ],
     ];
@@ -351,13 +366,59 @@ class LevelPlayer extends Component
         $this->levelConfig = $this->levelData[$this->levelId];
         $this->backgroundUrl = asset($this->levelConfig['background']);
 
-        if (env('APP_ENV') == 'local') {
-            $this->viewState = 'reflection';
+        $progress = session('game_progress', []);
+        if (!isset($progress[$this->levelId]['question_map'])) {
+            $objectKeys = array_keys($this->levelConfig['objects']);
+            $questionKeys = array_keys($this->levelConfig['questions']);
+
+            // Acak urutan kedua array
+            shuffle($objectKeys);
+            shuffle($questionKeys);
+
+            // Ambil hanya sejumlah object yang sama dengan jumlah pertanyaan
+            // Ini akan secara acak memilih benda mana yang akan memiliki pertanyaan
+            $objectsForQuestions = array_slice($objectKeys, 0, count($questionKeys));
+
+            // Sekarang $objectsForQuestions dan $questionKeys memiliki jumlah yang sama
+            if (!empty($objectsForQuestions)) {
+                $this->questionMap = array_combine($objectsForQuestions, $questionKeys);
+            }
+
+            // Simpan peta baru ke session
+            $progress[$this->levelId]['question_map'] = $this->questionMap;
+            session(['game_progress' => $progress]);
+        } else {
+            // Muat peta dari session yang ada
+            $this->questionMap = $progress[$this->levelId]['question_map'];
         }
 
+        // Memuat progres jawaban yang sudah ada
+        $this->answeredObjects = $progress[$this->levelId]['answered_objects'] ?? [];
+        $this->filledAnswers = $progress[$this->levelId]['filled_answers'] ?? [];
+
+        // Menentukan jumlah pertanyaan total
         if ($this->levelId === 4) {
             $this->initializeTts();
+            // Gunakan jumlah pertanyaan dari config, bukan dari TTS clues
+            $this->totalQuestions = count($this->levelConfig['questions']);
+        } else {
+            $this->totalQuestions = count($this->levelConfig['questions']);
         }
+
+        // Menentukan state awal saat level dimuat
+        // Logika ini sekarang harus memeriksa jumlah pertanyaan, bukan jumlah benda
+        $answeredCount = count($this->answeredObjects);
+        if ($answeredCount === 0) {
+            $this->viewState = 'rules_popup';
+        } elseif ($answeredCount >= $this->totalQuestions) {
+            $this->viewState = 'level_complete_popup';
+        } else {
+            $this->viewState = 'playing';
+        }
+
+        // if (env('APP_ENV') == 'local') {
+        //     $this->viewState = 'playing';
+        // }
     }
 
     // --- METODE NAVIGASI ALUR ---
@@ -394,9 +455,18 @@ class LevelPlayer extends Component
             return;
         }
 
-        if (isset($this->levelConfig['objects'][$objectName]['question'])) {
+        // ### LOGIKA BARU: Ambil pertanyaan dari peta acak ###
+        // Cek apakah ada pertanyaan yang dipetakan ke objek ini
+        if (isset($this->questionMap[$objectName])) {
+            $questionKey = $this->questionMap[$objectName];
+            $this->currentQuestion = $this->levelConfig['questions'][$questionKey];
+
+            // Tambahkan 'answer' jika tidak ada, khusus untuk level 4
+            if ($this->levelId === 4 && !isset($this->currentQuestion['answer'])) {
+                $this->currentQuestion['answer'] = $this->levelConfig['questions'][$questionKey]['answer'];
+            }
+
             $this->activeObjectName = $objectName;
-            $this->currentQuestion = $this->levelConfig['objects'][$objectName]['question'];
             $this->showQuestionModal = true;
             $this->userAnswer = '';
             $this->feedbackMessage = null;
@@ -415,6 +485,12 @@ class LevelPlayer extends Component
                 if (!in_array($this->activeObjectName, $this->answeredObjects)) {
                     $this->answeredObjects[] = $this->activeObjectName;
                 }
+
+                // Simpan progres ke session
+                $progress = session('game_progress', []);
+                $progress[$this->levelId]['answered_objects'] = $this->answeredObjects;
+                session(['game_progress' => $progress]);
+
                 $this->dispatch('correct-answer');
                 $this->dispatch('show-notification', message: 'Jawabanmu Benar! 👍', type: 'success');
                 $this->feedbackMessage = 'Benar';
@@ -454,9 +530,7 @@ class LevelPlayer extends Component
      */
     public function checkLevelCompletion()
     {
-        $totalObjectsWithQuestions = count($this->levelConfig['objects']);
-        $answeredCount = ($this->levelId === 4) ? count($this->filledAnswers) : count($this->answeredObjects);
-        if ($answeredCount >= $totalObjectsWithQuestions) {
+        if (count($this->answeredObjects) >= $this->totalQuestions) {
             $this->viewState = 'level_complete_popup';
             $this->currentCompletionPage = 0;
         }
@@ -618,9 +692,17 @@ class LevelPlayer extends Component
         $submittedAnswer = strtolower(trim($this->userAnswer));
 
         if ($submittedAnswer === $correctAnswer) {
-            if (!in_array($correctAnswer, $this->filledAnswers)) {
+            if (!in_array($this->activeObjectName, $this->answeredObjects)) {
+                $this->answeredObjects[] = $this->activeObjectName;
                 $this->filledAnswers[] = $correctAnswer;
             }
+
+            // Simpan progres ke session
+            $progress = session('game_progress', []);
+            $progress[$this->levelId]['answered_objects'] = $this->answeredObjects;
+            $progress[$this->levelId]['filled_answers'] = $this->filledAnswers;
+            session(['game_progress' => $progress]);
+
             $this->fillWordInGrid($correctAnswer);
             $this->dispatch('correct-answer');
             $this->dispatch('show-notification', message: 'Jawabanmu Benar! 👍', type: 'success');

@@ -94,7 +94,7 @@ class LevelPlayer extends Component
                 'penggaris' => [
                     'image' => 'images/level1/penggaris.png',
                     'alt' => 'Penggaris',
-                    'style' => 'top: 75%; left: 25%; width: 10%;',
+                    'style' => 'top: 90%; left: 25%; width: 10%;',
                 ],
             ],
             'questions' => [
@@ -416,9 +416,9 @@ class LevelPlayer extends Component
             $this->viewState = 'playing';
         }
 
-        // if (env('APP_ENV') == 'local') {
-        //     $this->viewState = 'playing';
-        // }
+        if (env('APP_ENV') == 'local') {
+            $this->viewState = 'playing';
+        }
     }
 
     // --- METODE NAVIGASI ALUR ---

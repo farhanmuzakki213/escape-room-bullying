@@ -9,7 +9,7 @@
                 $isAnswered = in_array($objectName, $answeredObjects);
             @endphp
             <button wire:click="objectClicked('{{ $objectName }}')"
-                class="absolute transition-transform z-10 -translate-x-1/2 -translate-y-1/2 {{ $isAnswered ? 'opacity-50 cursor-default' : 'hover:scale-101' }}"
+                class="absolute transition-transform z-10 -translate-x-1/2 -translate-y-1/2 cursor-default {{ $isAnswered ? 'opacity-50' : 'hover:scale-101' }}"
                 style="{{ $objectData['style'] }}" @disabled($isAnswered)>
                 <img src="{{ asset($objectData['image']) }}" alt="{{ $objectData['alt'] }}">
             </button>

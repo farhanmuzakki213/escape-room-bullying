@@ -65,8 +65,8 @@ class GameManager extends Component
         if (!empty($progress)) {
             $this->unlockedLevel = $progress['unlockedLevel'] ?? 1;
         }
-        // $this->currentView = 'level';
-        // $this->currentLevel = '4';
+        $this->currentView = 'level';
+        $this->currentLevel = '1';
     }
 
     public function startNewGame()

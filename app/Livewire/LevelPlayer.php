@@ -179,7 +179,7 @@ class LevelPlayer extends Component
                 'q2' => [
                     'image' => 'images/pertanyaan-jawaban/p2-lv2.svg',
                     'correct_pairs' => [
-                        'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'menjambak dan mendorong seseorang dengan segaja'],
+                        'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak dan mendorong seseorang dengan segaja'],
                         'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Mendorong, memukul, atau melakukan kekerasan fisik lainnya'],
                     ],
                 ],
@@ -202,7 +202,7 @@ class LevelPlayer extends Component
                 // Ini adalah gabungan semua 'correct_pairs' dari atas
                 'verbal_1' => ['image' => 'images/pertanyaan-jawaban/verbal-1.svg', 'text' => 'Mengejek, mempermalukan, dan menghina seseorang dengan sengaja'],
                 'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.svg', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan dengan sengaja.'],
-                'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'menjambak dan mendorong seseorang dengan segaja'],
+                'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak dan mendorong seseorang dengan segaja'],
                 'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Mendorong, memukul, atau melakukan kekerasan fisik lainnya'],
                 'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.svg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang '],
                 'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.svg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],

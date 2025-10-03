@@ -33,7 +33,7 @@
         {{-- STATE 1: POPUP ATURAN AWAL --}}
         @if ($viewState === 'rules_popup')
             <div class="absolute inset-0 w-full h-full flex items-center justify-center z-40">
-                <div class="relative w-[60%] aspect-[4/3]">
+                <div class="relative w-[50%] aspect-[4/3]">
                     {{-- Menampilkan gambar aturan secara dinamis --}}
                     <img src="{{ asset($levelConfig['assets']['rules_boards'][$currentRulesPage]) }}"
                         class="w-full h-full">
@@ -127,6 +127,58 @@
                             </div>
                         </div>
                     </div>
+                @elseif ($levelId == 2)
+                    <div class="relative w-[70%] aspect-[4/3]">
+                        {{-- Latar belakang pertanyaan tetap ada --}}
+                        <img src="{{ asset($currentQuestion['image']) }}" alt="Latar Belakang Pertanyaan"
+                            class="w-full h-full">
+
+                        {{-- Lapisan (overlay) untuk konten mini-game --}}
+                        <div class="absolute inset-0 flex justify-center items-center">
+
+                            {{-- Kontainer untuk mini-game, diposisikan lebih presisi --}}
+                            <div class="w-[80%] h-[60%] mt-[8%] flex justify-between items-center gap-x-4 md:gap-x-8">
+
+                                {{-- Kolom Kiri untuk Gambar --}}
+                                <div class="w-1/2 h-full flex flex-col justify-center items-center space-y-2">
+                                    @foreach ($matchingGameItems['images'] as $key => $image)
+                                        {{-- Div ini sekarang hanya untuk layout, bukan untuk diklik --}}
+                                        <div class="w-full h-1/4 flex items-center justify-center p-1">
+                                            @if (!in_array($key, $correctPairs))
+                                                {{-- Semua interaktivitas dan style dipindahkan ke tag <img> --}}
+                                                <img src="{{ asset($image) }}"
+                                                    wire:click="selectItem('image', '{{ $key }}')"
+                                                    class="max-w-full max-h-full object-contain p-1 bg-opacity-80 rounded-md cursor-pointer transition-all border-4 {{ $selectedImage === $key ? 'border-blue-500 scale-105' : 'border-transparent hover:border-blue-300' }}">
+                                            @else
+                                                {{-- Item yang sudah benar --}}
+                                                <img src="{{ asset($image) }}"
+                                                    class="max-w-full max-h-full object-contain p-1 opacity-20">
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                {{-- Kolom Kanan untuk Teks --}}
+                                <div class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
+                                    @foreach ($matchingGameItems['texts'] as $key => $text)
+                                        @if (!in_array($key, $correctPairs))
+                                            <div wire:click="selectItem('text', '{{ $key }}')"
+                                                class="w-full h-1/4 flex items-center justify-center text-center p-1 bg-yellow-100 rounded-md text-[0.6rem] md:text-[0.65rem] lg:text-sm leading-tight border-4 cursor-pointer transition-all {{ $selectedText === $key ? 'border-blue-500 bg-blue-200 scale-105' : 'border-yellow-700 hover:border-blue-300' }}">
+                                                {{ $text }}
+                                            </div>
+                                        @else
+                                            {{-- Item yang sudah benar akan menjadi hijau dan transparan --}}
+                                            <div
+                                                class="w-full h-1/4 flex items-center justify-center text-center p-1 bg-green-200 border-4 border-green-500 rounded-md text-[0.6rem] md:text-[0.65rem] lg:text-sm opacity-50">
+                                                {{ $text }}
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 @else
                     <div class="relative w-[70%] aspect-[4/3]">
                         <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">
@@ -179,7 +231,7 @@
         {{-- STATE 4: POPUP LEVEL SELESAI --}}
         @if ($viewState === 'level_complete_popup')
             <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-40">
-                <div class="relative w-[60%] aspect-[4/3]">
+                <div class="relative w-[50%] aspect-[4/3]">
                     {{-- Menampilkan gambar selesai secara dinamis --}}
                     <img src="{{ asset($levelConfig['assets']['completion_boards'][$currentCompletionPage]) }}"
                         class="w-full h-full">

@@ -66,7 +66,7 @@ class GameManager extends Component
             $this->unlockedLevel = $progress['unlockedLevel'] ?? 1;
         }
         $this->currentView = 'level';
-        $this->currentLevel = '1';
+        $this->currentLevel = '2';
     }
 
     public function startNewGame()

@@ -12,14 +12,14 @@
 </mask>
 <g mask="url(#mask2_63_3517)">
 <mask id="mask3_63_3517" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="216" height="216">
-<path d="M0 2.28882e-05H216V216H0V2.28882e-05Z" fill="white"/>
+<path d="M0 3.05176e-05H216V216H0V3.05176e-05Z" fill="white"/>
 </mask>
 <g mask="url(#mask3_63_3517)">
 <mask id="mask4_63_3517" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="216" height="216">
-<path d="M34 2.28882e-05H182C191.016 2.28882e-05 199.667 3.58336 206.042 9.95836C212.417 16.3334 216 24.9844 216 34V182C216 191.016 212.417 199.667 206.042 206.042C199.667 212.417 191.016 216 182 216H34C24.9844 216 16.3333 212.417 9.95833 206.042C3.58333 199.667 0 191.016 0 182V34C0 24.9844 3.58333 16.3334 9.95833 9.95836C16.3333 3.58336 24.9844 2.28882e-05 34 2.28882e-05Z" fill="white"/>
+<path d="M34 3.05176e-05H182C191.016 3.05176e-05 199.667 3.58336 206.042 9.95836C212.417 16.3334 216 24.9844 216 34V182C216 191.016 212.417 199.667 206.042 206.042C199.667 212.417 191.016 216 182 216H34C24.9844 216 16.3333 212.417 9.95833 206.042C3.58333 199.667 0 191.016 0 182V34C0 24.9844 3.58333 16.3334 9.95833 9.95836C16.3333 3.58336 24.9844 3.05176e-05 34 3.05176e-05Z" fill="white"/>
 </mask>
 <g mask="url(#mask4_63_3517)">
-<path d="M0 2.28882e-05H216V216H0V2.28882e-05Z" fill="white"/>
+<path d="M0 3.05176e-05H216V216H0V3.05176e-05Z" fill="white"/>
 </g>
 </g>
 </g>
@@ -30,10 +30,10 @@
 </mask>
 <g mask="url(#mask5_63_3517)">
 <mask id="mask6_63_3517" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="44" y="0" width="128" height="216">
-<rect x="44.9963" y="0.911606" width="127" height="214.693" fill="url(#pattern0_63_3517)"/>
+<rect x="44.9966" y="0.911621" width="127" height="214.693" fill="url(#pattern0_63_3517)"/>
 </mask>
 <g mask="url(#mask6_63_3517)">
-<rect x="44.9963" y="0.911606" width="127" height="214.693" fill="url(#pattern1_63_3517)"/>
+<rect x="44.9966" y="0.911621" width="127" height="214.693" fill="url(#pattern1_63_3517)"/>
 </g>
 </g>
 <defs>

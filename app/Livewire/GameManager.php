@@ -70,8 +70,8 @@ class GameManager extends Component
         } else {
             $this->currentView = 'home';
         }
-        // $this->currentView = 'level';
-        // $this->currentLevel = '2';
+        $this->currentView = 'level';
+        $this->currentLevel = '2';
     }
 
     public function startNewGame()

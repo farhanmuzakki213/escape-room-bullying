@@ -280,7 +280,7 @@ class LevelPlayer extends Component
                         'b' => 'images/pertanyaan-jawaban/b-p4-lv3.svg',
                         'c' => 'images/pertanyaan-jawaban/c-p4-lv3.svg',
                     ],
-                    'correct_answer' => 'a'
+                    'correct_answer' => 'b'
                 ]
             ]
         ],
@@ -413,9 +413,9 @@ class LevelPlayer extends Component
             $this->viewState = 'playing';
         }
 
-        // if (env('APP_ENV') == 'local') {
-        //     $this->viewState = 'playing';
-        // }
+        if (env('APP_ENV') == 'local') {
+            $this->viewState = 'playing';
+        }
     }
 
     // --- METODE NAVIGASI ALUR ---
@@ -723,7 +723,6 @@ class LevelPlayer extends Component
         if ($this->currentReflectionPage < count($this->reflectionPages)) {
             $this->currentReflectionPage++;
         } else {
-            // Setelah halaman terakhir, kembali ke peta misi
             $this->dispatch('levelCompleted', $this->levelId);
             $this->dispatch('backToPetaMisi');
         }

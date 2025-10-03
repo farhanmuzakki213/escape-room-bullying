@@ -281,15 +281,15 @@
                 </div>
 
                 {{-- Tombol Mengerti --}}
-                @if ($currentReflectionPage < count($reflectionPages) - 1)
+                @if ($currentReflectionPage === count($reflectionPages))
                     <button wire:click="nextReflectionPage"
                         class="absolute bottom-[8%] right-[25%] w-[25%] h-auto hover:scale-110 transition-transform">
-                        <img src="{{ asset('images/utils/tombol-mengerti.png') }}" alt="Mengerti">
+                        <img src="{{ asset('images/utils/tombol-selesai.png') }}" alt="Selesai">
                     </button>
                 @else
                     <button wire:click="nextReflectionPage"
                         class="absolute bottom-[8%] right-[25%] w-[25%] h-auto hover:scale-110 transition-transform">
-                        <img src="{{ asset('images/utils/tombol-selesai.png') }}" alt="Selesai">
+                        <img src="{{ asset('images/utils/tombol-mengerti.png') }}" alt="Mengerti">
                     </button>
                 @endif
             </div>

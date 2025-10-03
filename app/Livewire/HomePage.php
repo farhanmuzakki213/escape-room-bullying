@@ -10,10 +10,14 @@ use Livewire\Component;
 class HomePage extends Component
 {
     public ?array $savedProgress = null;
+    public bool $showContinuePopup = false;
 
     public function loadProgress(array $progress)
     {
-        $this->savedProgress = $progress;
+        if (!empty($progress)) {
+            $this->savedProgress = $progress;
+            $this->showContinuePopup = true;
+        }
     }
 
 
@@ -24,9 +28,7 @@ class HomePage extends Component
 
     public function continueGame()
     {
-        if ($this->savedProgress) {
-            $this->dispatch('continueGame', $this->savedProgress);
-        }
+        $this->dispatch('continueGame');
     }
 
     public function render()

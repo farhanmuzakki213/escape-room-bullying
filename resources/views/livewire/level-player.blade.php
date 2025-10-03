@@ -140,19 +140,19 @@
                             <div class="w-[80%] h-[60%] mt-[8%] flex justify-between items-center gap-x-4 md:gap-x-8">
 
                                 {{-- Kolom Kiri untuk Gambar --}}
-                                <div class="w-1/2 h-full flex flex-col justify-center items-center space-y-2">
+                                <div class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
                                     @foreach ($matchingGameItems['images'] as $key => $image)
                                         {{-- Div ini sekarang hanya untuk layout, bukan untuk diklik --}}
-                                        <div class="w-full h-1/4 flex items-center justify-center p-1">
+                                        <div class="w-full h-1/4 flex items-center justify-center">
                                             @if (!in_array($key, $correctPairs))
                                                 {{-- Semua interaktivitas dan style dipindahkan ke tag <img> --}}
                                                 <img src="{{ asset($image) }}"
                                                     wire:click="selectItem('image', '{{ $key }}')"
-                                                    class="max-w-full max-h-full object-contain p-1 bg-opacity-80 rounded-md cursor-pointer transition-all border-4 {{ $selectedImage === $key ? 'border-blue-500 scale-105' : 'border-transparent hover:border-blue-300' }}">
+                                                    class="max-w-full max-h-full object-contain bg-opacity-80 rounded-md cursor-pointer transition-all border-4 {{ $selectedImage === $key ? 'border-blue-500 scale-105' : 'border-transparent hover:border-blue-300' }}">
                                             @else
                                                 {{-- Item yang sudah benar --}}
                                                 <img src="{{ asset($image) }}"
-                                                    class="max-w-full max-h-full object-contain p-1 opacity-20">
+                                                    class="max-w-full max-h-full object-contain opacity-20">
                                             @endif
                                         </div>
                                     @endforeach

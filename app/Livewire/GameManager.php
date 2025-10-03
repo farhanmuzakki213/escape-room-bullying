@@ -13,6 +13,7 @@ class GameManager extends Component
     public ?int $currentLevel = null;
     public int $unlockedLevel = 1;
     public ?string $previousView = null;
+    public array $gameProgress = [];
 
     protected $listeners = [
         'startNewGame' => 'startNewGame',
@@ -31,8 +32,8 @@ class GameManager extends Component
     {
         if ($completedLevel >= $this->unlockedLevel && $completedLevel < 4) {
             $this->unlockedLevel = $completedLevel + 1;
-            $this->saveProgressToSession();
         }
+        $this->saveProgressToSession();
     }
 
     public function showHelpScreen()
@@ -62,11 +63,15 @@ class GameManager extends Component
     public function mount()
     {
         $progress = session('game_progress', []);
-        if (!empty($progress)) {
-            $this->unlockedLevel = $progress['unlockedLevel'] ?? 1;
+        $this->gameProgress = $progress;
+        if (!empty($progress) && isset($progress['unlockedLevel'])) {
+            $this->unlockedLevel = $progress['unlockedLevel'];
+            $this->currentView = 'peta_misi';
+        } else {
+            $this->currentView = 'home';
         }
-        $this->currentView = 'level';
-        $this->currentLevel = '2';
+        // $this->currentView = 'level';
+        // $this->currentLevel = '2';
     }
 
     public function startNewGame()
@@ -74,25 +79,22 @@ class GameManager extends Component
         session()->forget('game_progress');
         $this->dispatch('clear-local-storage');
         $this->unlockedLevel = 1;
+        $this->gameProgress = [];
         $this->showPetaMisi();
     }
 
     // METODE BARU: Untuk melanjutkan game
     public function continueGame(array $progress)
     {
-        session(['game_progress' => $progress]);
-        $this->unlockedLevel = $progress['unlockedLevel'] ?? 1;
-
         $this->showPetaMisi();
     }
 
     private function saveProgressToSession()
     {
-        $progress = [
-            'unlockedLevel' => $this->unlockedLevel,
-        ];
-        session(['game_progress' => $progress]);
-        $this->dispatch('save-progress-to-local-storage', progress: $progress);
+        $currentProgress = session('game_progress', []);
+        $currentProgress['unlockedLevel'] = $this->unlockedLevel;
+        session(['game_progress' => $currentProgress]);
+        $this->dispatch('save-progress-to-local-storage', progress: $currentProgress);
     }
 
 
@@ -108,6 +110,7 @@ class GameManager extends Component
         if ($level <= $this->unlockedLevel) {
             $this->currentLevel = $level;
             $this->currentView = 'level';
+            $this->saveProgressToSession();
         }
     }
 

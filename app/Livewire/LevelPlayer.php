@@ -377,44 +377,33 @@ class LevelPlayer extends Component
             $objectKeys = array_keys($this->levelConfig['objects']);
             $questionKeys = array_keys($this->levelConfig['questions']);
 
-            // Acak urutan kedua array
             shuffle($objectKeys);
             shuffle($questionKeys);
 
-            // Ambil hanya sejumlah object yang sama dengan jumlah pertanyaan
-            // Ini akan secara acak memilih benda mana yang akan memiliki pertanyaan
             $objectsForQuestions = array_slice($objectKeys, 0, count($questionKeys));
 
-            // Sekarang $objectsForQuestions dan $questionKeys memiliki jumlah yang sama
             if (!empty($objectsForQuestions)) {
                 $this->questionMap = array_combine($objectsForQuestions, $questionKeys);
             }
 
-            // Simpan peta baru ke session
             $progress[$this->levelId]['question_map'] = $this->questionMap;
             session(['game_progress' => $progress]);
         } else {
-            // Muat peta dari session yang ada
             $this->questionMap = $progress[$this->levelId]['question_map'];
         }
 
-        // Memuat progres jawaban yang sudah ada
         $this->answeredObjects = $progress[$this->levelId]['answered_objects'] ?? [];
         $this->filledAnswers = $progress[$this->levelId]['filled_answers'] ?? [];
 
-        // Menentukan jumlah pertanyaan total
         if ($this->levelId === 2) {
             $this->totalQuestions = count($this->levelConfig['objects']);
         } elseif ($this->levelId === 4) {
             $this->initializeTts();
-            // Gunakan jumlah pertanyaan dari config, bukan dari TTS clues
             $this->totalQuestions = count($this->levelConfig['questions']);
         } else {
             $this->totalQuestions = count($this->levelConfig['questions']);
         }
 
-        // Menentukan state awal saat level dimuat
-        // Logika ini sekarang harus memeriksa jumlah pertanyaan, bukan jumlah benda
         $answeredCount = count($this->answeredObjects);
         if ($answeredCount === 0) {
             $this->viewState = 'rules_popup';
@@ -424,9 +413,9 @@ class LevelPlayer extends Component
             $this->viewState = 'playing';
         }
 
-        if (env('APP_ENV') == 'local') {
-            $this->viewState = 'playing';
-        }
+        // if (env('APP_ENV') == 'local') {
+        //     $this->viewState = 'playing';
+        // }
     }
 
     // --- METODE NAVIGASI ALUR ---

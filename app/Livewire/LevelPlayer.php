@@ -506,14 +506,35 @@ class LevelPlayer extends Component
 
         $allItems = $this->levelConfig['item_bank'];
 
-        // Dapatkan kunci item yang BUKAN merupakan jawaban benar yang telah dipilih.
-        $distractorKeys = array_diff(array_keys($allItems), $this->currentGameCorrectKeys);
+        // 1. Tentukan kategori pertanyaan saat ini (misal: 'verbal', 'fisik').
+        $firstCorrectKey = !empty($allCorrectKeys) ? $allCorrectKeys[0] : null;
+        $currentCategory = $firstCorrectKey ? explode('_', $firstCorrectKey)[0] : null;
+
+        // 2. Buat kumpulan pengecoh HANYA dari kategori lain.
+        $distractorPool = [];
+        if ($currentCategory) {
+            foreach ($allItems as $key => $item) {
+                // Jika key item TIDAK dimulai dengan nama kategori saat ini,
+                // maka item tersebut adalah pengecoh yang valid.
+                if (strpos($key, $currentCategory . '_') !== 0) {
+                    $distractorPool[$key] = $item;
+                }
+            }
+        } else {
+            // Fallback jika kategori tidak bisa ditentukan (seharusnya tidak akan terjadi).
+            $distractorPoolKeys = array_diff(array_keys($allItems), $this->currentGameCorrectKeys);
+            foreach ($distractorPoolKeys as $key) {
+                $distractorPool[$key] = $allItems[$key];
+            }
+        }
+
+        $distractorKeys = array_keys($distractorPool);
         shuffle($distractorKeys);
 
-        // Ambil pengecoh berdasarkan jumlah yang sudah dihitung.
+        // 3. Ambil pengecoh dari kumpulan yang sudah difilter.
         $distractors = [];
         foreach (array_slice($distractorKeys, 0, $numDistractors) as $key) {
-            $distractors[$key] = $allItems[$key];
+            $distractors[$key] = $distractorPool[$key];
         }
 
         // Gabungkan pasangan yang benar (yang sudah dipilih acak) dengan pengecoh.
@@ -578,29 +599,19 @@ class LevelPlayer extends Component
      */
     public function checkPair()
     {
-        // Pastikan kedua item ada dan belum pernah dipasangkan sebelumnya
         if ($this->selectedImage && $this->selectedText && !isset($this->correctPairs[$this->selectedImage])) {
-            // Cek apakah pasangan yang dipilih benar berdasarkan logika game Anda
-            // Asumsi: selectedImage dan selectedText memiliki key yang sama jika benar
             if ($this->selectedImage === $this->selectedText) {
                 $selectedKey = $this->selectedImage;
-
-                // Pastikan key ini memang bagian dari jawaban yang benar untuk game ini
-                // dan belum menjadi bagian dari pasangan yang benar sebelumnya.
-                if (in_array($selectedKey, $this->currentGameCorrectKeys)) { // && !isset($this->correctPairs[$selectedKey])) { // Cek sudah di handle di atas
-
-                    // (DIUBAH): Simpan pasangan kunci gambar => kunci teks
+                if (in_array($selectedKey, $this->currentGameCorrectKeys)) {
                     $this->correctPairs[$selectedKey] = $this->selectedText;
 
                     $this->dispatch('correct-answer');
-                    // (BARU): Kirim event untuk menggambar panah setelah DOM diperbarui
                     $this->dispatch('draw-correct-arrow', [
                         'startKey' => $selectedKey,
                         'endKey' => $this->selectedText
                     ]);
 
 
-                    // Cek apakah semua pasangan sudah ditemukan
                     if (count($this->correctPairs) >= count($this->currentGameCorrectKeys)) {
                         if (!in_array($this->activeObjectName, $this->answeredObjects)) {
                             $this->answeredObjects[] = $this->activeObjectName;
@@ -623,15 +634,11 @@ class LevelPlayer extends Component
                 $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
             }
         } else {
-            // Ini akan menangani kasus di mana ada upaya untuk memasangkan item yang sudah benar
-            // atau jika selectedImage/selectedText belum ada
-            if ($this->selectedImage && $this->selectedText) { // Hanya jika ada upaya pasangan
+            if ($this->selectedImage && $this->selectedText) {
                 $this->dispatch('incorrect-answer');
                 $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
             }
         }
-
-        // Reset pilihan setelah setiap percobaan, TERMASUK yang benar agar bisa klik item lain
         $this->selectedImage = null;
         $this->selectedText = null;
     }

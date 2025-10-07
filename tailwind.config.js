@@ -19,6 +19,10 @@ export default {
                 'xs': '375px',
                 'tablet': '570px',
             },
+            colors: {
+                dragHighlight: '#FFD700',
+                dragTarget: '#FFA07A',
+            },
         },
     },
     plugins: [],

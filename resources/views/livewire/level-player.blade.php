@@ -129,50 +129,41 @@
                     </div>
                 @elseif ($levelId == 2)
                     <div class="relative w-[70%] aspect-[4/3]">
-                        {{-- Latar belakang pertanyaan tetap ada --}}
+                        {{-- Canvas untuk menggambar panah --}}
+                        <canvas id="arrow-canvas"
+                            class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"></canvas>
+
+                        {{-- Latar belakang pertanyaan --}}
                         <img src="{{ asset($currentQuestion['image']) }}" alt="Latar Belakang Pertanyaan"
                             class="w-full h-full">
 
                         {{-- Lapisan (overlay) untuk konten mini-game --}}
-                        <div class="absolute inset-0 flex justify-center items-center">
-
-                            {{-- Kontainer untuk mini-game, diposisikan lebih presisi --}}
+                        <div class="absolute inset-0 flex justify-center items-center z-10">
                             <div class="w-[80%] h-[60%] mt-[8%] flex justify-between items-center gap-x-4 md:gap-x-8">
 
                                 {{-- Kolom Kiri untuk Gambar --}}
-                                <div class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
+                                <div id="image-options"
+                                    class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
                                     @foreach ($matchingGameItems['images'] as $key => $image)
-                                        {{-- Div ini sekarang hanya untuk layout, bukan untuk diklik --}}
                                         <div class="w-full h-1/4 flex items-center justify-center">
-                                            @if (!in_array($key, $correctPairs))
-                                                {{-- Semua interaktivitas dan style dipindahkan ke tag <img> --}}
-                                                <img src="{{ asset($image) }}"
-                                                    wire:click="selectItem('image', '{{ $key }}')"
-                                                    class="max-w-full max-h-full object-contain bg-opacity-80 rounded-md cursor-pointer transition-all border-4 {{ $selectedImage === $key ? 'border-blue-500 scale-105' : 'border-transparent hover:border-blue-300' }}">
-                                            @else
-                                                {{-- Item yang sudah benar --}}
-                                                <img src="{{ asset($image) }}"
-                                                    class="max-w-full max-h-full object-contain opacity-20">
-                                            @endif
+                                            {{-- (DIUBAH): Tambahkan class untuk styling active/correct --}}
+                                            <img src="{{ asset($image) }}" data-key="{{ $key }}"
+                                                class="matching-image max-w-full max-h-full object-contain bg-opacity-80 rounded-md cursor-pointer transition-all border-4
+                                @if (isset($correctPairs[$key])) border-green-500 correct-paired @else border-transparent hover:border-blue-300 @endif">
                                         </div>
                                     @endforeach
                                 </div>
 
                                 {{-- Kolom Kanan untuk Teks --}}
-                                <div class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
+                                <div id="text-options"
+                                    class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
                                     @foreach ($matchingGameItems['texts'] as $key => $text)
-                                        @if (!in_array($key, $correctPairs))
-                                            <div wire:click="selectItem('text', '{{ $key }}')"
-                                                class="w-full h-1/4 flex items-center justify-center text-center p-1 bg-yellow-100 rounded-md text-[0.6rem] md:text-[0.65rem] lg:text-sm leading-tight border-4 cursor-pointer transition-all {{ $selectedText === $key ? 'border-blue-500 bg-blue-200 scale-105' : 'border-yellow-700 hover:border-blue-300' }}">
-                                                {{ $text }}
-                                            </div>
-                                        @else
-                                            {{-- Item yang sudah benar akan menjadi hijau dan transparan --}}
-                                            <div
-                                                class="w-full h-1/4 flex items-center justify-center text-center p-1 bg-green-200 border-4 border-green-500 rounded-md text-[0.6rem] md:text-[0.65rem] lg:text-sm opacity-50">
-                                                {{ $text }}
-                                            </div>
-                                        @endif
+                                        {{-- (DIUBAH): Tambahkan class untuk styling active/correct --}}
+                                        <div data-key="{{ $key }}"
+                                            class="matching-text w-full h-1/4 flex items-center justify-center text-center p-1 rounded-md text-[0.6rem] md:text-[0.65rem] lg:text-sm leading-tight border-4 cursor-pointer transition-all
+                            @if (in_array($key, $correctPairs)) bg-green-200 border-green-500 correct-paired @else bg-yellow-100 border-yellow-700 hover:border-blue-300 @endif">
+                                            {{ $text }}
+                                        </div>
                                     @endforeach
                                 </div>
 

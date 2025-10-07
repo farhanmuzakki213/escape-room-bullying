@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 
 #[Layout('layouts.guest')]
 class LevelPlayer extends Component
@@ -557,7 +558,8 @@ class LevelPlayer extends Component
     /**
      * (BARU) Dipanggil saat pemain mengklik gambar atau teks di mini-game.
      */
-    public function selectItem($type, $key)
+    #[On('selectItem')]
+    public function selectItem($key, $type)
     {
         if ($type === 'image') {
             $this->selectedImage = $key;
@@ -565,6 +567,7 @@ class LevelPlayer extends Component
             $this->selectedText = $key;
         }
 
+        // Jika kedua item sudah dipilih, periksa pasangannya.
         if ($this->selectedImage && $this->selectedText) {
             $this->checkPair();
         }
@@ -575,36 +578,76 @@ class LevelPlayer extends Component
      */
     public function checkPair()
     {
-        if ($this->selectedImage === $this->selectedText) {
-            $selectedKey = $this->selectedImage;
+        // Pastikan kedua item ada dan belum pernah dipasangkan sebelumnya
+        if ($this->selectedImage && $this->selectedText && !isset($this->correctPairs[$this->selectedImage])) {
+            // Cek apakah pasangan yang dipilih benar berdasarkan logika game Anda
+            // Asumsi: selectedImage dan selectedText memiliki key yang sama jika benar
+            if ($this->selectedImage === $this->selectedText) {
+                $selectedKey = $this->selectedImage;
 
-            if (in_array($selectedKey, $this->currentGameCorrectKeys) && !in_array($selectedKey, $this->correctPairs)) {
-                $this->correctPairs[] = $selectedKey;
-                $this->dispatch('correct-answer');
+                // Pastikan key ini memang bagian dari jawaban yang benar untuk game ini
+                // dan belum menjadi bagian dari pasangan yang benar sebelumnya.
+                if (in_array($selectedKey, $this->currentGameCorrectKeys)) { // && !isset($this->correctPairs[$selectedKey])) { // Cek sudah di handle di atas
 
-                if (count($this->correctPairs) >= count($this->currentGameCorrectKeys)) {
-                    if (!in_array($this->activeObjectName, $this->answeredObjects)) {
-                        $this->answeredObjects[] = $this->activeObjectName;
+                    // (DIUBAH): Simpan pasangan kunci gambar => kunci teks
+                    $this->correctPairs[$selectedKey] = $this->selectedText;
+
+                    $this->dispatch('correct-answer');
+                    // (BARU): Kirim event untuk menggambar panah setelah DOM diperbarui
+                    $this->dispatch('draw-correct-arrow', [
+                        'startKey' => $selectedKey,
+                        'endKey' => $this->selectedText
+                    ]);
+
+
+                    // Cek apakah semua pasangan sudah ditemukan
+                    if (count($this->correctPairs) >= count($this->currentGameCorrectKeys)) {
+                        if (!in_array($this->activeObjectName, $this->answeredObjects)) {
+                            $this->answeredObjects[] = $this->activeObjectName;
+                        }
+
+                        $progress = session('game_progress', []);
+                        $progress[$this->levelId]['answered_objects'] = $this->answeredObjects;
+                        session(['game_progress' => $progress]);
+
+                        $this->dispatch('show-notification', message: 'Hebat, kamu berhasil!', type: 'success');
+                        sleep(1);
+                        $this->closeModalAndCheckCompletion();
                     }
-
-                    $progress = session('game_progress', []);
-                    $progress[$this->levelId]['answered_objects'] = $this->answeredObjects;
-                    session(['game_progress' => $progress]);
-
-                    $this->dispatch('show-notification', message: 'Hebat, kamu berhasil!', type: 'success');
-                    sleep(1);
-                    $this->closeModalAndCheckCompletion();
+                } else {
+                    $this->dispatch('incorrect-answer');
+                    $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
                 }
             } else {
                 $this->dispatch('incorrect-answer');
+                $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
             }
         } else {
-            $this->dispatch('incorrect-answer');
-            $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
+            // Ini akan menangani kasus di mana ada upaya untuk memasangkan item yang sudah benar
+            // atau jika selectedImage/selectedText belum ada
+            if ($this->selectedImage && $this->selectedText) { // Hanya jika ada upaya pasangan
+                $this->dispatch('incorrect-answer');
+                $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
+            }
         }
 
+        // Reset pilihan setelah setiap percobaan, TERMASUK yang benar agar bisa klik item lain
         $this->selectedImage = null;
         $this->selectedText = null;
+    }
+
+    // (BARU): Ini akan dipanggil setelah Livewire me-render, untuk menggambar ulang panah
+    public function hydrate()
+    {
+        if (!empty($this->correctPairs) && $this->levelId == 2) {
+            foreach ($this->correctPairs as $imgKey => $txtKey) {
+                $this->dispatch('draw-correct-arrow', [
+                    'startKey' => $imgKey,
+                    'endKey' => $txtKey,
+                    'initialLoad' => true
+                ]);
+            }
+        }
     }
 
     /**

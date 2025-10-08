@@ -146,25 +146,23 @@
                                     class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
                                     @foreach ($matchingGameItems['images'] as $key => $image)
                                         <div class="w-full h-1/4 flex items-center justify-center">
-                                            {{-- (DIUBAH): Tambahkan class untuk styling active/correct --}}
                                             <img src="{{ asset($image) }}" data-key="{{ $key }}"
                                                 class="matching-image max-w-full max-h-full object-contain bg-opacity-80 rounded-md cursor-pointer transition-all border-4
-                                @if (isset($correctPairs[$key])) border-green-500 correct-paired
-                                @else border-transparent hover:border-blue-300 @endif">
+        @if (isset($correctPairs[$key])) border-green-500 correct-paired
+        @else border-transparent hover:border-blue-400 @endif">
                                         </div>
                                     @endforeach
                                 </div>
 
                                 {{-- Kolom Kanan untuk Teks --}}
                                 <div id="text-options"
-                                    class="w-1/2 h-full flex flex-col justify-center items-center space-y-1">
+                                    class="w-1/2 h-full flex flex-col justify-center items-center space-y-2">
                                     @foreach ($matchingGameItems['texts'] as $key => $text)
-                                        {{-- (DIUBAH): Tambahkan class untuk styling active/correct --}}
                                         <div data-key="{{ $key }}"
                                             class="matching-text w-full h-1/4 flex items-center justify-center text-center p-1 rounded-md text-[0.6rem] md:text-[0.65rem] lg:text-sm leading-tight border-4 cursor-pointer transition-all
-                                            @if (in_array($key, $correctPairs)) bg-green-200 border-green-500 correct-paired
-                                            @else
-                                            bg-yellow-100 border-yellow-700 hover:border-blue-300 @endif">
+            @if (in_array($key, $correctPairs)) bg-green-200 border-green-500 correct-paired
+            @else
+            bg-yellow-100 border-yellow-700 hover:border-blue-400 @endif">
                                             {{ $text }}
                                         </div>
                                     @endforeach

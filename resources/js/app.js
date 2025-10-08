@@ -82,20 +82,15 @@ function showNotification(message, type = 'success') {
     const container = document.getElementById('notification-container');
     if (!container) return;
 
-    // -- BAGIAN BARU: Mencegah notifikasi duplikat --
-    // Cek apakah sudah ada notifikasi dengan pesan yang sama
+    // -- Cek duplikat dan hapus jika ada --
     const existingNotif = container.querySelector(`[data-message="${message}"]`);
     if (existingNotif) {
-        // Jika ada, jangan tampilkan notifikasi baru
-        return;
+        existingNotif.remove();
     }
-    // -- AKHIR BAGIAN BARU --
 
+    // -- Buat notifikasi baru --
     const notification = document.createElement('div');
-
-    // -- BAGIAN BARU: Tambahkan atribut data-message --
     notification.setAttribute('data-message', message);
-    // -- AKHIR BAGIAN BARU --
 
     const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
     notification.className = `p-4 mb-2 text-white ${bgColor} rounded-lg shadow-lg transition-all duration-300 ease-in-out transform translate-x-full opacity-0 relative flex items-center justify-between min-w-[250px] max-w-sm`;
@@ -107,24 +102,40 @@ function showNotification(message, type = 'success') {
         </button>
     `;
 
-    container.appendChild(notification);
+    // -- Tambahkan di paling atas container --
+    if (container.firstChild) {
+        container.insertBefore(notification, container.firstChild);
+    } else {
+        container.appendChild(notification);
+    }
 
+    // -- Animasi masuk langsung --
     requestAnimationFrame(() => {
         notification.classList.remove('translate-x-full', 'opacity-0');
     });
 
+    // -- Auto dismiss --
     const dismissTimeout = setTimeout(() => {
         if (notification.parentElement) {
             notification.classList.add('translate-x-full', 'opacity-0');
             notification.addEventListener('transitionend', () => notification.remove(), { once: true });
         }
-    }, 3000);
+    }, 1000);
 
+    // -- Tombol close --
     notification.querySelector('button').addEventListener('click', () => {
         clearTimeout(dismissTimeout);
         notification.classList.add('translate-x-full', 'opacity-0');
         notification.addEventListener('transitionend', () => notification.remove(), { once: true });
     });
+
+    // -- Batasi maksimal 3 notifikasi --
+    const allNotifications = container.querySelectorAll('div');
+    if (allNotifications.length > 3) {
+        const oldestNotification = allNotifications[allNotifications.length - 1];
+        oldestNotification.classList.add('translate-x-full', 'opacity-0');
+        oldestNotification.addEventListener('transitionend', () => oldestNotification.remove(), { once: true });
+    }
 }
 
 // Listener ini sudah benar, akan meneruskan 'type' dengan benar.
@@ -153,47 +164,59 @@ document.addEventListener('livewire:initialized', () => {
         }
     });
 
-    const observer = new MutationObserver(() => {
-        const canvas = document.getElementById('arrow-canvas');
-        // Cek apakah canvas ada di DOM dan BELUM diinisialisasi
-        if (canvas && !canvas.getAttribute('data-initialized')) {
-            // Hapus semua panah yang mungkin tersisa dari pertanyaan sebelumnya
-            const drawnArrows = new Map();
-            initializeArrowCanvas(canvas, drawnArrows);
-            // Tandai sebagai sudah diinisialisasi agar tidak berjalan dua kali untuk modal yang sama
-            canvas.setAttribute('data-initialized', 'true');
-        } else if (!canvas) {
-            // Jika canvas hilang (modal ditutup), cari penanda dan hapus
-            // agar bisa diinisialisasi lagi saat modal berikutnya muncul.
-            const oldCanvas = document.querySelector('[data-initialized="true"]');
-            if (oldCanvas) oldCanvas.removeAttribute('data-initialized');
+    let drawnArrows = new Map();
+
+    Livewire.on('clear-arrows', () => {
+        drawnArrows.clear();
+        if (window.redrawAllCorrectArrows) {
+            window.redrawAllCorrectArrows();
         }
     });
 
-    // Amati perubahan pada seluruh body untuk mendeteksi kapan modal muncul atau hilang
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-    // AKHIR BLOK PERUBAHAN
-
-
-    // (BARU): Event listener untuk menggambar panah yang benar dari Livewire
-    Livewire.on('draw-correct-arrow', ([data]) => {
+    const observer = new MutationObserver((mutations) => {
         const canvas = document.getElementById('arrow-canvas');
-        if (canvas) {
-            // Pastikan fungsi global drawCorrectArrow dipanggil dengan benar
-            if(window.drawCorrectArrow) {
-               window.drawCorrectArrow(canvas, data.startKey, data.endKey, data.initialLoad);
+        if (canvas && !canvas.getAttribute('data-initialized')) {
+            console.log('Canvas ditemukan, menginisialisasi...');
+            initializeArrowCanvas(canvas, drawnArrows);
+            canvas.setAttribute('data-initialized', 'true');
+
+            // Coba gambar ulang setelah inisialisasi
+            setTimeout(() => {
+                if (window.redrawAllCorrectArrows) {
+                    window.redrawAllCorrectArrows();
+                }
+            }, 300);
+        } else if (!canvas) {
+            const oldCanvas = document.querySelector('[data-initialized="true"]');
+            if (oldCanvas) {
+                oldCanvas.removeAttribute('data-initialized');
+                console.log('Canvas dihapus, reset initialized state');
             }
         }
     });
 
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 
-    // (DIUBAH) Pindahkan drawnArrows ke luar fungsi agar bisa diakses
-    // dan di-reset oleh observer
+    Livewire.on('draw-correct-arrow', ([data]) => {
+        const canvas = document.getElementById('arrow-canvas');
+        if (canvas && window.drawCorrectArrow) {
+            window.drawCorrectArrow(canvas, data.startKey, data.endKey, data.initialLoad);
+        }
+    });
+
+    // Tambahkan event listener untuk redraw semua panah
+    Livewire.on('redraw-all-arrows', () => {
+        const canvas = document.getElementById('arrow-canvas');
+        if (canvas && window.redrawAllCorrectArrows) {
+            console.log('Redraw semua panah dipanggil');
+            window.redrawAllCorrectArrows();
+        }
+    });
+
     function initializeArrowCanvas(canvas, drawnArrows) {
-        // ... (sisa fungsi initializeArrowCanvas Anda dari sini ke bawah tidak perlu diubah sama sekali)
         const ctx = canvas.getContext('2d');
         const imageOptions = document.getElementById('image-options');
         const textOptions = document.getElementById('text-options');
@@ -202,15 +225,15 @@ document.addEventListener('livewire:initialized', () => {
 
         let isDrawing = false;
         let startImageElement = null;
-        let startImageRect = null;
         let currentTargetTextElement = null;
 
+        // --- FUNGSI BANTU ---
         const getElementStartPoint = (el) => {
             const rect = el.getBoundingClientRect();
             const canvasRect = canvas.getBoundingClientRect();
             return {
-                x: rect.left + rect.width - canvasRect.left,
-                y: rect.top + rect.height / 2 - canvasRect.top,
+                x: rect.right - canvasRect.left + 8,
+                y: rect.top + rect.height / 2 - canvasRect.top
             };
         };
 
@@ -218,162 +241,340 @@ document.addEventListener('livewire:initialized', () => {
             const rect = el.getBoundingClientRect();
             const canvasRect = canvas.getBoundingClientRect();
             return {
-                x: rect.left - canvasRect.left,
-                y: rect.top + rect.height / 2 - canvasRect.top,
+                x: rect.left - canvasRect.left - 8,
+                y: rect.top + rect.height / 2 - canvasRect.top
             };
         };
 
-        const drawArrowhead = (ctx, fromX, fromY, toX, toY) => {
+        const drawArrowhead = (ctx, fromX, fromY, toX, toY, color = '#60A5FA') => {
             const headlen = 12;
             const dx = toX - fromX;
             const dy = toY - fromY;
             const angle = Math.atan2(dy, dx);
+
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+
             ctx.beginPath();
             ctx.moveTo(toX, toY);
             ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
-            ctx.moveTo(toX, toY);
             ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
-            ctx.stroke();
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
         };
 
         const redrawAllCorrectArrows = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawnArrows.forEach((arrowData, key) => {
-                const startEl = arrowData.startEl;
-                const endEl = arrowData.endEl;
-                if (!startEl || !endEl) return;
-                const startPoint = getElementStartPoint(startEl);
-                const endPoint = getElementEndPoint(endEl);
-                ctx.beginPath();
-                ctx.moveTo(startPoint.x, startPoint.y);
-                ctx.lineTo(endPoint.x, endPoint.y);
-                ctx.strokeStyle = arrowData.color;
-                ctx.lineWidth = 5;
-                ctx.lineCap = 'round';
-                ctx.stroke();
-                drawArrowhead(ctx, startPoint.x, startPoint.y, endPoint.x, endPoint.y);
-            });
+            if (!canvas) {
+                console.log('Canvas tidak ditemukan');
+                return;
+            }
+
+            try {
+                // Clear canvas terlebih dahulu
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Pastikan canvas size sesuai
+                if (canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                }
+
+                console.log('Menggambar ulang', drawnArrows.size, 'panah');
+
+                // Gambar ulang semua panah yang benar
+                drawnArrows.forEach((arrowData, key) => {
+                    const startEl = arrowData.startEl;
+                    const endEl = arrowData.endEl;
+
+                    // Pastikan elemen masih ada di DOM dan terlihat
+                    if (!startEl || !endEl || !document.contains(startEl) || !document.contains(endEl)) {
+                        console.log('Menghapus panah untuk elemen yang tidak ditemukan:', key);
+                        drawnArrows.delete(key);
+                        return;
+                    }
+
+                    // Pastikan elemen sudah ter-render sepenuhnya
+                    const startRect = startEl.getBoundingClientRect();
+                    const endRect = endEl.getBoundingClientRect();
+
+                    if (startRect.width === 0 || startRect.height === 0 || endRect.width === 0 || endRect.height === 0) {
+                        console.log('Elemen belum siap untuk digambar:', key);
+                        return;
+                    }
+
+                    const startPoint = getElementStartPoint(startEl);
+                    const endPoint = getElementEndPoint(endEl);
+
+                    // Gambar garis panah
+                    ctx.beginPath();
+                    ctx.moveTo(startPoint.x, startPoint.y);
+                    ctx.lineTo(endPoint.x, endPoint.y);
+                    ctx.strokeStyle = arrowData.color;
+                    ctx.lineWidth = 4;
+                    ctx.lineCap = 'round';
+                    ctx.stroke();
+
+                    // Gambar kepala panah
+                    drawArrowhead(ctx, startPoint.x, startPoint.y, endPoint.x, endPoint.y, arrowData.color);
+                });
+            } catch (error) {
+                console.error('Error dalam redrawAllCorrectArrows:', error);
+            }
         };
 
         window.drawCorrectArrow = (canvas, startKey, endKey, initialLoad = false) => {
             const startEl = document.querySelector(`.matching-image[data-key="${startKey}"]`);
             const endEl = document.querySelector(`.matching-text[data-key="${endKey}"]`);
+
             if (startEl && endEl) {
+                // Logika Anda untuk menambahkan style, ini sudah benar
                 startEl.classList.add('correct-paired');
                 endEl.classList.add('correct-paired');
-                endEl.classList.remove('bg-yellow-100', 'border-yellow-700', 'hover:border-blue-300');
+                endEl.classList.remove('bg-yellow-100', 'border-yellow-700', 'hover:border-blue-400');
                 endEl.classList.add('bg-green-200', 'border-green-500');
+
+                // Simpan ke memori visual, ini sudah benar
                 drawnArrows.set(`${startKey}-${endKey}`, {
                     startEl: startEl,
                     endEl: endEl,
                     color: '#10B981'
                 });
-                redrawAllCorrectArrows();
+
+                // Pastikan canvas di-redraw untuk menampilkan panah
+                setTimeout(() => {
+                    redrawAllCorrectArrows();
+                }, 0);
+            } else if (retryCount < MAX_RETRIES) {
+                console.log(`Elemen belum ditemukan, mencoba lagi (${retryCount + 1}/${MAX_RETRIES})...`);
+                setTimeout(() => drawArrow(retryCount + 1), RETRY_DELAY);
+            } else {
+                console.error('Gagal menemukan elemen untuk panah:', startKey, endKey);
             }
         };
 
-        imageOptions.addEventListener('mousedown', (e) => {
-            if (e.target.classList.contains('matching-image') && !e.target.classList.contains('correct-paired')) {
-                isDrawing = true;
-                startImageElement = e.target;
-                startImageRect = startImageElement.getBoundingClientRect();
-                startImageElement.classList.add('border-blue-500', 'border-opacity-100', 'active-drag-source');
-                startImageElement.classList.remove('hover:border-blue-300');
-                canvas.style.pointerEvents = 'auto';
+        // --- FUNGSI UTAMA DRAG AND DROP ---
+        const handleDragStart = (e) => {
+            // Prevent default untuk mencegah behavior browser yang tidak diinginkan
+            if (e.type === 'touchstart') {
+                e.preventDefault();
             }
-        });
 
-        canvas.addEventListener('mousemove', (e) => {
+            let startElement = e.target;
+
+            // Untuk touch, dapatkan elemen dari titik sentuh
+            if (e.type === 'touchstart') {
+                const touch = e.touches[0];
+                startElement = document.elementFromPoint(touch.clientX, touch.clientY);
+            }
+
+            if (startElement && startElement.classList.contains('matching-image') &&
+                !startElement.classList.contains('correct-paired')) {
+                isDrawing = true;
+                startImageElement = startElement;
+
+                // **PERBAIKAN: Langsung aktifkan state drag untuk touch**
+                startImageElement.classList.add('border-blue-400', 'border-opacity-100', 'active-drag-source');
+                startImageElement.classList.remove('hover:border-blue-400');
+                canvas.style.pointerEvents = 'auto';
+
+                // **PERBAIKAN: Untuk touch, langsung panggil handleDragMove dengan posisi awal**
+                if (e.type === 'touchstart') {
+                    const touch = e.touches[0];
+                    handleDragMove({
+                        type: 'touchmove',
+                        touches: [touch],
+                        preventDefault: () => { }
+                    });
+                } else {
+                    handleDragMove({
+                        type: 'mousemove',
+                        clientX: e.clientX,
+                        clientY: e.clientY,
+                        preventDefault: () => { }
+                    });
+                }
+            }
+        };
+
+        const handleDragMove = (e) => {
             if (!isDrawing) return;
+
+            // **PERBAIKAN: Selalu prevent default untuk touchmove**
+            if (e.type === 'touchmove') {
+                e.preventDefault();
+            }
+
+            let currentX, currentY;
+            if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX;
+                currentY = e.touches[0].clientY;
+            } else {
+                currentX = e.clientX;
+                currentY = e.clientY;
+            }
+
             const canvasRect = canvas.getBoundingClientRect();
-            const currentMouseX = e.clientX;
-            const currentMouseY = e.clientY;
             const startPoint = getElementStartPoint(startImageElement);
+
             const targetTextElements = textOptions.querySelectorAll('.matching-text');
             let foundTarget = false;
-            let endX = currentMouseX - canvasRect.left;
-            let endY = currentMouseY - canvasRect.top;
+            let endX = currentX - canvasRect.left;
+            let endY = currentY - canvasRect.top;
+
+            // **PERBAIKAN: Optimasi deteksi target untuk performa touch yang lebih baik**
             targetTextElements.forEach(el => {
                 const rect = el.getBoundingClientRect();
-                if (currentMouseX >= rect.left && currentMouseX <= rect.right &&
-                    currentMouseY >= rect.top && currentMouseY <= rect.bottom) {
+
+                // **PERBAIKAN: Gunakan area yang sedikit lebih besar untuk touch**
+                const tolerance = 10; // 10px tolerance untuk touch
+                if (currentX >= rect.left - tolerance && currentX <= rect.right + tolerance &&
+                    currentY >= rect.top - tolerance && currentY <= rect.bottom + tolerance) {
+
                     const endPoint = getElementEndPoint(el);
                     endX = endPoint.x;
                     endY = endPoint.y;
+
                     if (currentTargetTextElement && currentTargetTextElement !== el) {
-                        currentTargetTextElement.classList.remove('border-blue-500', 'active-drag-target');
-                        currentTargetTextElement.classList.add('hover:border-blue-300');
+                        currentTargetTextElement.classList.remove('border-blue-400', 'active-drag-target');
+                        currentTargetTextElement.classList.add('hover:border-blue-400');
                     }
-                    if(!el.classList.contains('correct-paired')) {
-                        el.classList.add('border-blue-500', 'border-opacity-100', 'active-drag-target');
-                        el.classList.remove('hover:border-blue-300');
+                    if (!el.classList.contains('correct-paired')) {
+                        el.classList.add('border-blue-400', 'border-opacity-100', 'active-drag-target');
+                        el.classList.remove('hover:border-blue-400');
                         currentTargetTextElement = el;
                     }
                     foundTarget = true;
                 }
             });
+
             if (!foundTarget && currentTargetTextElement) {
-                currentTargetTextElement.classList.remove('border-blue-500', 'active-drag-target');
-                currentTargetTextElement.classList.add('hover:border-blue-300');
+                currentTargetTextElement.classList.remove('border-blue-400', 'active-drag-target');
+                currentTargetTextElement.classList.add('hover:border-blue-400');
                 currentTargetTextElement = null;
+
+                // **PERBAIKAN: Jika tidak ada target, gunakan posisi touch langsung**
+                endX = currentX - canvasRect.left;
+                endY = currentY - canvasRect.top;
             }
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+
+            // **PERBAIKAN: Optimasi performa - hanya resize canvas jika diperlukan**
+            if (canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+
             redrawAllCorrectArrows();
+
+            // Gambar panah sementara
             ctx.beginPath();
             ctx.moveTo(startPoint.x, startPoint.y);
             ctx.lineTo(endX, endY);
-            ctx.strokeStyle = '#3B82F6';
-            ctx.lineWidth = 5;
+            ctx.strokeStyle = '#60A5FA';
+            ctx.lineWidth = 4;
             ctx.lineCap = 'round';
             ctx.stroke();
-            drawArrowhead(ctx, startPoint.x, startPoint.y, endX, endY);
-        });
+            drawArrowhead(ctx, startPoint.x, startPoint.y, endX, endY, '#60A5FA');
+        };
 
-        canvas.addEventListener('mouseup', (e) => {
+        const handleDragEnd = (e) => {
             if (!isDrawing) return;
-            isDrawing = false;
-            canvas.style.pointerEvents = 'none';
-            if (startImageElement) {
-                startImageElement.classList.remove('border-blue-500', 'border-opacity-100', 'active-drag-source');
-                startImageElement.classList.add('hover:border-blue-300');
+
+            let endX, endY;
+            if (e.type === 'touchend') {
+                const touch = e.changedTouches[0];
+                endX = touch.clientX;
+                endY = touch.clientY;
+            } else {
+                endX = e.clientX;
+                endY = e.clientY;
             }
-            if (currentTargetTextElement) {
-                currentTargetTextElement.classList.remove('border-blue-500', 'border-opacity-100', 'active-drag-target');
-                currentTargetTextElement.classList.add('hover:border-blue-300');
+
+            // **PERBAIKAN: Gunakan currentTargetTextElement yang sudah disimpan**
+            let endElement = currentTargetTextElement;
+
+            // **PERBAIKAN: Fallback untuk touch - cari elemen dengan tolerance yang lebih besar**
+            if (!endElement) {
+                const elements = document.elementsFromPoint(endX, endY);
+                endElement = elements.find(el => el.classList.contains('matching-text'));
             }
-            redrawAllCorrectArrows();
-            const endElement = document.elementFromPoint(e.clientX, e.clientY);
-            if (endElement && endElement.classList.contains('matching-text')) {
+
+            if (startImageElement && endElement && endElement.classList.contains('matching-text')) {
                 const startKey = startImageElement.dataset.key;
                 const endKey = endElement.dataset.key;
+
                 if (startKey && endKey) {
-                    Livewire.dispatch('selectItem', { type: 'image', key: startKey });
-                    Livewire.dispatch('selectItem', { type: 'text', key: endKey });
+                    Livewire.dispatch('itemSelected', {
+                        type: 'image',
+                        key: startKey
+                    });
+
+                    Livewire.dispatch('itemSelected', {
+                        type: 'text',
+                        key: endKey
+                    });
                 }
             }
+
+            cleanupDragState();
+        };
+
+        const cleanupDragState = () => {
+            if (!isDrawing && !startImageElement && !currentTargetTextElement) return;
+            isDrawing = false;
+            canvas.style.pointerEvents = 'none';
+
+            if (startImageElement) {
+                startImageElement.classList.remove('border-blue-400', 'border-opacity-100', 'active-drag-source');
+                startImageElement.classList.add('hover:border-blue-400');
+            }
+
+            if (currentTargetTextElement) {
+                currentTargetTextElement.classList.remove('border-blue-400', 'border-opacity-100', 'active-drag-target');
+                currentTargetTextElement.classList.add('hover:border-blue-400');
+            }
+
             startImageElement = null;
             currentTargetTextElement = null;
-        });
 
-        canvas.addEventListener('mouseleave', () => {
+            redrawAllCorrectArrows();
+        };
+
+        // **PERBAIKAN: Fungsi global untuk touch events**
+        const handleGlobalTouchMove = (e) => {
             if (isDrawing) {
-                isDrawing = false;
-                canvas.style.pointerEvents = 'none';
-                if (startImageElement) {
-                    startImageElement.classList.remove('border-blue-500', 'border-opacity-100', 'active-drag-source');
-                    startImageElement.classList.add('hover:border-blue-300');
-                }
-                if (currentTargetTextElement) {
-                    currentTargetTextElement.classList.remove('border-blue-500', 'border-opacity-100', 'active-drag-target');
-                    currentTargetTextElement.classList.add('hover:border-blue-300');
-                }
-                redrawAllCorrectArrows();
-                startImageElement = null;
-                currentTargetTextElement = null;
+                handleDragMove(e);
             }
-        });
+        };
 
-        redrawAllCorrectArrows();
+        const handleGlobalTouchEnd = (e) => {
+            if (isDrawing) {
+                handleDragEnd(e);
+            }
+        };
+
+        // --- SETUP EVENT LISTENER ---
+        // Hapus listener lama
+        imageOptions.removeEventListener('mousedown', handleDragStart);
+        document.removeEventListener('mousemove', handleDragMove);
+        document.removeEventListener('mouseup', handleDragEnd);
+        imageOptions.removeEventListener('touchstart', handleDragStart);
+        document.removeEventListener('touchmove', handleDragMove);
+        document.removeEventListener('touchend', handleDragEnd);
+
+        // 1. Daftarkan event 'start' (mousedown/touchstart) pada container gambar.
+        //    Ini adalah titik awal interaksi.
+        imageOptions.addEventListener('mousedown', handleDragStart);
+        imageOptions.addEventListener('touchstart', handleDragStart, { passive: false });
+
+        // 2. Daftarkan event 'move' dan 'end' pada 'document'.
+        //    Ini memastikan aksi tetap terlacak bahkan jika kursor/jari keluar dari
+        //    area canvas atau imageOptions. Inilah yang membuat perilakunya andal.
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragEnd);
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+        document.addEventListener('touchend', handleDragEnd);
     }
 });

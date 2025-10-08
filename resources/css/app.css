@@ -1,3 +1,45 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.matching-image.active-drag-source {
+    border-color: rgb(96, 165, 250) !important; /* blue-400 */
+    border-width: 4px;
+}
+
+.matching-text.active-drag-target {
+    border-color: rgb(96, 165, 250) !important; /* blue-400 */
+    border-width: 4px;
+}
+
+/* Hover state yang konsisten */
+.matching-image:hover:not(.correct-paired) {
+    border-color: rgb(96, 165, 250) !important; /* blue-400 */
+}
+
+.matching-text:hover:not(.correct-paired) {
+    border-color: rgb(96, 165, 250) !important; /* blue-400 */
+}
+
+.matching-image.correct-paired {
+    border-color: rgb(34, 197, 94) !important; /* green-500 */
+    border-width: 4px;
+}
+
+.matching-text.correct-paired {
+    border-color: rgb(34, 197, 94) !important; /* green-500 */
+    border-width: 4px;
+}
+
+.matching-image, .matching-text {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+#arrow-canvas {
+    z-index: 25;
+}
+
+

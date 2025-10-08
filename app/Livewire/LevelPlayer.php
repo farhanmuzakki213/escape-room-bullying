@@ -40,6 +40,7 @@ class LevelPlayer extends Component
     public array $filledAnswers = [];
     public string $userAnswer = '';
     public int $totalQuestions = 0;
+    public bool $isQuestionComplete = false;
 
     /**
      * Properti STATE untuk mengelola alur di dalam level.
@@ -53,6 +54,7 @@ class LevelPlayer extends Component
     public $correctPairs = [];
     public ?string $currentGameTitle = null;
     public array $currentGameCorrectKeys = [];
+    public ?string $currentGameCategory = null;
 
     /**
      * Properti baru untuk alur refleksi.
@@ -172,28 +174,32 @@ class LevelPlayer extends Component
             'questions' => [
                 'q1' => [
                     'image' => 'images/pertanyaan-jawaban/p1-lv2.svg',
-                    'correct_pairs' => [
+                    'category' => 'verbal',
+                    'correct_items' => [
                         'verbal_1' => ['image' => 'images/pertanyaan-jawaban/verbal-1.svg', 'text' => 'Mengejek, mempermalukan, dan menghina seseorang dengan sengaja'],
-                        'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.svg', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan dengan sengaja.'],
+                        'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.svg', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan'],
                     ],
                 ],
                 'q2' => [
                     'image' => 'images/pertanyaan-jawaban/p2-lv2.svg',
-                    'correct_pairs' => [
-                        'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak dan mendorong seseorang dengan segaja'],
-                        'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Mendorong, memukul, atau melakukan kekerasan fisik lainnya'],
+                    'category' => 'fisik',
+                    'correct_items' => [
+                        'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak, menampar, dan mengunci seseorang di ruangan dan pemerasan uang'],
+                        'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Memukul, menendang, dan mendorong seseorang dengan segaja'],
                     ],
                 ],
                 'q3' => [
                     'image' => 'images/pertanyaan-jawaban/p3-lv2.svg',
-                    'correct_pairs' => [
-                        'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.svg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang '],
-                        'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.svg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
+                    'category' => 'sosial',
+                    'correct_items' => [
+                        'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.svg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
+                        'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.svg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang'],
                     ],
                 ],
                 'q4' => [
                     'image' => 'images/pertanyaan-jawaban/p4-lv2.svg',
-                    'correct_pairs' => [
+                    'category' => 'cyber',
+                    'correct_items' => [
                         'cyber_1' => ['image' => 'images/pertanyaan-jawaban/cyber-1.svg', 'text' => 'Membuat komentar jahat di media sosial dan menyebarkan foto-foto seseorang tanpa izin'],
                         'cyber_2' => ['image' => 'images/pertanyaan-jawaban/cyber-2.svg', 'text' => 'Meneror seseorang melalui media sosial dan menyerang seseorang secara online'],
                     ],
@@ -202,11 +208,11 @@ class LevelPlayer extends Component
             'item_bank' => [
                 // Ini adalah gabungan semua 'correct_pairs' dari atas
                 'verbal_1' => ['image' => 'images/pertanyaan-jawaban/verbal-1.svg', 'text' => 'Mengejek, mempermalukan, dan menghina seseorang dengan sengaja'],
-                'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.svg', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan dengan sengaja.'],
-                'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak dan mendorong seseorang dengan segaja'],
-                'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Mendorong, memukul, atau melakukan kekerasan fisik lainnya'],
-                'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.svg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang '],
-                'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.svg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
+                'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.svg', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan'],
+                'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak, menampar, dan mengunci seseorang di ruangan dan pemerasan uang'],
+                'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Memukul, menendang, dan mendorong seseorang dengan segaja'],
+                'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.svg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
+                'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.svg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang'],
                 'cyber_1' => ['image' => 'images/pertanyaan-jawaban/cyber-1.svg', 'text' => 'Membuat komentar jahat di media sosial dan menyebarkan foto-foto seseorang tanpa izin'],
                 'cyber_2' => ['image' => 'images/pertanyaan-jawaban/cyber-2.svg', 'text' => 'Meneror seseorang melalui media sosial dan menyerang seseorang secara online'],
             ],
@@ -414,8 +420,12 @@ class LevelPlayer extends Component
             $this->viewState = 'playing';
         }
 
-        if (env('APP_ENV') == 'local') {
-            $this->viewState = 'playing';
+        // if (env('APP_ENV') == 'local') {
+        //     $this->viewState = 'playing';
+        // }
+
+        if ($this->levelId == 2) {
+            $this->redrawArrows();
         }
     }
 
@@ -477,176 +487,216 @@ class LevelPlayer extends Component
     }
 
     /**
-     * (BARU) Menyiapkan data untuk mini-game mencocokkan.
+     * MENYEDERHANAKAN: Setup game untuk level 2 dengan pengecoh dari kategori lain
      */
     public function setupMatchingGameForQuestion(array $questionData)
     {
-        $allCorrectPairs = $questionData['correct_pairs'];
-        $allCorrectKeys = array_keys($allCorrectPairs);
+        $this->isQuestionComplete = false;
+        $this->dispatch('clear-arrows');
+        // Reset state
+        $this->correctPairs = [];
+        $this->selectedImage = null;
+        $this->selectedText = null;
 
-        // 2. Tentukan secara acak berapa banyak pasangan yang harus ditemukan (1 atau 2).
-        // Pastikan tidak mencoba mengambil lebih dari yang tersedia.
-        $maxPairsToFind = min(2, count($allCorrectKeys));
-        $numPairsToFind = rand(1, $maxPairsToFind);
+        // Tentukan kategori dari soal
+        $this->currentGameCategory = $questionData['category'];
 
-        // 3. Acak kunci jawaban dan ambil sejumlah yang ditentukan.
-        shuffle($allCorrectKeys);
-        $selectedCorrectKeys = array_slice($allCorrectKeys, 0, $numPairsToFind);
-        $this->currentGameCorrectKeys = $selectedCorrectKeys; // Ini akan menjadi target kemenangan.
+        // Ambil item benar dari soal
+        $correctItems = $questionData['correct_items'];
+        $correctKeys = array_keys($correctItems);
 
-        // 4. Buat array pasangan benar yang akan digunakan di game kali ini.
-        $correctPairsForGame = [];
-        foreach ($selectedCorrectKeys as $key) {
-            $correctPairsForGame[$key] = $allCorrectPairs[$key];
-        }
+        // Ambil 2 pengecoh dari kategori LAIN (bukan kategori soal)
+        $distractors = $this->getDistractors($this->currentGameCategory, $correctKeys);
 
-        // 5. Hitung berapa banyak pengecoh yang dibutuhkan agar total item tetap konsisten (misal: 4).
-        $poolSize = 4;
-        $numDistractors = $poolSize - $numPairsToFind;
+        // Gabungkan item benar dan pengecoh
+        $gameItems = array_merge($correctItems, $distractors);
 
-        $allItems = $this->levelConfig['item_bank'];
-
-        // 1. Tentukan kategori pertanyaan saat ini (misal: 'verbal', 'fisik').
-        $firstCorrectKey = !empty($allCorrectKeys) ? $allCorrectKeys[0] : null;
-        $currentCategory = $firstCorrectKey ? explode('_', $firstCorrectKey)[0] : null;
-
-        // 2. Buat kumpulan pengecoh HANYA dari kategori lain.
-        $distractorPool = [];
-        if ($currentCategory) {
-            foreach ($allItems as $key => $item) {
-                // Jika key item TIDAK dimulai dengan nama kategori saat ini,
-                // maka item tersebut adalah pengecoh yang valid.
-                if (strpos($key, $currentCategory . '_') !== 0) {
-                    $distractorPool[$key] = $item;
-                }
-            }
-        } else {
-            // Fallback jika kategori tidak bisa ditentukan (seharusnya tidak akan terjadi).
-            $distractorPoolKeys = array_diff(array_keys($allItems), $this->currentGameCorrectKeys);
-            foreach ($distractorPoolKeys as $key) {
-                $distractorPool[$key] = $allItems[$key];
-            }
-        }
-
-        $distractorKeys = array_keys($distractorPool);
-        shuffle($distractorKeys);
-
-        // 3. Ambil pengecoh dari kumpulan yang sudah difilter.
-        $distractors = [];
-        foreach (array_slice($distractorKeys, 0, $numDistractors) as $key) {
-            $distractors[$key] = $distractorPool[$key];
-        }
-
-        // Gabungkan pasangan yang benar (yang sudah dipilih acak) dengan pengecoh.
-        $gamePool = array_merge($correctPairsForGame, $distractors);
-
-        // Pisahkan gambar dan teks untuk ditampilkan.
+        // Pisahkan gambar dan teks
         $images = [];
         $texts = [];
-        foreach ($gamePool as $key => $item) {
+
+        foreach ($gameItems as $key => $item) {
             $images[$key] = $item['image'];
             $texts[$key] = $item['text'];
         }
 
-        // Acak urutan gambar.
-        $shuffledImageKeys = array_keys($images);
-        shuffle($shuffledImageKeys);
+        // Acak urutan
+        $imageKeys = array_keys($images);
+        $textKeys = array_keys($texts);
+        shuffle($imageKeys);
+        shuffle($textKeys);
+
         $shuffledImages = [];
-        foreach ($shuffledImageKeys as $key) {
+        $shuffledTexts = [];
+
+        foreach ($imageKeys as $key) {
             $shuffledImages[$key] = $images[$key];
         }
 
-        // Acak urutan teks.
-        $shuffledTextKeys = array_keys($texts);
-        shuffle($shuffledTextKeys);
-        $shuffledTexts = [];
-        foreach ($shuffledTextKeys as $key) {
+        foreach ($textKeys as $key) {
             $shuffledTexts[$key] = $texts[$key];
         }
 
-        // Kirim data yang sudah siap ke view.
         $this->matchingGameItems = [
             'images' => $shuffledImages,
             'texts' => $shuffledTexts,
         ];
-
-        // Reset state mini-game
-        $this->correctPairs = [];
-        $this->selectedImage = null;
-        $this->selectedText = null;
     }
 
     /**
-     * (BARU) Dipanggil saat pemain mengklik gambar atau teks di mini-game.
+     * DAPATKAN PENGEcoh DARI KATEGORI LAIN
      */
-    #[On('selectItem')]
-    public function selectItem($key, $type)
+    private function getDistractors(string $currentCategory, array $excludeKeys = []): array
     {
+        $distractors = [];
+        $itemBank = $this->levelConfig['item_bank'];
+
+        // Acak semua kunci item bank
+        $allKeys = array_keys($itemBank);
+        shuffle($allKeys);
+
+        foreach ($allKeys as $key) {
+            // Jika sudah cukup 2 pengecoh, berhenti
+            if (count($distractors) >= 2) break;
+
+            // Ekstrak kategori dari key
+            $itemCategory = explode('_', $key)[0];
+
+            // Skip jika:
+            // 1. Kategori sama dengan soal
+            // 2. Key termasuk dalam item benar yang sudah dipakai
+            if ($itemCategory === $currentCategory || in_array($key, $excludeKeys)) {
+                continue;
+            }
+
+            // Tambahkan sebagai pengecoh
+            $distractors[$key] = $itemBank[$key];
+        }
+
+        return $distractors;
+    }
+
+    /**
+     * MENYEDERHANAKAN: Method untuk menangani pemilihan item
+     */
+    #[On('itemSelected')]
+    public function itemSelected($type, $key)
+    {
+        if ($this->isQuestionComplete) {
+            return;
+        }
+
         if ($type === 'image') {
             $this->selectedImage = $key;
         } elseif ($type === 'text') {
             $this->selectedText = $key;
         }
 
-        // Jika kedua item sudah dipilih, periksa pasangannya.
+        // Jika kedua item sudah dipilih, periksa pasangan
         if ($this->selectedImage && $this->selectedText) {
             $this->checkPair();
         }
     }
 
     /**
-     * (BARU) Memeriksa apakah pasangan yang dipilih benar.
+     * MENYEDERHANAKAN: Method untuk memeriksa pasangan
      */
     public function checkPair()
     {
-        if ($this->selectedImage && $this->selectedText && !isset($this->correctPairs[$this->selectedImage])) {
-            if ($this->selectedImage === $this->selectedText) {
-                $selectedKey = $this->selectedImage;
-                if (in_array($selectedKey, $this->currentGameCorrectKeys)) {
-                    $this->correctPairs[$selectedKey] = $this->selectedText;
+        if ($this->isQuestionComplete || !$this->selectedImage || !$this->selectedText) {
+            return;
+        }
 
-                    $this->dispatch('correct-answer');
-                    $this->dispatch('draw-correct-arrow', [
-                        'startKey' => $selectedKey,
-                        'endKey' => $this->selectedText
-                    ]);
+        // Ekstrak kategori dari item yang dipilih.
+        $imageCategory = explode('_', $this->selectedImage)[0];
+        $textCategory = explode('_', $this->selectedText)[0];
 
+        // --- LANGKAH 1: Cek apakah pasangan SAAT INI adalah jawaban yang benar ---
+        if ($imageCategory === $textCategory && $imageCategory === $this->currentGameCategory) {
 
-                    if (count($this->correctPairs) >= count($this->currentGameCorrectKeys)) {
-                        if (!in_array($this->activeObjectName, $this->answeredObjects)) {
-                            $this->answeredObjects[] = $this->activeObjectName;
-                        }
+            // Jika benar, langsung proses dan selesaikan.
+            $this->correctPairs[$this->selectedImage] = $this->selectedText;
+            $this->dispatch('correct-answer');
+            $this->dispatch('draw-correct-arrow', [
+                'startKey' => $this->selectedImage,
+                'endKey' => $this->selectedText
+            ]);
 
-                        $progress = session('game_progress', []);
-                        $progress[$this->levelId]['answered_objects'] = $this->answeredObjects;
-                        session(['game_progress' => $progress]);
-
-                        $this->dispatch('show-notification', message: 'Hebat, kamu berhasil!', type: 'success');
-                        sleep(1);
-                        $this->closeModalAndCheckCompletion();
-                    }
-                } else {
-                    $this->dispatch('incorrect-answer');
-                    $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
-                }
+            // Cek kondisi kemenangan.
+            if (count($this->correctPairs) >= 2) {
+                $this->isQuestionComplete = true;
+                $this->js("setTimeout(() => { Livewire.dispatch('completeCurrentQuestion') }, 500)");
             } else {
-                $this->dispatch('incorrect-answer');
-                $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
+                $this->dispatch('show-notification', message: 'Pasangan benar!', type: 'success');
             }
         } else {
-            if ($this->selectedImage && $this->selectedText) {
-                $this->dispatch('incorrect-answer');
+            // --- LANGKAH 2: Jika BUKAN jawaban benar, baru cari tahu alasannya ---
+
+            // Cek apakah salah satu item yang dipilih sudah menjadi bagian dari pasangan lain yang sudah benar.
+            $isImageAlreadyPaired = isset($this->correctPairs[$this->selectedImage]);
+            $isTextAlreadyPaired = in_array($this->selectedText, $this->correctPairs);
+
+            if ($isImageAlreadyPaired || $isTextAlreadyPaired) {
+                // Jika ya, beri tahu user bahwa item ini tidak bisa digunakan lagi.
+                $this->dispatch('show-notification', message: 'Item ini sudah punya pasangan yang benar.', type: 'error');
+            } else {
+                // Jika tidak, berarti ini hanya tebakan yang salah.
                 $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
             }
+
+            $this->dispatch('incorrect-answer');
         }
+
+        // --- LANGKAH 3: Selalu reset pilihan setelah setiap percobaan (benar atau salah) ---
+        $this->resetSelection();
+    }
+
+    /**
+     * Method untuk menyelesaikan soal
+     */
+    #[On('completeCurrentQuestion')]
+    public function completeQuestion()
+    {
+        if (!in_array($this->activeObjectName, $this->answeredObjects)) {
+            $this->answeredObjects[] = $this->activeObjectName;
+        }
+
+        $progress = session('game_progress', []);
+        $progress[$this->levelId]['answered_objects'] = $this->answeredObjects;
+        session(['game_progress' => $progress]);
+
+        $this->dispatch('show-notification', message: 'Hebat, semua pasangan ditemukan!', type: 'success');
+
+        // Tunggu sebentar agar notifikasi terbaca, lalu tutup modal.
+        $this->js("setTimeout(() => { Livewire.dispatch('closeModalAndCheck') }, 1200)");
+    }
+
+    /**
+     * Reset selected image and text
+     */
+    public function resetSelection()
+    {
         $this->selectedImage = null;
         $this->selectedText = null;
     }
 
-    // (BARU): Ini akan dipanggil setelah Livewire me-render, untuk menggambar ulang panah
-    public function hydrate()
+    /**
+     * Dipanggil setelah Livewire selesai update DOM
+     */
+    public function updated($property)
     {
-        if (!empty($this->correctPairs) && $this->levelId == 2) {
+        // Jika yang berubah adalah correctPairs, pastikan panah digambar ulang
+        if ($property === 'correctPairs' && $this->levelId == 2) {
+            $this->dispatch('redraw-all-arrows');
+        }
+    }
+
+    /**
+     * Method khusus untuk menggambar ulang semua panah
+     */
+    public function redrawArrows()
+    {
+        if ($this->levelId == 2 && !empty($this->correctPairs)) {
             foreach ($this->correctPairs as $imgKey => $txtKey) {
                 $this->dispatch('draw-correct-arrow', [
                     'startKey' => $imgKey,
@@ -654,6 +704,13 @@ class LevelPlayer extends Component
                     'initialLoad' => true
                 ]);
             }
+        }
+    }
+
+    public function hydrate()
+    {
+        if ($this->levelId == 2) {
+            $this->redrawArrows();
         }
     }
 
@@ -703,6 +760,7 @@ class LevelPlayer extends Component
     /**
      * Menutup modal pertanyaan dan langsung memeriksa apakah level sudah selesai.
      */
+    #[On('closeModalAndCheck')]
     public function closeModalAndCheckCompletion()
     {
         $this->closeModal();

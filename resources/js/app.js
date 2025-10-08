@@ -1,20 +1,22 @@
 import './bootstrap';
 
-// --- Elemen Audio Global ---
+/**
+ * ----------------------------------------------------------------
+ * PENGELOLAAN AUDIO GLOBAL
+ * ----------------------------------------------------------------
+ * Mengelola semua elemen audio dan status mute/unmute.
+ */
 const bgMusic = document.getElementById('background-music');
 const correctSound = document.getElementById('correct-answer-sound');
 const incorrectSound = document.getElementById('incorrect-answer-sound');
 const clickSound = document.getElementById('click-sound');
 
-// --- State Audio ---
 let isMuted = localStorage.getItem('isMuted') === 'true';
 let hasInteracted = false;
 
-// --- Fungsi Pengontrol Audio ---
-
 /**
  * Mengatur status mute/unmute untuk semua suara dan menyimpannya.
- * @param {boolean} muted
+ * @param {boolean} muted Status mute yang baru.
  */
 function setMuted(muted) {
     isMuted = muted;
@@ -24,7 +26,7 @@ function setMuted(muted) {
 
 /**
  * Memainkan elemen suara jika tidak dalam mode mute.
- * @param {HTMLAudioElement} soundElement
+ * @param {HTMLAudioElement} soundElement Elemen audio yang akan dimainkan.
  */
 function playSound(soundElement) {
     if (!isMuted && soundElement) {
@@ -33,43 +35,34 @@ function playSound(soundElement) {
     }
 }
 
-// --- Inisialisasi dan Event Listener Utama ---
-
-// 1. Atur status mute segera setelah skrip dimuat
+// Inisialisasi status mute saat halaman dimuat.
 setMuted(isMuted);
 
-// 2. Mainkan musik latar HANYA pada interaksi pertama user dengan halaman
+// Mainkan musik latar pada interaksi pertama pengguna untuk mematuhi kebijakan autoplay browser.
 document.body.addEventListener('click', () => {
     if (!hasInteracted && bgMusic && bgMusic.paused) {
         hasInteracted = true;
         bgMusic.play().catch(e => console.error("Autoplay musik dicegah oleh browser."));
     }
-}, { once: true }); // Opsi { once: true } memastikan ini hanya berjalan sekali
+}, { once: true });
 
-// 3. EVENT DELEGATION: Satu listener utama untuk menangani semua klik
+// Menggunakan event delegation untuk menangani semua klik pada tombol secara efisien.
 document.addEventListener('click', function (event) {
-    // Cari elemen <button> atau <a> terdekat dari elemen yang diklik (event.target)
-    // Ini penting agar suara tetap berbunyi meskipun yang diklik adalah <img> di dalam <button>
+    // Cari elemen interaktif terdekat (button atau link) dari target klik.
     const button = event.target.closest('button, a');
-
-    // Jika yang diklik bukan bagian dari sebuah tombol atau link, hentikan fungsi
     if (!button) {
         return;
     }
 
-    // Cek apakah ini tombol volume
     const isVolumeButton = button.querySelector('img[alt="Volume"]');
-
     if (isVolumeButton) {
-        // Jika ya, atur status mute dan jangan mainkan suara klik
         setMuted(!isMuted);
     } else {
-        // Jika tidak, mainkan suara klik untuk semua tombol lainnya
         playSound(clickSound);
     }
 });
 
-// 4. Listener global untuk efek suara dari event Livewire (tidak berubah)
+// Listener global untuk efek suara dari event Livewire (tidak berubah)
 Livewire.on('correct-answer', () => playSound(correctSound));
 Livewire.on('incorrect-answer', () => playSound(incorrectSound));
 
@@ -82,19 +75,17 @@ function showNotification(message, type = 'success') {
     const container = document.getElementById('notification-container');
     if (!container) return;
 
-    // -- Cek duplikat dan hapus jika ada --
+    // Hapus notifikasi duplikat yang mungkin masih ada.
     const existingNotif = container.querySelector(`[data-message="${message}"]`);
     if (existingNotif) {
         existingNotif.remove();
     }
 
-    // -- Buat notifikasi baru --
     const notification = document.createElement('div');
     notification.setAttribute('data-message', message);
 
     const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
     notification.className = `p-4 mb-2 text-white ${bgColor} rounded-lg shadow-lg transition-all duration-300 ease-in-out transform translate-x-full opacity-0 relative flex items-center justify-between min-w-[250px] max-w-sm`;
-
     notification.innerHTML = `
         <span class="mr-4">${message}</span>
         <button class="flex-shrink-0 text-white hover:text-gray-100 focus:outline-none" aria-label="Close">
@@ -102,19 +93,18 @@ function showNotification(message, type = 'success') {
         </button>
     `;
 
-    // -- Tambahkan di paling atas container --
+    // Tambahkan notifikasi baru di bagian atas container.
     if (container.firstChild) {
         container.insertBefore(notification, container.firstChild);
     } else {
         container.appendChild(notification);
     }
 
-    // -- Animasi masuk langsung --
     requestAnimationFrame(() => {
         notification.classList.remove('translate-x-full', 'opacity-0');
     });
 
-    // -- Auto dismiss --
+    // Atur notifikasi untuk hilang secara otomatis.
     const dismissTimeout = setTimeout(() => {
         if (notification.parentElement) {
             notification.classList.add('translate-x-full', 'opacity-0');
@@ -122,14 +112,14 @@ function showNotification(message, type = 'success') {
         }
     }, 1000);
 
-    // -- Tombol close --
+    // Tambahkan fungsionalitas pada tombol close.
     notification.querySelector('button').addEventListener('click', () => {
         clearTimeout(dismissTimeout);
         notification.classList.add('translate-x-full', 'opacity-0');
         notification.addEventListener('transitionend', () => notification.remove(), { once: true });
     });
 
-    // -- Batasi maksimal 3 notifikasi --
+    // Batasi jumlah notifikasi yang ditampilkan menjadi maksimal 3.
     const allNotifications = container.querySelectorAll('div');
     if (allNotifications.length > 3) {
         const oldestNotification = allNotifications[allNotifications.length - 1];
@@ -138,7 +128,7 @@ function showNotification(message, type = 'success') {
     }
 }
 
-// Listener ini sudah benar, akan meneruskan 'type' dengan benar.
+// Listener untuk event notifikasi dari Livewire.
 Livewire.on('show-notification', ({ message, type }) => {
     if (message) {
         showNotification(message, type);
@@ -147,7 +137,11 @@ Livewire.on('show-notification', ({ message, type }) => {
 
 document.addEventListener('livewire:initialized', () => {
 
-    // --- FUNGSI PROGRES GAME ---
+    /**
+     * ----------------------------------------------------------------
+     * MANAJEMEN PROGRES GAME (LOCAL STORAGE)
+     * ----------------------------------------------------------------
+     */
     if (document.querySelector('livewire\\:home-page')) {
         const savedProgress = JSON.parse(localStorage.getItem('gameProgress'));
         if (savedProgress) {
@@ -164,6 +158,12 @@ document.addEventListener('livewire:initialized', () => {
         }
     });
 
+    /**
+     * ----------------------------------------------------------------
+     * LOGIKA GAME MENJODOHKAN (LEVEL 2) - PENGGAMBARAN PANAH
+     * ----------------------------------------------------------------
+     */
+
     let drawnArrows = new Map();
 
     Livewire.on('clear-arrows', () => {
@@ -173,14 +173,14 @@ document.addEventListener('livewire:initialized', () => {
         }
     });
 
+    // Observer untuk mendeteksi kapan canvas panah muncul atau hilang dari DOM.
     const observer = new MutationObserver((mutations) => {
         const canvas = document.getElementById('arrow-canvas');
         if (canvas && !canvas.getAttribute('data-initialized')) {
-            console.log('Canvas ditemukan, menginisialisasi...');
             initializeArrowCanvas(canvas, drawnArrows);
             canvas.setAttribute('data-initialized', 'true');
 
-            // Coba gambar ulang setelah inisialisasi
+            // Gambar ulang panah yang sudah ada setelah inisialisasi.
             setTimeout(() => {
                 if (window.redrawAllCorrectArrows) {
                     window.redrawAllCorrectArrows();
@@ -190,7 +190,6 @@ document.addEventListener('livewire:initialized', () => {
             const oldCanvas = document.querySelector('[data-initialized="true"]');
             if (oldCanvas) {
                 oldCanvas.removeAttribute('data-initialized');
-                console.log('Canvas dihapus, reset initialized state');
             }
         }
     });
@@ -207,11 +206,9 @@ document.addEventListener('livewire:initialized', () => {
         }
     });
 
-    // Tambahkan event listener untuk redraw semua panah
     Livewire.on('redraw-all-arrows', () => {
         const canvas = document.getElementById('arrow-canvas');
         if (canvas && window.redrawAllCorrectArrows) {
-            console.log('Redraw semua panah dipanggil');
             window.redrawAllCorrectArrows();
         }
     });
@@ -227,7 +224,6 @@ document.addEventListener('livewire:initialized', () => {
         let startImageElement = null;
         let currentTargetTextElement = null;
 
-        // --- FUNGSI BANTU ---
         const getElementStartPoint = (el) => {
             const rect = el.getBoundingClientRect();
             const canvasRect = canvas.getBoundingClientRect();
@@ -268,28 +264,22 @@ document.addEventListener('livewire:initialized', () => {
 
         const redrawAllCorrectArrows = () => {
             if (!canvas) {
-                console.log('Canvas tidak ditemukan');
                 return;
             }
 
             try {
-                // Clear canvas terlebih dahulu
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // Pastikan canvas size sesuai
                 if (canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
                     canvas.width = canvas.offsetWidth;
                     canvas.height = canvas.offsetHeight;
                 }
 
-                console.log('Menggambar ulang', drawnArrows.size, 'panah');
-
-                // Gambar ulang semua panah yang benar
+                // Gambar ulang semua panah yang sudah benar dan tersimpan.
                 drawnArrows.forEach((arrowData, key) => {
                     const startEl = arrowData.startEl;
                     const endEl = arrowData.endEl;
 
-                    // Pastikan elemen masih ada di DOM dan terlihat
                     if (!startEl || !endEl || !document.contains(startEl) || !document.contains(endEl)) {
                         console.log('Menghapus panah untuk elemen yang tidak ditemukan:', key);
                         drawnArrows.delete(key);
@@ -330,20 +320,17 @@ document.addEventListener('livewire:initialized', () => {
             const endEl = document.querySelector(`.matching-text[data-key="${endKey}"]`);
 
             if (startEl && endEl) {
-                // Logika Anda untuk menambahkan style, ini sudah benar
                 startEl.classList.add('correct-paired');
                 endEl.classList.add('correct-paired');
                 endEl.classList.remove('bg-yellow-100', 'border-yellow-700', 'hover:border-blue-400');
                 endEl.classList.add('bg-green-200', 'border-green-500');
 
-                // Simpan ke memori visual, ini sudah benar
                 drawnArrows.set(`${startKey}-${endKey}`, {
                     startEl: startEl,
                     endEl: endEl,
                     color: '#10B981'
                 });
 
-                // Pastikan canvas di-redraw untuk menampilkan panah
                 setTimeout(() => {
                     redrawAllCorrectArrows();
                 }, 0);
@@ -355,32 +342,25 @@ document.addEventListener('livewire:initialized', () => {
             }
         };
 
-        // --- FUNGSI UTAMA DRAG AND DROP ---
         const handleDragStart = (e) => {
-            // Prevent default untuk mencegah behavior browser yang tidak diinginkan
             if (e.type === 'touchstart') {
                 e.preventDefault();
             }
 
             let startElement = e.target;
 
-            // Untuk touch, dapatkan elemen dari titik sentuh
             if (e.type === 'touchstart') {
                 const touch = e.touches[0];
                 startElement = document.elementFromPoint(touch.clientX, touch.clientY);
             }
 
-            if (startElement && startElement.classList.contains('matching-image') &&
-                !startElement.classList.contains('correct-paired')) {
+            if (startElement && startElement.classList.contains('matching-image') && !startElement.classList.contains('correct-paired')) {
                 isDrawing = true;
                 startImageElement = startElement;
 
-                // **PERBAIKAN: Langsung aktifkan state drag untuk touch**
                 startImageElement.classList.add('border-blue-400', 'border-opacity-100', 'active-drag-source');
                 startImageElement.classList.remove('hover:border-blue-400');
                 canvas.style.pointerEvents = 'auto';
-
-                // **PERBAIKAN: Untuk touch, langsung panggil handleDragMove dengan posisi awal**
                 if (e.type === 'touchstart') {
                     const touch = e.touches[0];
                     handleDragMove({
@@ -401,8 +381,6 @@ document.addEventListener('livewire:initialized', () => {
 
         const handleDragMove = (e) => {
             if (!isDrawing) return;
-
-            // **PERBAIKAN: Selalu prevent default untuk touchmove**
             if (e.type === 'touchmove') {
                 e.preventDefault();
             }
@@ -424,12 +402,9 @@ document.addEventListener('livewire:initialized', () => {
             let endX = currentX - canvasRect.left;
             let endY = currentY - canvasRect.top;
 
-            // **PERBAIKAN: Optimasi deteksi target untuk performa touch yang lebih baik**
             targetTextElements.forEach(el => {
                 const rect = el.getBoundingClientRect();
-
-                // **PERBAIKAN: Gunakan area yang sedikit lebih besar untuk touch**
-                const tolerance = 10; // 10px tolerance untuk touch
+                const tolerance = 10;
                 if (currentX >= rect.left - tolerance && currentX <= rect.right + tolerance &&
                     currentY >= rect.top - tolerance && currentY <= rect.bottom + tolerance) {
 
@@ -455,12 +430,10 @@ document.addEventListener('livewire:initialized', () => {
                 currentTargetTextElement.classList.add('hover:border-blue-400');
                 currentTargetTextElement = null;
 
-                // **PERBAIKAN: Jika tidak ada target, gunakan posisi touch langsung**
                 endX = currentX - canvasRect.left;
                 endY = currentY - canvasRect.top;
             }
 
-            // **PERBAIKAN: Optimasi performa - hanya resize canvas jika diperlukan**
             if (canvas.width !== canvas.offsetWidth || canvas.height !== canvas.offsetHeight) {
                 canvas.width = canvas.offsetWidth;
                 canvas.height = canvas.offsetHeight;
@@ -492,10 +465,8 @@ document.addEventListener('livewire:initialized', () => {
                 endY = e.clientY;
             }
 
-            // **PERBAIKAN: Gunakan currentTargetTextElement yang sudah disimpan**
             let endElement = currentTargetTextElement;
 
-            // **PERBAIKAN: Fallback untuk touch - cari elemen dengan tolerance yang lebih besar**
             if (!endElement) {
                 const elements = document.elementsFromPoint(endX, endY);
                 endElement = elements.find(el => el.classList.contains('matching-text'));
@@ -542,7 +513,6 @@ document.addEventListener('livewire:initialized', () => {
             redrawAllCorrectArrows();
         };
 
-        // **PERBAIKAN: Fungsi global untuk touch events**
         const handleGlobalTouchMove = (e) => {
             if (isDrawing) {
                 handleDragMove(e);
@@ -555,8 +525,7 @@ document.addEventListener('livewire:initialized', () => {
             }
         };
 
-        // --- SETUP EVENT LISTENER ---
-        // Hapus listener lama
+        // Hapus listener lama untuk mencegah duplikasi.
         imageOptions.removeEventListener('mousedown', handleDragStart);
         document.removeEventListener('mousemove', handleDragMove);
         document.removeEventListener('mouseup', handleDragEnd);
@@ -564,14 +533,11 @@ document.addEventListener('livewire:initialized', () => {
         document.removeEventListener('touchmove', handleDragMove);
         document.removeEventListener('touchend', handleDragEnd);
 
-        // 1. Daftarkan event 'start' (mousedown/touchstart) pada container gambar.
-        //    Ini adalah titik awal interaksi.
+        // Daftarkan event 'start' pada container gambar.
         imageOptions.addEventListener('mousedown', handleDragStart);
         imageOptions.addEventListener('touchstart', handleDragStart, { passive: false });
 
-        // 2. Daftarkan event 'move' dan 'end' pada 'document'.
-        //    Ini memastikan aksi tetap terlacak bahkan jika kursor/jari keluar dari
-        //    area canvas atau imageOptions. Inilah yang membuat perilakunya andal.
+        // Daftarkan event 'move' dan 'end' pada document untuk melacak pergerakan di mana saja.
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('mouseup', handleDragEnd);
         document.addEventListener('touchmove', handleDragMove, { passive: false });

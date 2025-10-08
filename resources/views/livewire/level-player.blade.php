@@ -1,6 +1,6 @@
 <div class="bg-gray-800 min-h-screen flex items-center justify-center overflow-hidden">
     <div class="relative w-full max-h-full aspect-video">
-        {{-- Latar Belakang Game --}}
+        {{-- Latar Belakang Level --}}
         <img src="{{ $backgroundUrl }}" class="absolute top-0 left-0 w-full h-full object-cover z-0">
 
         {{-- Objek Interaktif --}}
@@ -15,7 +15,7 @@
             </button>
         @endforeach
 
-        {{-- Tombol UI Game --}}
+        {{-- Tombol UI Global (Volume & Kembali) --}}
         <div class="absolute top-[4%] right-[1%] flex gap-[4%] z-20 w-[15%]">
             <button class="w-[60%] hover:scale-110 transition-transform">
                 <img src="{{ asset('images/home/volume-button.svg') }}" alt="Volume">
@@ -25,12 +25,12 @@
             </button>
         </div>
 
-        {{-- Overlay dan Popup --}}
+        {{-- Overlay gelap saat popup aktif --}}
         @if ($viewState !== 'playing' || $showQuestionModal)
             <div class="absolute inset-0 bg-black bg-opacity-50 z-30"></div>
         @endif
 
-        {{-- STATE 1: POPUP ATURAN AWAL --}}
+        {{-- Tampilan: Popup Aturan --}}
         @if ($viewState === 'rules_popup')
             <div class="absolute inset-0 w-full h-full flex items-center justify-center z-40">
                 <div class="relative w-[50%] aspect-[4/3]">
@@ -61,18 +61,15 @@
             </div>
         @endif
 
-        {{-- POPUP SOAL (di dalam state 'playing') --}}
+        {{-- Tampilan: Popup Pertanyaan (Semua Level) --}}
         @if ($showQuestionModal && $currentQuestion)
             <div class="absolute inset-0 flex items-center justify-center z-50">
                 @if ($levelId == 4)
+                    {{-- Tampilan Pertanyaan: Level 4 (Teka-Teki Silang) --}}
                     <div class="relative w-[70%] aspect-[4/3]">
-                        {{-- Gambar Papan Tulis sebagai Latar Belakang --}}
                         <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">
-
-                        {{-- Kontainer untuk elemen-elemen di atas gambar --}}
                         <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center">
 
-                            {{-- === BLOK TTS BARU YANG SUDAH DI-STYLING === --}}
                             <div
                                 class="absolute top-[80%] xs:top-[75%] tablet:top-[42%] lg:top-[48%] left-[32%] lg:left-1/2 -translate-x-1/2 -translate-y-1/2 xs:w-[80%] sm:w-[20%] tablet:w-[20%] lg:w-[60%]">
                                 <div class="inline-grid gap-1 w-full"
@@ -89,7 +86,7 @@
                                                 {{-- Area kosong --}}
                                                 <div class="w-full aspect-square bg-transparent"></div>
                                             @else
-                                                {{-- Kotak huruf yang benar (hanya w-full dan aspect-square) --}}
+                                                {{-- Kotak huruf --}}
                                                 <div
                                                     class="relative w-full aspect-square bg-white text-black text-center flex items-center justify-center font-bold rounded-sm">
                                                     @if ($clueNo)
@@ -104,7 +101,6 @@
                                     @endfor
                                 </div>
                             </div>
-                            {{-- === AKHIR BLOK TTS === --}}
 
                             {{-- Form Jawaban --}}
                             <div
@@ -128,16 +124,14 @@
                         </div>
                     </div>
                 @elseif ($levelId == 2)
+                    {{-- Tampilan Pertanyaan: Level 2 (Game Menjodohkan) --}}
                     <div class="relative w-[70%] aspect-[4/3]">
-                        {{-- Canvas untuk menggambar panah --}}
                         <canvas id="arrow-canvas"
                             class="absolute top-0 left-0 w-full h-full z-20 pointer-events-none"></canvas>
 
-                        {{-- Latar belakang pertanyaan --}}
                         <img src="{{ asset($currentQuestion['image']) }}" alt="Latar Belakang Pertanyaan"
                             class="w-full h-full">
 
-                        {{-- Lapisan (overlay) untuk konten mini-game --}}
                         <div class="absolute inset-0 flex justify-center items-center z-10">
                             <div class="w-[80%] h-[60%] mt-[8%] flex justify-between items-center gap-x-4 md:gap-x-8">
 
@@ -172,6 +166,7 @@
                         </div>
                     </div>
                 @else
+                    {{-- Tampilan Pertanyaan: Level 1 & 3 (Pilihan Ganda) --}}
                     <div class="relative w-[70%] aspect-[4/3]">
                         <img src="{{ asset($currentQuestion['image']) }}" class="w-full h-full object-contain">
                         <div class="absolute inset-0 flex flex-col items-center justify-end p-[12%]">
@@ -220,7 +215,7 @@
             </div>
         @endif
 
-        {{-- STATE 4: POPUP LEVEL SELESAI --}}
+        {{-- Tampilan: Popup Level Selesai --}}
         @if ($viewState === 'level_complete_popup')
             <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-40">
                 <div class="relative w-[50%] aspect-[4/3]">
@@ -261,6 +256,7 @@
             </div>
         @endif
 
+        {{-- Tampilan: Layar Refleksi (Khusus setelah Level 4) --}}
         @if ($viewState === 'reflection')
             <div class="absolute inset-0 w-full h-full flex flex-col items-center justify-center z-40">
                 <img src="{{ asset($reflectionPages[$currentReflectionPage]) }}" class="w-full h-full object-cover">

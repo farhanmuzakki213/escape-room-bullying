@@ -10,54 +10,98 @@ use Livewire\Attributes\On;
 class LevelPlayer extends Component
 {
     /**
-     * Properti utama untuk konfigurasi level.
+     * ID level yang sedang dimainkan.
      */
     public int $levelId;
+
+    /**
+     * Konfigurasi spesifik untuk level saat ini, diambil dari $levelData.
+     */
     public array $levelConfig;
+
+    /**
+     * URL gambar latar belakang untuk level saat ini.
+     */
     public string $backgroundUrl;
+
+    /**
+     * Menyimpan daftar nama objek yang pertanyaannya sudah dijawab dengan benar.
+     */
     public array $answeredObjects = [];
+
+    /**
+     * Memetakan objek interaktif ke pertanyaan secara acak untuk setiap sesi game.
+     */
     public array $questionMap = [];
 
     /**
-     * Properti untuk mengelola state Popup Soal.
+     * Mengontrol visibilitas modal/popup pertanyaan.
      */
     public bool $showQuestionModal = false;
+
+    /**
+     * Data pertanyaan yang sedang aktif ditampilkan di modal.
+     */
     public ?array $currentQuestion = null;
+
+    /**
+     * Pesan umpan balik (Benar/Salah) setelah menjawab pertanyaan.
+     */
     public ?string $feedbackMessage = null;
+
+    /**
+     * Nama objek yang sedang aktif (diklik) untuk menampilkan pertanyaan.
+     */
     public ?string $activeObjectName = null;
 
+    /**
+     * Mengontrol halaman/gambar aturan yang sedang ditampilkan.
+     */
     public int $currentRulesPage = 0;
+
+    /**
+     * Mengontrol halaman/gambar popup penyelesaian level yang sedang ditampilkan.
+     */
     public int $currentCompletionPage = 0;
 
     /**
-     * Properti untuk teka teki silang.
+     * Properti untuk game Teka-Teki Silang (Level 4).
      */
     public array $crosswordGrid = [];
     public int $rows = 0;
     public int $cols = 0;
     public array $clueNumbers = [];
     public array $wordData = [];
-    public array $filledAnswers = [];
     public string $userAnswer = '';
+
+    /**
+     * Jumlah total pertanyaan/objek yang harus diselesaikan di level ini.
+     */
     public int $totalQuestions = 0;
+
+    /**
+     * Status apakah pertanyaan saat ini (misal: TTS atau game menjodohkan) sudah selesai.
+     */
     public bool $isQuestionComplete = false;
 
     /**
-     * Properti STATE untuk mengelola alur di dalam level.
-     * Pilihan state: 'rules_popup', 'rules_background', 'playing', 'level_complete_popup'.
+     * Mengelola state tampilan utama dalam level.
+     * Pilihan: 'rules_popup', 'rules_background', 'playing', 'level_complete_popup', 'reflection'.
      */
     public string $viewState = 'rules_popup';
 
+    /**
+     * Properti untuk game Menjodohkan (Level 2).
+     */
     public $matchingGameItems = [];
     public $selectedImage = null;
     public $selectedText = null;
     public $correctPairs = [];
     public ?string $currentGameTitle = null;
-    public array $currentGameCorrectKeys = [];
     public ?string $currentGameCategory = null;
 
     /**
-     * Properti baru untuk alur refleksi.
+     * Properti untuk alur layar refleksi di akhir Level 4.
      */
     public int $currentReflectionPage = 1;
     public array $reflectionPages = [
@@ -400,7 +444,6 @@ class LevelPlayer extends Component
         }
 
         $this->answeredObjects = $progress[$this->levelId]['answered_objects'] ?? [];
-        $this->filledAnswers = $progress[$this->levelId]['filled_answers'] ?? [];
 
         if ($this->levelId === 2) {
             $this->totalQuestions = count($this->levelConfig['objects']);
@@ -431,22 +474,34 @@ class LevelPlayer extends Component
 
     // --- METODE NAVIGASI ALUR ---
 
+    /**
+     * Menampilkan latar belakang di balik popup aturan.
+     */
     public function showRulesBackground()
     {
         $this->viewState = 'rules_background';
     }
 
+    /**
+     * Memulai gameplay utama setelah melihat aturan.
+     */
     public function startGameplay()
     {
         $this->viewState = 'playing';
         $this->currentRulesPage = 0;
     }
 
+    /**
+     * Kembali ke popup aturan dari tampilan latar belakang aturan.
+     */
     public function backToRulesPopup()
     {
         $this->viewState = 'rules_popup';
     }
 
+    /**
+     * Kembali ke halaman Peta Misi.
+     */
     public function backToPetaMisi()
     {
         $this->dispatch('backToPetaMisi');
@@ -456,21 +511,18 @@ class LevelPlayer extends Component
 
 
     /**
-     * Dipanggil saat objek interaktif di dalam game diklik.
+     * Menangani event klik pada objek interaktif di dalam level.
+     * @param string $objectName Nama objek yang diklik.
      */
     public function objectClicked(string $objectName)
     {
         if (in_array($objectName, $this->answeredObjects)) {
             return;
         }
-
-        // ### LOGIKA BARU: Ambil pertanyaan dari peta acak ###
-        // Cek apakah ada pertanyaan yang dipetakan ke objek ini
         if (isset($this->questionMap[$objectName])) {
             $questionKey = $this->questionMap[$objectName];
             $this->currentQuestion = $this->levelConfig['questions'][$questionKey];
 
-            // Tambahkan 'answer' jika tidak ada, khusus untuk level 4
             if ($this->levelId === 4 && !isset($this->currentQuestion['answer'])) {
                 $this->currentQuestion['answer'] = $this->levelConfig['questions'][$questionKey]['answer'];
             }
@@ -487,31 +539,26 @@ class LevelPlayer extends Component
     }
 
     /**
-     * MENYEDERHANAKAN: Setup game untuk level 2 dengan pengecoh dari kategori lain
+     * Menyiapkan state untuk mini-game menjodohkan (Level 2).
+     * @param array $questionData Data pertanyaan yang berisi item-item yang benar.
      */
     public function setupMatchingGameForQuestion(array $questionData)
     {
         $this->isQuestionComplete = false;
         $this->dispatch('clear-arrows');
-        // Reset state
         $this->correctPairs = [];
         $this->selectedImage = null;
         $this->selectedText = null;
 
-        // Tentukan kategori dari soal
         $this->currentGameCategory = $questionData['category'];
 
-        // Ambil item benar dari soal
         $correctItems = $questionData['correct_items'];
         $correctKeys = array_keys($correctItems);
 
-        // Ambil 2 pengecoh dari kategori LAIN (bukan kategori soal)
         $distractors = $this->getDistractors($this->currentGameCategory, $correctKeys);
 
-        // Gabungkan item benar dan pengecoh
         $gameItems = array_merge($correctItems, $distractors);
 
-        // Pisahkan gambar dan teks
         $images = [];
         $texts = [];
 
@@ -520,7 +567,6 @@ class LevelPlayer extends Component
             $texts[$key] = $item['text'];
         }
 
-        // Acak urutan
         $imageKeys = array_keys($images);
         $textKeys = array_keys($texts);
         shuffle($imageKeys);
@@ -544,7 +590,10 @@ class LevelPlayer extends Component
     }
 
     /**
-     * DAPATKAN PENGEcoh DARI KATEGORI LAIN
+     * Mengambil item pengecoh untuk game menjodohkan dari kategori yang berbeda.
+     * @param string $currentCategory Kategori soal saat ini.
+     * @param array $excludeKeys Kunci item yang benar untuk dikecualikan.
+     * @return array Daftar item pengecoh.
      */
     private function getDistractors(string $currentCategory, array $excludeKeys = []): array
     {
@@ -556,20 +605,14 @@ class LevelPlayer extends Component
         shuffle($allKeys);
 
         foreach ($allKeys as $key) {
-            // Jika sudah cukup 2 pengecoh, berhenti
             if (count($distractors) >= 2) break;
 
-            // Ekstrak kategori dari key
             $itemCategory = explode('_', $key)[0];
 
-            // Skip jika:
-            // 1. Kategori sama dengan soal
-            // 2. Key termasuk dalam item benar yang sudah dipakai
             if ($itemCategory === $currentCategory || in_array($key, $excludeKeys)) {
                 continue;
             }
 
-            // Tambahkan sebagai pengecoh
             $distractors[$key] = $itemBank[$key];
         }
 
@@ -577,7 +620,9 @@ class LevelPlayer extends Component
     }
 
     /**
-     * MENYEDERHANAKAN: Method untuk menangani pemilihan item
+     * Menerima event 'itemSelected' dari JavaScript untuk game menjodohkan.
+     * @param string $type Tipe item ('image' atau 'text').
+     * @param string $key Kunci unik dari item yang dipilih.
      */
     #[On('itemSelected')]
     public function itemSelected($type, $key)
@@ -592,67 +637,54 @@ class LevelPlayer extends Component
             $this->selectedText = $key;
         }
 
-        // Jika kedua item sudah dipilih, periksa pasangan
         if ($this->selectedImage && $this->selectedText) {
             $this->checkPair();
         }
     }
 
     /**
-     * MENYEDERHANAKAN: Method untuk memeriksa pasangan
+     * Memeriksa apakah pasangan gambar dan teks yang dipilih benar untuk game menjodohkan.
      */
     public function checkPair()
     {
         if ($this->isQuestionComplete || !$this->selectedImage || !$this->selectedText) {
             return;
         }
-
-        // Ekstrak kategori dari item yang dipilih.
         $imageCategory = explode('_', $this->selectedImage)[0];
         $textCategory = explode('_', $this->selectedText)[0];
 
-        // --- LANGKAH 1: Cek apakah pasangan SAAT INI adalah jawaban yang benar ---
         if ($imageCategory === $textCategory && $imageCategory === $this->currentGameCategory) {
 
-            // Jika benar, langsung proses dan selesaikan.
-            $this->correctPairs[$this->selectedImage] = $this->selectedText;
-            $this->dispatch('correct-answer');
-            $this->dispatch('draw-correct-arrow', [
-                'startKey' => $this->selectedImage,
-                'endKey' => $this->selectedText
-            ]);
-
-            // Cek kondisi kemenangan.
-            if (count($this->correctPairs) >= 2) {
-                $this->isQuestionComplete = true;
-                $this->js("setTimeout(() => { Livewire.dispatch('completeCurrentQuestion') }, 500)");
-            } else {
-                $this->dispatch('show-notification', message: 'Pasangan benar!', type: 'success');
-            }
-        } else {
-            // --- LANGKAH 2: Jika BUKAN jawaban benar, baru cari tahu alasannya ---
-
-            // Cek apakah salah satu item yang dipilih sudah menjadi bagian dari pasangan lain yang sudah benar.
             $isImageAlreadyPaired = isset($this->correctPairs[$this->selectedImage]);
             $isTextAlreadyPaired = in_array($this->selectedText, $this->correctPairs);
 
             if ($isImageAlreadyPaired || $isTextAlreadyPaired) {
-                // Jika ya, beri tahu user bahwa item ini tidak bisa digunakan lagi.
                 $this->dispatch('show-notification', message: 'Item ini sudah punya pasangan yang benar.', type: 'error');
+                $this->dispatch('incorrect-answer');
             } else {
-                // Jika tidak, berarti ini hanya tebakan yang salah.
-                $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
-            }
+                $this->correctPairs[$this->selectedImage] = $this->selectedText;
+                $this->dispatch('correct-answer');
+                $this->dispatch('draw-correct-arrow', [
+                    'startKey' => $this->selectedImage,
+                    'endKey' => $this->selectedText
+                ]);
 
+                if (count($this->correctPairs) >= 2) {
+                    $this->isQuestionComplete = true;
+                    $this->js("setTimeout(() => { Livewire.dispatch('completeCurrentQuestion') }, 500)");
+                } else {
+                    $this->dispatch('show-notification', message: 'Pasangan benar!', type: 'success');
+                }
+            }
+        } else {
+            $this->dispatch('show-notification', message: 'Pasangan kurang tepat, coba lagi.', type: 'error');
             $this->dispatch('incorrect-answer');
         }
-
-        // --- LANGKAH 3: Selalu reset pilihan setelah setiap percobaan (benar atau salah) ---
         $this->resetSelection();
     }
 
     /**
-     * Method untuk menyelesaikan soal
+     * Menyelesaikan pertanyaan game menjodohkan saat ini.
      */
     #[On('completeCurrentQuestion')]
     public function completeQuestion()
@@ -667,12 +699,11 @@ class LevelPlayer extends Component
 
         $this->dispatch('show-notification', message: 'Hebat, semua pasangan ditemukan!', type: 'success');
 
-        // Tunggu sebentar agar notifikasi terbaca, lalu tutup modal.
         $this->js("setTimeout(() => { Livewire.dispatch('closeModalAndCheck') }, 1200)");
     }
 
     /**
-     * Reset selected image and text
+     * Mereset pilihan gambar dan teks pada game menjodohkan.
      */
     public function resetSelection()
     {
@@ -681,18 +712,17 @@ class LevelPlayer extends Component
     }
 
     /**
-     * Dipanggil setelah Livewire selesai update DOM
+     * Livewire hook yang dipanggil setelah properti diupdate.
      */
     public function updated($property)
     {
-        // Jika yang berubah adalah correctPairs, pastikan panah digambar ulang
         if ($property === 'correctPairs' && $this->levelId == 2) {
             $this->dispatch('redraw-all-arrows');
         }
     }
 
     /**
-     * Method khusus untuk menggambar ulang semua panah
+     * Memicu event JavaScript untuk menggambar ulang semua panah yang sudah benar.
      */
     public function redrawArrows()
     {
@@ -707,6 +737,9 @@ class LevelPlayer extends Component
         }
     }
 
+    /**
+     * Livewire hook yang dipanggil saat komponen di-hydrate (misal: setelah request).
+     */
     public function hydrate()
     {
         if ($this->levelId == 2) {
@@ -716,6 +749,7 @@ class LevelPlayer extends Component
 
     /**
      * Memproses pilihan jawaban dari pemain.
+     * @param string $selectedOption Pilihan jawaban (misal: 'a', 'b', 'c').
      */
     public function selectAnswer(string $selectedOption)
     {
@@ -744,7 +778,7 @@ class LevelPlayer extends Component
     }
 
     /**
-     * Menutup modal selesai dan langsung menuju peta misi.
+     * Menyelesaikan level dan melanjutkan alur game.
      */
     public function completeLevelAndExit()
     {
@@ -758,7 +792,7 @@ class LevelPlayer extends Component
     }
 
     /**
-     * Menutup modal pertanyaan dan langsung memeriksa apakah level sudah selesai.
+     * Menutup modal pertanyaan dan memeriksa status penyelesaian level.
      */
     #[On('closeModalAndCheck')]
     public function closeModalAndCheckCompletion()
@@ -790,7 +824,9 @@ class LevelPlayer extends Component
         $this->feedbackMessage = null;
     }
 
-
+    /**
+     * Menampilkan halaman berikutnya pada popup penyelesaian level.
+     */
     public function showNextCompletionPage()
     {
         $completionBoards = $this->levelConfig['assets']['completion_boards'];
@@ -799,6 +835,9 @@ class LevelPlayer extends Component
         }
     }
 
+    /**
+     * Menampilkan halaman sebelumnya pada popup penyelesaian level.
+     */
     public function showPreviousCompletionPage()
     {
         if ($this->currentCompletionPage > 0) {
@@ -806,6 +845,9 @@ class LevelPlayer extends Component
         }
     }
 
+    /**
+     * Menampilkan halaman aturan berikutnya atau memulai game jika sudah di halaman terakhir.
+     */
     public function showNextRule()
     {
         $rulesBoards = $this->levelConfig['assets']['rules_boards'];
@@ -816,6 +858,9 @@ class LevelPlayer extends Component
         }
     }
 
+    /**
+     * Menampilkan halaman aturan sebelumnya.
+     */
     public function showPreviousRule()
     {
         if ($this->currentRulesPage > 0) {
@@ -824,7 +869,7 @@ class LevelPlayer extends Component
     }
 
     /**
-     * **NEW:** Navigasi ke halaman refleksi berikutnya.
+     * Navigasi ke halaman refleksi berikutnya atau menyelesaikan level jika sudah di halaman terakhir.
      */
     public function nextReflectionPage()
     {
@@ -837,7 +882,7 @@ class LevelPlayer extends Component
     }
 
     /**
-     * **NEW:** Navigasi ke halaman refleksi sebelumnya.
+     * Navigasi ke halaman refleksi sebelumnya.
      */
     public function previousReflectionPage()
     {
@@ -846,6 +891,9 @@ class LevelPlayer extends Component
         }
     }
 
+    /**
+     * Menginisialisasi grid dan data untuk game Teka-Teki Silang (Level 4).
+     */
     public function initializeTts()
     {
         $words = [
@@ -925,6 +973,9 @@ class LevelPlayer extends Component
         $this->crosswordGrid = $grid;
     }
 
+    /**
+     * Memproses jawaban yang dikirimkan pemain untuk game Teka-Teki Silang.
+     */
     public function submitTtsAnswer()
     {
         if (!$this->currentQuestion) return;
@@ -935,13 +986,10 @@ class LevelPlayer extends Component
         if ($submittedAnswer === $correctAnswer) {
             if (!in_array($this->activeObjectName, $this->answeredObjects)) {
                 $this->answeredObjects[] = $this->activeObjectName;
-                $this->filledAnswers[] = $correctAnswer;
             }
 
-            // Simpan progres ke session
             $progress = session('game_progress', []);
             $progress[$this->levelId]['answered_objects'] = $this->answeredObjects;
-            $progress[$this->levelId]['filled_answers'] = $this->filledAnswers;
             session(['game_progress' => $progress]);
 
             $this->fillWordInGrid($correctAnswer);
@@ -954,6 +1002,10 @@ class LevelPlayer extends Component
         }
     }
 
+    /**
+     * Mengisi huruf-huruf dari kata yang benar ke dalam grid Teka-Teki Silang.
+     * @param string $word Kata yang akan diisi.
+     */
     public function fillWordInGrid(string $word)
     {
         $word = strtolower($word);
@@ -966,13 +1018,11 @@ class LevelPlayer extends Component
         foreach ($letters as $i => $letter) {
             if ($data['dir'] === 'H') {
                 $this->crosswordGrid[$row][$col + $i] = strtoupper($letter);
-            } else { // 'V'
+            } else {
                 $this->crosswordGrid[$row + $i][$col] = strtoupper($letter);
             }
         }
     }
-
-
 
     /**
      * Merender view komponen.

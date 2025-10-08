@@ -1,4 +1,3 @@
-{{-- resources/views/livewire/home-page.blade.php --}}
 <div class="bg-gray-800 min-h-screen flex items-center justify-center">
 
     {{-- Aspect Ratio Container: "Kanvas" utama yang menjaga proporsi semua elemen --}}
@@ -33,8 +32,7 @@
 
         @if ($showContinuePopup)
             <div class="absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-                {{-- Anda bisa mengganti div ini dengan gambar papan/background pop-up jika ada --}}
-                <div class="bg-gray-800/80 border-4 border-yellow-300 rounded-2xl p-8 text-white text-center flex flex-col items-center justify-center w-1/3">
+                <div class="bg-gray-800/80 border-4 border-yellow-300 rounded-2xl p-8 text-white text-center flex flex-col items-center justify-center w-1/3" role="dialog" aria-modal="true" aria-labelledby="continue-popup-title">
 
                     <h2 class="text-3xl font-bold mb-4 text-yellow-300">Permainan Ditemukan!</h2>
 

@@ -52,7 +52,8 @@ class GameManager extends Component
         'showHelp' => 'showHelpScreen',
         'hideHelp' => 'hideHelpScreen',
         'showProfile' => 'showProfileScreen',
-        'hideProfile' => 'hideProfileScreen'
+        'hideProfile' => 'hideProfileScreen',
+        'finishStartSequence' => 'showPetaMisi'
     ];
 
     /**
@@ -117,13 +118,12 @@ class GameManager extends Component
 
         if (!empty($progress) && isset($progress['unlockedLevel'])) {
             $this->unlockedLevel = $progress['unlockedLevel'];
-            $this->currentView = 'peta_misi';
         } else {
             $this->currentView = 'home';
         }
 
-        $this->currentView = 'level';
-        $this->currentLevel = '4';
+        $this->currentView = 'start_sequence';
+        // $this->currentLevel = '4';
     }
 
     /**
@@ -136,7 +136,8 @@ class GameManager extends Component
         $this->dispatch('clear-local-storage');
         $this->unlockedLevel = 1;
         $this->gameProgress = [];
-        $this->showPetaMisi();
+        $this->currentView = 'start_sequence';
+        $this->currentLevel = null;
     }
 
     /**
@@ -147,6 +148,14 @@ class GameManager extends Component
      */
     public function continueGame(array $progress)
     {
+        // Memuat progres dari session jika ada
+        $progress = session('game_progress', []);
+        $this->gameProgress = $progress;
+
+        if (!empty($progress) && isset($progress['unlockedLevel'])) {
+            $this->unlockedLevel = $progress['unlockedLevel'];
+        }
+
         $this->showPetaMisi();
     }
 

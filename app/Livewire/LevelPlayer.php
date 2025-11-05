@@ -15,6 +15,26 @@ class LevelPlayer extends Component
     public int $levelId;
 
     /**
+     * Mengontrol visibilitas popup aturan di awal level.
+     */
+    public bool $showRulesPopup = true;
+
+    /**
+     * Mengontrol visibilitas popup "Waktu Habis".
+     */
+    public bool $showTimesUpPopup = false;
+
+    /**
+     * Sisa waktu dalam detik. (2 Menit = 120 Detik).
+     */
+    public int $timeLeft = 120;
+
+    /**
+     * Status apakah timer sedang berjalan atau tidak.
+     */
+    public bool $timerRunning = false;
+
+    /**
      * Konfigurasi spesifik untuk level saat ini, diambil dari $levelData.
      */
     public array $levelConfig;
@@ -458,12 +478,16 @@ class LevelPlayer extends Component
             $this->viewState = 'playing';
         }
 
-        if (env('APP_ENV') == 'local') {
-            $this->viewState = 'playing';
-        }
+        // if (env('APP_ENV') == 'local') {
+        //     $this->viewState = 'playing';
+        // }
 
         if ($this->levelId == 2) {
             $this->redrawArrows();
+        }
+
+        if ($this->viewState === 'playing') {
+            $this->timerRunning = true;
         }
     }
 
@@ -484,6 +508,7 @@ class LevelPlayer extends Component
     {
         $this->viewState = 'playing';
         $this->currentRulesPage = 0;
+        $this->timerRunning = true;
     }
 
     /**
@@ -499,11 +524,43 @@ class LevelPlayer extends Component
      */
     public function backToPetaMisi()
     {
+        $this->timerRunning = false;
         $this->dispatch('backToPetaMisi');
     }
 
     // --- METODE LOGIKA GAME ---
 
+
+    /**
+     * BARU: Metode ini dipanggil oleh wire:poll setiap detik.
+     */
+    public function decrementTimer()
+    {
+        if ($this->timerRunning && $this->timeLeft > 0) {
+            $this->timeLeft--;
+
+            if ($this->timeLeft <= 0) {
+                $this->showTimesUp();
+            }
+        }
+    }
+
+    /**
+     * BARU: Menangani event ketika waktu habis.
+     */
+    public function showTimesUp()
+    {
+        $this->timerRunning = false;
+        $this->showTimesUpPopup = true;
+
+        $progress = session('game_progress', []);
+
+        if (isset($progress[$this->levelId])) {
+            $progress[$this->levelId]['answered_objects'] = [];
+            session(['game_progress' => $progress]);
+        }
+        $this->answeredObjects = [];
+    }
 
     /**
      * Menangani event klik pada objek interaktif di dalam level.
@@ -515,6 +572,7 @@ class LevelPlayer extends Component
             return;
         }
         if (isset($this->questionMap[$objectName])) {
+
             $questionKey = $this->questionMap[$objectName];
             $this->currentQuestion = $this->levelConfig['questions'][$questionKey];
 
@@ -777,6 +835,8 @@ class LevelPlayer extends Component
      */
     public function completeLevelAndExit()
     {
+        $this->timerRunning = false;
+
         if ($this->levelId === 4) {
             $this->viewState = 'reflection';
             $this->currentReflectionPage = 1;
@@ -802,6 +862,7 @@ class LevelPlayer extends Component
     public function checkLevelCompletion()
     {
         if (count($this->answeredObjects) >= $this->totalQuestions) {
+            $this->timerRunning = false;
             $this->viewState = 'level_complete_popup';
             $this->currentCompletionPage = 0;
         }
@@ -817,6 +878,10 @@ class LevelPlayer extends Component
         $this->activeObjectName = null;
         $this->userAnswer = '';
         $this->feedbackMessage = null;
+
+        if ($this->viewState === 'playing') {
+            $this->timerRunning = true;
+        }
     }
 
     /**

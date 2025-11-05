@@ -1,4 +1,4 @@
-<div class="bg-gray-800 min-h-screen flex items-center justify-center overflow-hidden">
+<div class="bg-gray-800 min-h-screen flex items-center justify-center overflow-hidden" wire:poll.1000ms="decrementTimer">
     <div class="relative w-full max-h-full aspect-video">
         {{-- Latar Belakang Level --}}
         <img src="{{ $backgroundUrl }}" class="absolute top-0 left-0 w-full h-full object-cover z-0">
@@ -15,6 +15,31 @@
             </button>
         @endforeach
 
+        {{-- BARU: Tampilan Timer --}}
+        <div x-data="{
+            timeLeft: @entangle('timeLeft'),
+            formatTime() {
+                if (this.timeLeft <= 0) return '00:00';
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }" class="absolute top-[4%] left-[2%] z-20">
+            <div
+                class="flex items-center gap-2 bg-black bg-opacity-40 px-4 py-2 rounded-full shadow-lg border border-white/20">
+                {{-- Ikon Jam --}}
+                <svg class="w-6 h-6 text-white" fill="none" stroke-width="2" stroke="currentColor"
+                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                </svg>
+                {{-- Teks Waktu --}}
+                <span x-text="formatTime()" class="text-white font-bold text-xl md:text-2xl tabular-nums tracking-wider"
+                    :class="{ 'text-red-500 animate-pulse': timeLeft > 0 && timeLeft <= 10 }">
+                </span>
+            </div>
+        </div>
+
         {{-- Tombol UI Global (Volume & Kembali) --}}
         <div class="absolute top-[4%] right-[1%] flex gap-[4%] z-20 w-[15%]">
             <button class="w-[60%] hover:scale-110 transition-transform">
@@ -26,7 +51,7 @@
         </div>
 
         {{-- Overlay gelap saat popup aktif --}}
-        @if ($viewState !== 'playing' || $showQuestionModal)
+        @if ($viewState !== 'playing' || $showQuestionModal || $showTimesUpPopup)
             <div class="absolute inset-0 bg-black bg-opacity-50 z-30"></div>
         @endif
 
@@ -253,6 +278,47 @@
                         @endif
                     @endif
                 </div>
+            </div>
+        @endif
+
+        {{-- BARU: Tampilan: Popup Waktu Habis --}}
+        @if ($showTimesUpPopup)
+            <div class="absolute inset-0 w-full h-full flex items-center justify-center z-50 p-4">
+
+                {{-- Card Popup --}}
+                <div x-data="{ show: false }" x-init="$nextTick(() => show = true)" x-show="show"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform scale-90"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 transform scale-100"
+                    x-transition:leave-end="opacity-0 transform scale-90"
+                    class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-8 text-center flex flex-col items-center">
+
+                    {{-- Ikon --}}
+                    <svg class="w-16 h-16 text-red-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+
+                    {{-- Judul --}}
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">
+                        Waktu Habis!
+                    </h2>
+
+                    {{-- Pesan --}}
+                    <p class="text-lg text-gray-600 mb-6">
+                        Yah, waktumu habis. Jangan khawatir, kamu bisa coba lagi nanti!
+                    </p>
+
+                    {{-- Tombol Aksi --}}
+                    <button wire:click="backToPetaMisi"
+                        class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-full transition-all hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        Kembali ke Peta Misi
+                    </button>
+                </div>
+
             </div>
         @endif
 

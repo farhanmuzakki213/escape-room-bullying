@@ -122,7 +122,7 @@ class GameManager extends Component
             $this->currentView = 'home';
         }
 
-        $this->currentView = 'start_sequence';
+        // $this->currentView = 'start_sequence';
         // $this->currentLevel = '4';
     }
 

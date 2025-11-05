@@ -22,7 +22,7 @@ class PetaMisiPage extends Component
      */
     public array $levelTitles = [
         1 => 'Ruang Kelas',
-        2 => 'Perpustakaan',
+        2 => 'Kantin',
         3 => 'Lorong',
         4 => 'Lapangan',
     ];

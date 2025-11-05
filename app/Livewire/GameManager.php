@@ -121,6 +121,9 @@ class GameManager extends Component
         } else {
             $this->currentView = 'home';
         }
+
+        $this->currentView = 'level';
+        $this->currentLevel = '4';
     }
 
     /**

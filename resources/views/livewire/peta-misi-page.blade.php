@@ -31,12 +31,12 @@
 
         {{-- GRUP LEVEL 2 --}}
         <div
-            class="absolute top-[40%] left-[28%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-[2%] z-20 w-[15%]">
+            class="absolute top-[45%] left-[28%] -translate-x-1/2 -translate-y-1/2 flex items-center gap-[2%] z-20 w-[15%]">
             <img src="{{ asset('images/petamisi/number-2.png') }}" alt="Nomor 2"
                 class="w-[25%] pointer-events-none {{ $unlockedLevel < 2 ? 'grayscale' : '' }}"
                 @disabled($unlockedLevel < 2)>
             <button wire:click="selectLevel(2)" class="w-[65%] hover:scale-110 transition-transform">
-                <img src="{{ asset('images/petamisi/rak-buku.png') }}" alt="Level 2: Perpustakaan"
+                <img src="{{ asset('images/petamisi/kantin.png') }}" alt="Level 2: Kantin"
                     class="{{ $unlockedLevel < 2 ? 'grayscale' : '' }}">
             </button>
             @if ($unlockedLevel < 2)

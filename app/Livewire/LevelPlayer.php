@@ -135,20 +135,15 @@ class LevelPlayer extends Component
                     'alt' => 'Gunting',
                     'style' => 'top: 90%; left: 70%; width: 6%;',
                 ],
-                'colokan' => [
-                    'image' => 'images/level1/colokan.png',
-                    'alt' => 'Colokan',
-                    'style' => 'top:63%; left: 39%; width: 6%;',
-                ],
-                'lukisan' => [
-                    'image' => 'images/level1/lukisan-biru.png',
-                    'alt' => 'Lukisan',
-                    'style' => 'top: 28%; left: 25%; width: 10%;',
+                'kemonceng' => [
+                    'image' => 'images/level1/kemonceng.svg',
+                    'alt' => 'Kemonceng',
+                    'style' => 'top: 48%; left: 21.5%; width: 3%;',
                 ],
                 'penggaris' => [
                     'image' => 'images/level1/penggaris.png',
                     'alt' => 'Penggaris',
-                    'style' => 'top: 90%; left: 25%; width: 10%;',
+                    'style' => 'top: 92%; left: 42%; width: 6%;',
                 ],
             ],
             'questions' => [
@@ -183,7 +178,7 @@ class LevelPlayer extends Component
         ],
         2 => [
             'background' => 'images/level2/background-level-2.jpg',
-            'title' => 'Perpustakaan',
+            'title' => 'Kantin',
             'assets' => [
                 'rules_boards' => [
                     'images/level2/papan-aturan-lv2.1.png',
@@ -194,25 +189,25 @@ class LevelPlayer extends Component
                 ],
             ],
             'objects' => [
-                'ac' => [
-                    'image' => 'images/level2/ac.png',
-                    'alt' => 'AC',
-                    'style' => 'top: 20%; left: 60%; width: 10%;',
+                'kotak-tisu' => [
+                    'image' => 'images/level2/kotak-tisu.png',
+                    'alt' => 'Kotak Tisu',
+                    'style' => 'top: 47%; left: 16%; width: 10%;',
                 ],
-                'papan-library' => [
-                    'image' => 'images/level2/papan-library.png',
-                    'alt' => 'Papan Library',
-                    'style' => 'top: 35%; left: 50%; width: 8%;',
+                'botol-saus' => [
+                    'image' => 'images/level2/botol-saus.png',
+                    'alt' => 'Botol Saus',
+                    'style' => 'top: 44%; left: 64.5%; width: 3%;',
                 ],
-                'tempat-sampah' => [
-                    'image' => 'images/level2/tempat-sampah.png',
-                    'alt' => 'Tempat Sampah',
-                    'style' => 'top: 67%; left: 76%; width: 8%;',
+                'tong-sampah-3' => [
+                    'image' => 'images/level2/tong-sampah-3.png',
+                    'alt' => 'Tong Sampah',
+                    'style' => 'top: 85%; left: 92%; width: 11%;',
                 ],
-                'vas' => [
-                    'image' => 'images/level2/vas.png',
-                    'alt' => 'Vas',
-                    'style' => 'top: 76%; left: 33%; width: 7%;',
+                'botol-3' => [
+                    'image' => 'images/level2/botol-3.png',
+                    'alt' => 'Botol Minum',
+                    'style' => 'top: 73%; left: 40%; width: 3%;',
                 ],
             ],
             'questions' => [
@@ -220,45 +215,45 @@ class LevelPlayer extends Component
                     'image' => 'images/pertanyaan-jawaban/p1-lv2.svg',
                     'category' => 'verbal',
                     'correct_items' => [
-                        'verbal_1' => ['image' => 'images/pertanyaan-jawaban/verbal-1.svg', 'text' => 'Mengejek, mempermalukan, dan menghina seseorang dengan sengaja'],
-                        'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.svg', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan'],
+                        'verbal_1' => ['image' => 'images/pertanyaan-jawaban/verbal-1.png', 'text' => 'Mengejek, mempermalukan, dan menghina seseorang dengan sengaja'],
+                        'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.png', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan'],
                     ],
                 ],
                 'q2' => [
                     'image' => 'images/pertanyaan-jawaban/p2-lv2.svg',
                     'category' => 'fisik',
                     'correct_items' => [
-                        'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak, menampar, dan mengunci seseorang di ruangan dan pemerasan uang'],
-                        'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Memukul, menendang, dan mendorong seseorang dengan segaja'],
+                        'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.jpg', 'text' => 'Menjambak, menampar, dan mengunci seseorang di ruangan dan pemerasan uang atau barang'],
+                        'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.jpg', 'text' => 'Memukul, menendang, dan mendorong seseorang dengan segaja'],
                     ],
                 ],
                 'q3' => [
                     'image' => 'images/pertanyaan-jawaban/p3-lv2.svg',
                     'category' => 'sosial',
                     'correct_items' => [
-                        'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.svg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
-                        'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.svg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang'],
+                        'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.jpg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
+                        'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.jpg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang'],
                     ],
                 ],
                 'q4' => [
                     'image' => 'images/pertanyaan-jawaban/p4-lv2.svg',
                     'category' => 'cyber',
                     'correct_items' => [
-                        'cyber_1' => ['image' => 'images/pertanyaan-jawaban/cyber-1.svg', 'text' => 'Membuat komentar jahat di media sosial dan menyebarkan foto-foto seseorang tanpa izin'],
-                        'cyber_2' => ['image' => 'images/pertanyaan-jawaban/cyber-2.svg', 'text' => 'Meneror seseorang melalui media sosial dan menyerang seseorang secara online'],
+                        'cyber_1' => ['image' => 'images/pertanyaan-jawaban/cyber-1.png', 'text' => 'Membuat komentar jahat di media sosial dan menyebarkan foto-foto seseorang tanpa izin'],
+                        'cyber_2' => ['image' => 'images/pertanyaan-jawaban/cyber-2.png', 'text' => 'Meneror seseorang melalui media sosial dan menyerang seseorang secara online'],
                     ],
                 ]
             ],
             'item_bank' => [
                 // Ini adalah gabungan semua 'correct_pairs' dari atas
-                'verbal_1' => ['image' => 'images/pertanyaan-jawaban/verbal-1.svg', 'text' => 'Mengejek, mempermalukan, dan menghina seseorang dengan sengaja'],
-                'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.svg', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan'],
-                'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.svg', 'text' => 'Menjambak, menampar, dan mengunci seseorang di ruangan dan pemerasan uang'],
-                'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.svg', 'text' => 'Memukul, menendang, dan mendorong seseorang dengan segaja'],
-                'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.svg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
-                'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.svg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang'],
-                'cyber_1' => ['image' => 'images/pertanyaan-jawaban/cyber-1.svg', 'text' => 'Membuat komentar jahat di media sosial dan menyebarkan foto-foto seseorang tanpa izin'],
-                'cyber_2' => ['image' => 'images/pertanyaan-jawaban/cyber-2.svg', 'text' => 'Meneror seseorang melalui media sosial dan menyerang seseorang secara online'],
+                'verbal_1' => ['image' => 'images/pertanyaan-jawaban/verbal-1.png', 'text' => 'Mengejek, mempermalukan, dan menghina seseorang dengan sengaja'],
+                'verbal_2' => ['image' => 'images/pertanyaan-jawaban/verbal-2.png', 'text' => 'Memanggil nama-nama kasar, atau mengatakan hal-hal menyakitkan'],
+                'fisik_1' => ['image' => 'images/pertanyaan-jawaban/fisik-1.jpg', 'text' => 'Menjambak, menampar, dan mengunci seseorang di ruangan dan pemerasan uang atau barang'],
+                'fisik_2' => ['image' => 'images/pertanyaan-jawaban/fisik-2.jpg', 'text' => 'Memukul, menendang, dan mendorong seseorang dengan segaja'],
+                'sosial_1' => ['image' => 'images/pertanyaan-jawaban/sosial-1.jpg', 'text' => 'Menyebarkan rumor, menghasut seseorang, dan mengucilkan seseorang dari kelompok'],
+                'sosial_2' => ['image' => 'images/pertanyaan-jawaban/sosial-2.jpg', 'text' => 'Merusak reputasi sosial korban dan membuat lelucon yang merendahkan seseorang'],
+                'cyber_1' => ['image' => 'images/pertanyaan-jawaban/cyber-1.png', 'text' => 'Membuat komentar jahat di media sosial dan menyebarkan foto-foto seseorang tanpa izin'],
+                'cyber_2' => ['image' => 'images/pertanyaan-jawaban/cyber-2.png', 'text' => 'Meneror seseorang melalui media sosial dan menyerang seseorang secara online'],
             ],
         ],
         3 => [
@@ -275,20 +270,20 @@ class LevelPlayer extends Component
                 ],
             ],
             'objects' => [
-                'mading' => [
-                    'image' => 'images/level3/mading.png',
-                    'alt' => 'Mading',
-                    'style' => 'top: 48%; left: 44.5%; width: 10%;',
+                'tas-2' => [
+                    'image' => 'images/level3/tas-2.png',
+                    'alt' => 'Tas',
+                    'style' => 'top: 72%; left: 60%; width: 6%;',
                 ],
                 'bola-basket' => [
                     'image' => 'images/level3/bola-basket.png',
                     'alt' => 'Bola Basket',
                     'style' => 'top: 67%; left: 54%; width: 3%;',
                 ],
-                'jam-dinding' => [
-                    'image' => 'images/level3/jam-dinding.png',
-                    'alt' => 'Jam Dinding',
-                    'style' => 'top: 40%; left: 28%; width: 5%;',
+                'sepatu' => [
+                    'image' => 'images/level3/sepatu.png',
+                    'alt' => 'Sepatu',
+                    'style' => 'top: 93%; left: 23%; width: 6%;',
                 ],
                 'pensil-berjatuhan' => [
                     'image' => 'images/level3/pensil-berjatuhan.png',
@@ -352,32 +347,32 @@ class LevelPlayer extends Component
                 'kertas-berjatuhan' => [
                     'image' => 'images/level4/kertas-berjatuhan.png',
                     'alt' => 'Kertas Berjatuhan',
-                    'style' => 'top: 90%; left: 20%; width: 8%;',
+                    'style' => 'top: 72%; left: 62%; width: 5%;',
                 ],
-                'kursi' => [
-                    'image' => 'images/level4/kursi.png',
-                    'alt' => 'Kursi',
-                    'style' => 'top: 70%; left: 11%; width: 20%;',
+                'botol-2' => [
+                    'image' => 'images/level4/botol-2.png',
+                    'alt' => 'Botol Minum',
+                    'style' => 'top: 68%; left: 6%; width: 2%;',
                 ],
-                'pohon' => [
-                    'image' => 'images/level4/pohon.png',
-                    'alt' => 'Pohon',
-                    'style' => 'top: 45%; left: 10%; width: 25%;',
+                'kotak-bekal' => [
+                    'image' => 'images/level4/kotak-bekal.png',
+                    'alt' => 'Kotak Bekal',
+                    'style' => 'top: 70%; left: 11%; width: 6%;',
                 ],
-                'tempat-sampah' => [
-                    'image' => 'images/level4/tempat-sampah.png',
-                    'alt' => 'Tempat Sampah',
-                    'style' => 'top: 66%; left: 78%; width: 14%;',
+                'sepatu' => [
+                    'image' => 'images/level4/sepatu.png',
+                    'alt' => 'Sepatu',
+                    'style' => 'top: 89%; left: 14%; width: 6%;',
                 ],
-                'bendera' => [
-                    'image' => 'images/level4/bendera.png',
-                    'alt' => 'Bendera',
-                    'style' => 'top: 50%; left: 55%; width: 15%;',
+                'tas-3' => [
+                    'image' => 'images/level4/tas-3.png',
+                    'alt' => 'Tas',
+                    'style' => 'top: 86%; left: 6%; width: 7%;',
                 ],
                 'bola-basket' => [
                     'image' => 'images/level3/bola-basket.png',
                     'alt' => 'Bambu',
-                    'style' => 'top: 85%; left: 85%; width: 5%;',
+                    'style' => 'top: 78%; left: 20%; width: 3%;',
                 ],
             ],
             'questions' => [
@@ -463,9 +458,9 @@ class LevelPlayer extends Component
             $this->viewState = 'playing';
         }
 
-        // if (env('APP_ENV') == 'local') {
-        //     $this->viewState = 'playing';
-        // }
+        if (env('APP_ENV') == 'local') {
+            $this->viewState = 'playing';
+        }
 
         if ($this->levelId == 2) {
             $this->redrawArrows();
